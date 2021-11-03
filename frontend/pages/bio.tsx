@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 
 const Bio: NextPage = () => {
-  return <div>BIO</div>;
+  return <div>Bio</div>;
 };
 
 export default Bio;
