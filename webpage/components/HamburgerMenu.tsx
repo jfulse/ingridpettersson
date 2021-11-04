@@ -1,7 +1,8 @@
 import HamburgerButton from "./HamburgerButton";
-import DropdownMenu, { MenuItems } from "./DropdownMenu";
+import DropdownMenu from "./DropdownMenu";
+import { MenuItem } from "../types";
 
-const HamburgerMenu = ({ items }: { items: MenuItems }) => (
+const HamburgerMenu = ({ items }: { items: MenuItem[] }) => (
   <DropdownMenu items={items} component={HamburgerButton} />
 );
 

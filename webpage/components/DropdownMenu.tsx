@@ -1,5 +1,8 @@
-import { ComponentType, ReactElement, useCallback, useState } from "react";
+import { ComponentType, useCallback, useRef, useState } from "react";
 import styled from "styled-components";
+import { useClickAway } from "react-use";
+
+import { MenuItem as MenuItemType } from "../types";
 
 import MaybeLink from "./MaybeLink";
 import MenuItem from "./MenuItem";
@@ -44,28 +47,40 @@ const Menu = styled.ul<{ open: boolean }>`
   ${({ open }) => open && "transform: scaleY(1);"}
 `;
 
-export type MenuItems = {
-  title: string;
-  href?: string;
-  onClick?: () => void;
-}[];
-
 type Props = {
-  items: MenuItems;
+  items: MenuItemType[];
   component: ComponentType<{ onClick?: () => void }>;
 };
 
+const hasSubmenu = (menuItems?: MenuItemType[]) =>
+  menuItems && menuItems.length > 0;
+
 const HamburgerMenu = ({ items, component: Component }: Props) => {
+  const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const toggle = useCallback(() => setIsOpen((current) => !current), []);
+  const close = useCallback(() => setIsOpen(false), []);
+
+  useClickAway(ref, close);
 
   return (
-    <Wrapper>
+    <Wrapper ref={ref}>
       <Component onClick={toggle} />
       <Menu open={isOpen}>
-        {items.map(({ title, href, onClick }) => (
-          <MenuItem key={title} onClick={onClick} toggle={toggle}>
-            <MaybeLink href={href}>{title}</MaybeLink>
+        {items.map(({ title, href, onClick, menuItems }) => (
+          <MenuItem
+            key={title}
+            onClick={onClick}
+            toggle={toggle}
+            group={hasSubmenu(menuItems)}
+          >
+            {
+              /* TODO: sub menu items */ hasSubmenu(menuItems) ? (
+                <div>{title}</div>
+              ) : (
+                <MaybeLink href={href}>{title}</MaybeLink>
+              )
+            }
           </MenuItem>
         ))}
       </Menu>
