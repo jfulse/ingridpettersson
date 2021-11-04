@@ -3,18 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "todo": "TODO"
+    "start": "concurrently \"cd webpage && npm run dev\" \"cd sanity && sanity start\""
   },
   "dependencies": {
     "get-youtube-id": "^1.0.1",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "react-youtube": "^7.13.1",
     "styled-components": "^5.3.3"
   },
   "devDependencies": {
     "@types/react": "17.0.34",
     "@types/styled-components": "^5.1.15",
+    "concurrently": "^6.3.0",
     "eslint": "7.32.0",
     "eslint-config-next": "12.0.2",
     "typescript": "4.4.4"
