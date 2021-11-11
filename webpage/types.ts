@@ -4,3 +4,10 @@ export type MenuItem = {
   onClick?: () => void;
   menuItems?: MenuItem[];
 };
+
+export type ResolvedProject = {
+  _id: string;
+  title: string;
+  images?: { url: string }[];
+  year: number;
+};

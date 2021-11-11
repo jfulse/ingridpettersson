@@ -1,12 +1,15 @@
 import { NextPage } from "next";
 import styled from "styled-components";
 
+import slugify from "../utils/slugify";
 import useIsMobile from "../hooks/useIsMobile";
+import useData from "../hooks/useData";
 import HamburgerMenu from "../components/HamburgerMenu";
 import Link from "../components/Link";
 import MaybeLink from "../components/MaybeLink";
 import DropdownMenu from "../components/DropdownMenu";
-import { MenuItem } from "../types";
+import { MenuItem, ResolvedProject } from "../types";
+import { useMemo } from "react";
 
 const Wrapper = styled.div`
   display: flex;
@@ -27,14 +30,14 @@ const MenuButton = styled.button`
   border: none;
 `;
 
-const headerMenuItems: MenuItem[] = [
+const getHeaderMenuItems = (projects: ResolvedProject[]): MenuItem[] => [
   { title: "shop", href: "/shop" },
   {
     title: "projects",
-    menuItems: [
-      { title: "project 1", href: "/project1" },
-      { title: "project 1", href: "/project1" },
-    ],
+    menuItems: projects.map(({ title, year }) => ({
+      title: `${title} (${year})`,
+      href: `/projects/${slugify(title)}`,
+    })),
   },
   { title: "illustration", href: "/illustration" },
   { title: "bio", href: "/bio" },
@@ -43,6 +46,12 @@ const headerMenuItems: MenuItem[] = [
 
 const Header: NextPage = () => {
   const isMobile = useIsMobile();
+  const { data: projects = [], loading, error } = useData("api/projects");
+  const headerMenuItems = useMemo(
+    () => getHeaderMenuItems(projects),
+    [projects]
+  );
+  // TODO: loading and error
 
   if (isMobile) {
     return (
