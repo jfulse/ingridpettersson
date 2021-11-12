@@ -14,8 +14,8 @@ const ImageWrapper = styled.div<{ height: number; aspectRatio: number }>`
   margin: 0 1.5rem 0 0;
   position: relative;
 
-  &:first-child {
-    margin-left: 1.5rem;
+  &:last-child {
+    margin-right: 0;
   }
 `;
 
