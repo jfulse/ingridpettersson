@@ -1,7 +1,8 @@
-import { NextPage } from "next";
 import styled from "styled-components";
 
+import { EMPTY_ARRAY } from "../constants";
 import slugify from "../utils/slugify";
+import makeGetServerSideProps, { Props } from "../utils/makeGetServerSideProps";
 import useIsMobile from "../hooks/useIsMobile";
 import useData from "../hooks/useData";
 import HamburgerMenu from "../components/HamburgerMenu";
@@ -44,14 +45,26 @@ const getHeaderMenuItems = (projects: ResolvedProject[]): MenuItem[] => [
   { title: "checkout", href: "/checkout" },
 ];
 
-const Header: NextPage = () => {
+const API_URL = "http://localhost:3000";
+
+const getProjectsSlug = () => "api/projects";
+
+const getProjectsApiUrl = () => `${API_URL}/api/projects`;
+
+export const getServerSideProps = makeGetServerSideProps(
+  getProjectsSlug,
+  getProjectsApiUrl
+);
+
+const Header = (props: Props<ResolvedProject[]>) => {
+  const { data } = useData(getProjectsApiUrl());
+  const projects = (data || props.data) ?? EMPTY_ARRAY;
+
   const isMobile = useIsMobile();
-  const { data: projects = [], loading, error } = useData("api/projects");
   const headerMenuItems = useMemo(
     () => getHeaderMenuItems(projects),
     [projects]
   );
-  // TODO: loading and error
 
   if (isMobile) {
     return (
@@ -74,7 +87,10 @@ const Header: NextPage = () => {
           const Component = ({ onClick }: { onClick?: () => void }) => (
             <MenuButton onClick={onClick}>{title}</MenuButton>
           );
-          return <DropdownMenu items={menuItems} component={Component} />;
+
+          return (
+            <DropdownMenu key={title} items={menuItems} component={Component} />
+          );
         }
 
         return (
