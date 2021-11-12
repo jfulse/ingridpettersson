@@ -27,6 +27,7 @@ const Menu = styled.ul<{ open: boolean }>`
   transform-origin: top;
   transform: scaleY(0);
   transition: transform 0.26s ease;
+  background-color: ${(props) => getColors(props, "background")};
 
   ${({ open }) => open && "transform: scaleY(1);"}
 
@@ -66,13 +67,23 @@ const HamburgerMenu = ({ items, component: Component }: Props) => {
             toggle={toggle}
             group={hasSubmenu(menuItems)}
           >
-            {
-              /* TODO: sub menu items */ hasSubmenu(menuItems) ? (
-                <div>{title}</div>
-              ) : (
-                <MaybeLink href={href}>{title}</MaybeLink>
-              )
-            }
+            {hasSubmenu(menuItems) ? (
+              <div>
+                {title}
+                {menuItems?.map?.((subMenuItem) => (
+                  <MenuItem
+                    key={subMenuItem.title}
+                    onClick={subMenuItem.onClick}
+                  >
+                    <MaybeLink href={subMenuItem.href}>
+                      {subMenuItem.title}
+                    </MaybeLink>
+                  </MenuItem>
+                ))}
+              </div>
+            ) : (
+              <MaybeLink href={href}>{title}</MaybeLink>
+            )}
           </MenuItem>
         ))}
       </Menu>

@@ -5,6 +5,7 @@ import makeGetServerSideProps, {
   Props,
 } from "../../utils/makeGetServerSideProps";
 import useData from "../../hooks/useData";
+import styled from "styled-components";
 
 const API_URL = "http://localhost:3000";
 
@@ -13,6 +14,12 @@ const getProjectSlug = (context: GetServerSidePropsContext) =>
 
 const getProjectApiUrl = (context: GetServerSidePropsContext) =>
   `${API_URL}/api/project?slug=${getProjectSlug(context)}`;
+
+const StyledData = styled.div`
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: scroll;
+`;
 
 export const getServerSideProps = makeGetServerSideProps(
   getProjectSlug,
@@ -30,7 +37,7 @@ const Project = (props: Props<ResolvedProject>) => {
       </div>
       <br />
       <br />
-      <div>Data: {JSON.stringify(project)}</div>
+      <StyledData>Data: {JSON.stringify(project)}</StyledData>
     </>
   );
 };

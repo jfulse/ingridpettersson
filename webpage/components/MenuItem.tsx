@@ -8,6 +8,7 @@ const StyledMenuItem = styled.li<{ group?: boolean }>`
   white-space: nowrap;
   padding: 0.5rem 1rem;
   cursor: pointer;
+  font-weight: normal;
 
   &:first-child {
     padding-top: 1rem;
@@ -17,7 +18,16 @@ const StyledMenuItem = styled.li<{ group?: boolean }>`
     padding-bottom: 1rem;
   }
 
-  ${({ group }) => group && "font-weight: bold"};
+  ${({ group }) =>
+    group &&
+    `
+    font-weight: bold;
+    padding-bottom: 0;
+    
+    & + li {
+      padding-top: 0;
+    }
+  `}
 
   &:hover {
     ${(props) =>
