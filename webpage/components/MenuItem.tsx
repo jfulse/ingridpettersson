@@ -6,7 +6,7 @@ import { getColors } from "../style/theme";
 const StyledMenuItem = styled.li<{ group?: boolean }>`
   list-style: none;
   white-space: nowrap;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 1.5rem;
   cursor: pointer;
   font-weight: normal;
 
