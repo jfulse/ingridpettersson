@@ -1,10 +1,28 @@
 import { ReactNode, useCallback } from "react";
 import styled from "styled-components";
 
+import { getColors } from "../style/theme";
+
 const StyledMenuItem = styled.li<{ group?: boolean }>`
   list-style: none;
   white-space: nowrap;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+
+  &:first-child {
+    padding-top: 1rem;
+  }
+
+  &:last-child {
+    padding-bottom: 1rem;
+  }
+
   ${({ group }) => group && "font-weight: bold"};
+
+  &:hover {
+    ${(props) =>
+      `background-color: ${getColors(props, "backgroundEmphasized")};`}
+  }
 `;
 
 type Props = {

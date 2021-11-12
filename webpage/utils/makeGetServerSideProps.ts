@@ -8,8 +8,8 @@ type ContextToString = (
 
 export type Props<T> = {
   slug?: string;
-  apiUrl: string;
-  data: T;
+  apiUrl?: string;
+  data?: T;
 };
 
 const makeGetServerSideProps =
