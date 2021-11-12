@@ -1,4 +1,4 @@
-import { GetServerSidePropsResult, GetServerSidePropsContext } from "next";
+import { GetServerSidePropsContext } from "next";
 
 import { ResolvedProject } from "../../types";
 import makeGetServerSideProps, {
@@ -6,6 +6,7 @@ import makeGetServerSideProps, {
 } from "../../utils/makeGetServerSideProps";
 import useData from "../../hooks/useData";
 import styled from "styled-components";
+import ImageBeam from "../../components/ImageBeam";
 
 const API_URL = "http://localhost:3000";
 
@@ -15,10 +16,15 @@ const getProjectSlug = (context: GetServerSidePropsContext) =>
 const getProjectApiUrl = (context: GetServerSidePropsContext) =>
   `${API_URL}/api/project?slug=${getProjectSlug(context)}`;
 
-const StyledData = styled.div`
-  width: 100%;
-  overflow-x: hidden;
-  overflow-y: scroll;
+const Wrapper = styled.div`
+  height: 100%;
+
+  h2 {
+    font-size: 1rem;
+    font-weight: normal;
+    margin: 0;
+    padding: 1rem;
+  }
 `;
 
 export const getServerSideProps = makeGetServerSideProps(
@@ -31,14 +37,14 @@ const Project = (props: Props<ResolvedProject>) => {
   const project = data || props.data;
 
   return (
-    <>
-      <div>
-        Project: {project.title} - {project.year} ({props.slug})
-      </div>
+    <Wrapper>
+      <h2>
+        {project.title} ({project.year})
+      </h2>
       <br />
       <br />
-      <StyledData>Data: {JSON.stringify(project)}</StyledData>
-    </>
+      <ImageBeam images={project.images} />
+    </Wrapper>
   );
 };
 

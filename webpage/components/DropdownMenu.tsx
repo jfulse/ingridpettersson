@@ -27,6 +27,7 @@ const Menu = styled.ul<{ open: boolean }>`
   transform: scaleY(0);
   transition: transform 0.26s ease;
   background-color: ${(props) => getColors(props, "background")};
+  z-index: 10;
 
   ${({ open }) => open && "transform: scaleY(1);"}
 

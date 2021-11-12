@@ -14,6 +14,18 @@ const GlobalStyle = createGlobalStyle<{ theme: Theme }>`
     ${fontSize}
     ${fontFamily}
     background-color: ${(props) => getColors(props, "background")}
+    height: 100vh;
+    width: 100vw;
+    
+    * {
+      box-sizing: border-box;
+    }
+  }
+
+  body {
+    margin: 0;
+    height: 100vh;
+    width: 100vw;
   }
 
   input, select, button {

@@ -7,7 +7,7 @@ import slugify from "../../utils/slugify";
 const PROJECT_QUERY = `*[ _type == "project" && !(_id in path('drafts.**'))]{
   _id,
   title,
-  "images": images[].asset -> { _id, url },
+  images[] { _key, asset -> },
   year
 }`;
 
