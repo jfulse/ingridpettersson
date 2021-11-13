@@ -7,27 +7,27 @@ type ContextToString = (
 ) => string | string[] | undefined;
 
 export type Props<T> = {
-  slug?: string;
+  slug?: string | null;
   apiUrl?: string;
   data?: T;
 };
 
 const makeGetServerSideProps =
-  <T>(getSlug: ContextToString, getApiUrl: ContextToString) =>
+  <T>(getApiUrl: ContextToString, getSlug?: ContextToString) =>
   async (
     context: GetServerSidePropsContext
   ): Promise<GetServerSidePropsResult<Props<T>>> => {
     try {
-      const slug = getSlug(context);
-
-      if (slug && typeof slug !== "string") {
-        throw new Error("Slug should be a string");
-      }
-
       const apiUrl = getApiUrl(context);
 
       if (typeof apiUrl !== "string") {
         throw new Error("Could not get api url server side");
+      }
+
+      const slug = getSlug?.(context) ?? null;
+
+      if (slug && typeof slug !== "string") {
+        throw new Error("Slug should be a string");
       }
 
       const data = await fetcher(apiUrl);
@@ -36,6 +36,7 @@ const makeGetServerSideProps =
         throw new Error("Could not get data server side");
       }
 
+      console.log("🤩", { slug, data, apiUrl });
       return { props: { slug, data, apiUrl } };
     } catch (err) {
       console.error(err);

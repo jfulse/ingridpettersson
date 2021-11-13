@@ -5,9 +5,13 @@ export type MenuItem = {
   menuItems?: MenuItem[];
 };
 
+export type ResolvedAsset = {
+  metadata: { dimensions: { aspectRatio: number } };
+};
+
 export type ResolvedImage = {
   _id: string;
-  asset: { metadata: { dimensions: { aspectRatio: number } } };
+  asset: ResolvedAsset;
 };
 
 export type ResolvedProject = {
@@ -15,4 +19,10 @@ export type ResolvedProject = {
   title: string;
   images?: ResolvedImage[];
   year: number;
+};
+
+export type ResolvedPiece = {
+  _id: string;
+  title: string;
+  firstImage: ResolvedImage;
 };

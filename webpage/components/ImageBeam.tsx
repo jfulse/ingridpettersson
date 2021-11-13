@@ -11,13 +11,14 @@ const Wrapper = styled.div`
 
 type Props = {
   images: ResolvedImage[];
+  height?: number;
 };
 
-const ImageBeam = ({ images }: Props) => {
+const ImageBeam = ({ images, height = 60 }: Props) => {
   return (
     <Wrapper>
       {images?.map((image) => (
-        <Image key={image?._id} image={image} height={60} />
+        <Image key={image?._id} image={image} height={height} />
       ))}
     </Wrapper>
   );

@@ -47,14 +47,9 @@ const getHeaderMenuItems = (projects: ResolvedProject[]): MenuItem[] => [
 
 const API_URL = "http://localhost:3000";
 
-const getProjectsSlug = () => "api/projects";
-
 const getProjectsApiUrl = () => `${API_URL}/api/projects`;
 
-export const getServerSideProps = makeGetServerSideProps(
-  getProjectsSlug,
-  getProjectsApiUrl
-);
+export const getServerSideProps = makeGetServerSideProps(getProjectsApiUrl);
 
 const Header = (props: Props<ResolvedProject[]>) => {
   const { data } = useData(getProjectsApiUrl());

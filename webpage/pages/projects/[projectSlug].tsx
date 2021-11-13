@@ -28,8 +28,8 @@ const Wrapper = styled.div`
 `;
 
 export const getServerSideProps = makeGetServerSideProps(
-  getProjectSlug,
-  getProjectApiUrl
+  getProjectApiUrl,
+  getProjectSlug
 );
 
 const Project = (props: Props<ResolvedProject>) => {
