@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "concurrently \"cd webpage && npm run dev\" \"cd sanity && sanity start\"",
-    "bootstrap": "lerna bootstrap",
+    "bootstrap": "npx lerna bootstrap",
     "build": "cd webpage && next build"
   },
   "dependencies": {
