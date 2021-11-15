@@ -1,11 +1,16 @@
 import { useNextSanityImage } from "next-sanity-image";
 import NextImage from "next/image";
+import { useCallback } from "react";
 import styled from "styled-components";
 
 import { ResolvedImage } from "../types";
 import { sanityClient } from "../utils/sanityClient";
 
-type Props = { image: ResolvedImage; height: number };
+type Props = {
+  image: ResolvedImage;
+  height: number;
+  onClick?: (id: string) => void;
+};
 
 const ImageWrapper = styled.div<{ height: number; aspectRatio: number }>`
   display: inline-block;
@@ -19,9 +24,11 @@ const ImageWrapper = styled.div<{ height: number; aspectRatio: number }>`
   }
 `;
 
-const Image = ({ image, height }: Props) => {
+const Image = ({ image, height, onClick }: Props) => {
   const imageProps = useNextSanityImage(sanityClient, image.asset);
   const aspectRatio = image.asset?.metadata?.dimensions?.aspectRatio;
+
+  const handleClick = useCallback(() => onClick?.(image._id), [image, onClick]);
 
   if (!aspectRatio) {
     console.error("Image without aspect ratio:", image);
@@ -29,7 +36,11 @@ const Image = ({ image, height }: Props) => {
   }
 
   return (
-    <ImageWrapper aspectRatio={aspectRatio} height={height}>
+    <ImageWrapper
+      aspectRatio={aspectRatio}
+      height={height}
+      onClick={handleClick}
+    >
       <NextImage {...imageProps} layout="responsive" placeholder="blur" />
     </ImageWrapper>
   );

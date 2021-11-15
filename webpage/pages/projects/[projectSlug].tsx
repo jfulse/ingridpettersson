@@ -4,17 +4,16 @@ import { ResolvedProject } from "../../types";
 import makeGetServerSideProps, {
   Props,
 } from "../../utils/makeGetServerSideProps";
+import getApiUrl from "../../utils/getApiUrl";
 import useData from "../../hooks/useData";
 import styled from "styled-components";
 import ImageBeam from "../../components/ImageBeam";
-
-const API_URL = "http://localhost:3000";
 
 const getProjectSlug = (context: GetServerSidePropsContext) =>
   context.query?.projectSlug;
 
 const getProjectApiUrl = (context: GetServerSidePropsContext) =>
-  `${API_URL}/api/project?slug=${getProjectSlug(context)}`;
+  `${getApiUrl()}/api/project?slug=${getProjectSlug(context)}`;
 
 const Wrapper = styled.div`
   height: 100%;

@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 import { EMPTY_ARRAY } from "../constants";
 import slugify from "../utils/slugify";
+import getApiUrl from "../utils/getApiUrl";
 import makeGetServerSideProps, { Props } from "../utils/makeGetServerSideProps";
 import useIsMobile from "../hooks/useIsMobile";
 import useData from "../hooks/useData";
@@ -45,9 +46,7 @@ const getHeaderMenuItems = (projects: ResolvedProject[]): MenuItem[] => [
   { title: "checkout", href: "/checkout" },
 ];
 
-const API_URL = "http://localhost:3000";
-
-const getProjectsApiUrl = () => `${API_URL}/api/projects`;
+const getProjectsApiUrl = () => `${getApiUrl()}/api/projects`;
 
 export const getServerSideProps = makeGetServerSideProps(getProjectsApiUrl);
 
