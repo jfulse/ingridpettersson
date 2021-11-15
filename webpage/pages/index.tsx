@@ -11,7 +11,10 @@ import ImageBeam from "../components/ImageBeam";
 // TODO: Can I make dataset public and then do queries directly from the frontend?
 // Maybe wait with this until image credits etc are up
 
-const getLandingApiUrl = () => `${getApiUrl()}/api/landing`;
+const getLandingApiUrl = () =>
+  Boolean(console.error("💥 getLandingApiUrl", `${getApiUrl()}/api/landing`))
+    ? ""
+    : `${getApiUrl()}/api/landing`;
 
 export const getServerSideProps = makeGetServerSideProps(getLandingApiUrl);
 
