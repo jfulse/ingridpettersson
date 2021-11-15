@@ -18,5 +18,8 @@
     "slugify": "^1.6.2",
     "styled-components": "^5.3.3",
     "swr": "^1.0.1"
+  },
+  "devDependencies": {
+    "typescript": "^4.4.4"
   }
 }
