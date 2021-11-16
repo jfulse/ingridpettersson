@@ -1,37 +1,77 @@
 import { useNextSanityImage } from "next-sanity-image";
 import NextImage from "next/image";
 import { useCallback } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import { ResolvedImage } from "../types";
 import { sanityClient } from "../utils/sanityClient";
 
-type Props = {
-  image: ResolvedImage;
-  height: number;
+type ImageWrapperProps = {
+  height?: number;
+  width?: number;
+  gap?: string;
+  aspectRatio: number;
   onClick?: (id?: string) => void;
 };
 
-type ImageWrapperProps = {
-  height: number;
-  onClick?: (id?: string) => void;
-  aspectRatio: number;
+const getDimensions = ({
+  aspectRatio,
+  height,
+  width,
+  gap,
+}: ImageWrapperProps) => {
+  if (!height && !width) {
+    console.error("Specified neither height nor width for image");
+    return "";
+  }
+
+  if (height && width) {
+    console.error("Specified both height and width for image");
+  }
+
+  if (height) {
+    return css`
+      height: ${height}vh;
+      width: ${height * aspectRatio}vh;
+    `;
+  }
+
+  // TODO: Worry about rightmost gap for masonry
+  return css`
+    width: calc(${width}vw - ${gap});
+    height: calc(${width! / aspectRatio}vw - ${gap});
+  `;
 };
 
 const ImageWrapper = styled.div<ImageWrapperProps>`
   display: inline-block;
-  margin: 0 1.5rem 0 0;
+  margin: ${({ gap }) => `0 ${gap} 0 0`};
   position: relative;
 
-  height: ${({ height }) => `${height}vh`};
-  width: ${({ aspectRatio, height }) => `${height * aspectRatio}vh`};
+  ${getDimensions}
 
   &:last-child {
     margin-right: 0;
   }
 `;
 
-const Image = ({ image, height, onClick }: Props) => {
+type Props = {
+  image: ResolvedImage;
+  height?: number;
+  width?: number;
+  gap?: string;
+  onClick?: (id?: string) => void;
+  className?: string;
+};
+
+const Image = ({
+  image,
+  height,
+  width,
+  onClick,
+  className,
+  gap = "1.5rem",
+}: Props) => {
   const imageProps = useNextSanityImage(sanityClient, image?.asset ?? {});
   const aspectRatio = image.asset?.metadata?.dimensions?.aspectRatio;
 
@@ -49,7 +89,10 @@ const Image = ({ image, height, onClick }: Props) => {
     <ImageWrapper
       aspectRatio={aspectRatio}
       height={height}
+      width={width}
+      gap={gap}
       onClick={handleClick}
+      className={className}
     >
       {/* TODO: If we want speed instead of data saving we can use loading="eager" */}
       <NextImage {...imageProps} layout="responsive" placeholder="blur" />
