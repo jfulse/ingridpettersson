@@ -36,7 +36,6 @@ const makeGetServerSideProps =
         throw new Error("Could not get data server side");
       }
 
-      console.log("🤩", { slug, data, apiUrl });
       return { props: { slug, data, apiUrl } };
     } catch (err) {
       console.error(err);
