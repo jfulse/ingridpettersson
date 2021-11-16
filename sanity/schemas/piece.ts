@@ -18,17 +18,6 @@ export default {
       to: [{ type: "category" }],
       required: true,
     }),
-    field("forSale", {
-      title: "For sale",
-      type: "boolean",
-      initialValue: false,
-    }),
-    field("price", {
-      name: "price",
-      title: "Price",
-      type: "price",
-      hidden: notForSale,
-    }),
     field("description"),
     field("colour"),
     field("material"),

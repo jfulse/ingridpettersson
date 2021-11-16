@@ -1,4 +1,4 @@
-import { FieldConfig, SchemaType, Rule } from "../types";
+import { FieldConfig, SchemaType, RuleType } from "../types";
 import capitalize from "./capitalize";
 
 export default (
@@ -7,7 +7,8 @@ export default (
 ): FieldConfig => ({
   name,
   type: type || "string",
-  validation: validation || (required ? (Rule) => Rule.required() : undefined),
+  validation:
+    validation || (required ? (Rule: RuleType) => Rule.required() : undefined),
   title: title || capitalize(name),
   ...rest,
 });

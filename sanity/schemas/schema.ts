@@ -5,6 +5,7 @@ import bio from "./bio";
 import category from "./category";
 import frontPage from "./frontPage";
 import piece from "./piece";
+import product from "./product";
 import project from "./project";
 import price from "./price";
 import shop from "./shop";
@@ -15,6 +16,7 @@ export default createSchema({
   types: schemaTypes.concat([
     bio,
     piece,
+    product,
     category,
     frontPage,
     project,

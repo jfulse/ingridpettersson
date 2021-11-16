@@ -9,18 +9,16 @@ export default {
   icon: RiShoppingCart2Line,
   __experimental_actions: ["update", "publish"],
   fields: [
-    field("pieces", {
+    field("products", {
       type: "array",
       required: true,
       of: [
         {
           type: "reference",
-          to: [{ type: "piece" }],
-          options: { filter: `_type == 'piece' && forSale` },
+          to: [{ type: "product" }],
         },
       ],
-      description:
-        "The pieces shown in the shop, in the order below. Only the ones for sale are eligible",
+      description: "The products shown in the shop, in the order below.",
     }),
   ],
   preview: {
