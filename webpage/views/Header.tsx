@@ -17,6 +17,14 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  // Making dropdown goes above images also during the transformation:
+  position: relative;
+  z-index: 1;
+
+  span:last-child {
+    margin-right: 1rem;
+  }
 `;
 
 const Name = styled.h1`
