@@ -11,7 +11,7 @@ const Wrapper = styled.div`
 
 type Props = {
   images: ResolvedImage[];
-  onClick?: (id: string) => void;
+  onClick?: (id?: string) => void;
   height?: number;
 };
 
@@ -20,7 +20,7 @@ const ImageBeam = ({ images, onClick, height = 60 }: Props) => {
     <Wrapper>
       {images?.map((image) => (
         <Image
-          key={image?._id}
+          key={image?.ownerId}
           image={image}
           height={height}
           onClick={onClick}

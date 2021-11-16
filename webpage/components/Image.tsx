@@ -9,7 +9,7 @@ import { sanityClient } from "../utils/sanityClient";
 type Props = {
   image: ResolvedImage;
   height: number;
-  onClick?: (id: string) => void;
+  onClick?: (id?: string) => void;
 };
 
 const ImageWrapper = styled.div<{ height: number; aspectRatio: number }>`
@@ -25,10 +25,13 @@ const ImageWrapper = styled.div<{ height: number; aspectRatio: number }>`
 `;
 
 const Image = ({ image, height, onClick }: Props) => {
-  const imageProps = useNextSanityImage(sanityClient, image.asset);
+  const imageProps = useNextSanityImage(sanityClient, image?.asset ?? {});
   const aspectRatio = image.asset?.metadata?.dimensions?.aspectRatio;
 
-  const handleClick = useCallback(() => onClick?.(image._id), [image, onClick]);
+  const handleClick = useCallback(
+    () => onClick?.(image.ownerId),
+    [image, onClick]
+  );
 
   if (!aspectRatio) {
     console.error("Image without aspect ratio:", image);

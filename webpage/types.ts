@@ -10,8 +10,9 @@ export type ResolvedAsset = {
 };
 
 export type ResolvedImage = {
-  _id: string;
-  asset: ResolvedAsset;
+  _key?: string;
+  ownerId?: string;
+  asset?: ResolvedAsset;
 };
 
 export type ResolvedProject = {
@@ -24,5 +25,12 @@ export type ResolvedProject = {
 export type ResolvedPiece = {
   _id: string;
   title: string;
-  firstImage: ResolvedImage;
+  category?: string;
+  firstImage?: ResolvedImage;
+  images?: ResolvedImage[];
+  description?: string;
+  colour?: string;
+  material?: string;
+  care?: string;
+  size?: number;
 };
