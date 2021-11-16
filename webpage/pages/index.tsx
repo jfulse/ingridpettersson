@@ -37,7 +37,7 @@ const Index = (props: Props<{ pieces: ResolvedPiece[] }>) => {
   return (
     <>
       <br />
-      <ImageBeam images={images} height={80} onClick={onClick} />
+      <ImageBeam images={images} onClick={onClick} />
     </>
   );
 };

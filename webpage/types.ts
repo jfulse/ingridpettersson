@@ -6,7 +6,9 @@ export type MenuItem = {
 };
 
 export type ResolvedAsset = {
-  metadata: { dimensions: { aspectRatio: number } };
+  metadata: {
+    dimensions: { aspectRatio: number; height: number; width: number };
+  };
 };
 
 export type ResolvedImage = {

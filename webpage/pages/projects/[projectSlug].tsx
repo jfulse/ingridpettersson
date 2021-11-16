@@ -42,7 +42,7 @@ const Project = (props: Props<ResolvedProject>) => {
       </h2>
       <br />
       <br />
-      <ImageBeam images={project.images} />
+      <ImageBeam images={project.images} maxHeight={70} />
     </Wrapper>
   );
 };
