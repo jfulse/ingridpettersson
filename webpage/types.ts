@@ -24,6 +24,13 @@ export type ResolvedProject = {
   year: number;
 };
 
+export type ResolvedProduct = {
+  _id: string;
+  piece: ResolvedPiece;
+  price: number;
+  stock: number;
+};
+
 export type ResolvedPiece = {
   _id: string;
   title: string;

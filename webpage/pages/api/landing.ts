@@ -2,14 +2,11 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 import { ResolvedProject } from "../../types";
 import { sanityClient } from "../../utils/sanityClient";
+import { pieceProjection } from "../../utils/queries";
 
 const LANDING_QUERY = `*[ _type == "frontPage" && !(_id in path('drafts.**'))]{
   pieces[] -> {
-    _id,
-    title,
-    "firstImage": images {
-      _key, asset ->
-    }[0]
+    ${pieceProjection}
   }
 }[0]`;
 
