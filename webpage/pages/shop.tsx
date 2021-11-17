@@ -6,7 +6,7 @@ import getApiUrl from "../utils/getApiUrl";
 import filterTruthy from "../utils/filterTruthy";
 import { ResolvedProduct } from "../types";
 import useData from "../hooks/useData";
-import ImageMasonry from "../components/ImageMasonry";
+import ImageGrid from "../components/ImageGrid";
 
 const getShopApiUrl = () => `${getApiUrl()}/api/shop`;
 
@@ -22,7 +22,7 @@ const Shop = (props: Props<{ pieces: ResolvedProduct[] }>) => {
   return (
     <div>
       Products: {products.map(({ piece, price }) => `${piece.title} (${price})`).join(", ")}
-      <ImageMasonry images={images} />
+      <ImageGrid images={images} />
     </div>
   );
 };

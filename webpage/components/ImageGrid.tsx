@@ -35,7 +35,7 @@ type Props = {
 };
 
 // TODO: secondImage
-const ImageMasonry = ({ images, onClick }: Props) => {
+const ImageGrid = ({ images, onClick }: Props) => {
   return (
     <Wrapper>
       {images?.map((image, idx) => (
@@ -47,4 +47,4 @@ const ImageMasonry = ({ images, onClick }: Props) => {
   );
 };
 
-export default ImageMasonry;
+export default ImageGrid;
