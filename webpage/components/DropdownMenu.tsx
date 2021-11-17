@@ -45,8 +45,7 @@ type Props = {
   component: ComponentType<{ onClick?: () => void }>;
 };
 
-const hasSubmenu = (menuItems?: MenuItemType[]) =>
-  menuItems && menuItems.length > 0;
+const hasSubmenu = (menuItems?: MenuItemType[]) => menuItems && menuItems.length > 0;
 
 const HamburgerMenu = ({ items, component: Component }: Props) => {
   const ref = useRef(null);
@@ -61,23 +60,13 @@ const HamburgerMenu = ({ items, component: Component }: Props) => {
       <Component onClick={toggle} />
       <Menu open={isOpen}>
         {items.map(({ title, href, onClick, menuItems }) => (
-          <MenuItem
-            key={title}
-            onClick={onClick}
-            toggle={toggle}
-            group={hasSubmenu(menuItems)}
-          >
+          <MenuItem key={title} onClick={onClick} toggle={toggle} group={hasSubmenu(menuItems)}>
             {hasSubmenu(menuItems) ? (
               <div>
                 {title}
                 {menuItems?.map?.((subMenuItem) => (
-                  <MenuItem
-                    key={subMenuItem.title}
-                    onClick={subMenuItem.onClick}
-                  >
-                    <MaybeLink href={subMenuItem.href}>
-                      {subMenuItem.title}
-                    </MaybeLink>
+                  <MenuItem key={subMenuItem.title} onClick={subMenuItem.onClick}>
+                    <MaybeLink href={subMenuItem.href}>{subMenuItem.title}</MaybeLink>
                   </MenuItem>
                 ))}
               </div>

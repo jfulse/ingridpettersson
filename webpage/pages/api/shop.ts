@@ -16,10 +16,7 @@ const SHOP_QUERY = `*[ _type == "shop" && ${FILTER_NON_DRAFTS} ]{
   }
 }[0]`;
 
-export default async (
-  req: NextApiRequest,
-  res: NextApiResponse<ResolvedProduct | string>
-) => {
+export default async (req: NextApiRequest, res: NextApiResponse<ResolvedProduct | string>) => {
   const landing = await sanityClient.fetch(SHOP_QUERY);
 
   if (!landing) {

@@ -32,10 +32,7 @@ const Index = (props: Props<{ pieces: ResolvedPiece[] }>) => {
     [pieces]
   );
 
-  const onClick = useCallback(
-    (pieceId) => router.push(`/pieces/${pieceId}`),
-    [router]
-  );
+  const onClick = useCallback((pieceId) => router.push(`/pieces/${pieceId}`), [router]);
 
   return (
     <>

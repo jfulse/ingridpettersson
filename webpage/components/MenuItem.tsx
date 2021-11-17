@@ -30,8 +30,7 @@ const StyledMenuItem = styled.li<{ group?: boolean }>`
   `}
 
   &:hover {
-    ${(props) =>
-      `background-color: ${getColors(props, "backgroundEmphasized")};`}
+    ${(props) => `background-color: ${getColors(props, "backgroundEmphasized")};`}
   }
 `;
 

@@ -3,20 +3,13 @@ import { ResolvedPiece } from "../../types";
 import useData from "../../hooks/useData";
 
 import getApiUrl from "../../utils/getApiUrl";
-import makeGetServerSideProps, {
-  Props,
-} from "../../utils/makeGetServerSideProps";
+import makeGetServerSideProps, { Props } from "../../utils/makeGetServerSideProps";
 
-const getPieceSlug = (context: GetServerSidePropsContext) =>
-  context.query?.pieceId;
+const getPieceSlug = (context: GetServerSidePropsContext) => context.query?.pieceId;
 
-const getPieceApiUrl = (context: GetServerSidePropsContext) =>
-  `${getApiUrl()}/api/piece/${context.query.pieceId}`;
+const getPieceApiUrl = (context: GetServerSidePropsContext) => `${getApiUrl()}/api/piece/${context.query.pieceId}`;
 
-export const getServerSideProps = makeGetServerSideProps(
-  getPieceApiUrl,
-  getPieceSlug
-);
+export const getServerSideProps = makeGetServerSideProps(getPieceApiUrl, getPieceSlug);
 
 const Piece = (props: Props<ResolvedPiece>) => {
   const { data } = useData(props.apiUrl);

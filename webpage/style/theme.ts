@@ -20,10 +20,7 @@ const theme: Theme = {
   },
 };
 
-export const getColors = (
-  { theme }: { theme: Theme },
-  element: Element,
-  section: Section = "base"
-) => theme.colors[section][element];
+export const getColors = ({ theme }: { theme: Theme }, element: Element, section: Section = "base") =>
+  theme.colors[section][element];
 
 export default theme;

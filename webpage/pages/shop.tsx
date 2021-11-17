@@ -14,21 +14,14 @@ export const getServerSideProps = makeGetServerSideProps(getShopApiUrl);
 
 const Shop = (props: Props<{ pieces: ResolvedProduct[] }>) => {
   const { data } = useData(getShopApiUrl());
-  const products: ResolvedProduct[] =
-    (data || props.data)?.products ?? EMPTY_ARRAY;
+  const products: ResolvedProduct[] = (data || props.data)?.products ?? EMPTY_ARRAY;
 
-  const images = useMemo(
-    () => filterTruthy(products.map(({ piece }) => piece.firstImage)),
-    [products]
-  );
+  const images = useMemo(() => filterTruthy(products.map(({ piece }) => piece.firstImage)), [products]);
   console.log("🐸 images", images);
 
   return (
     <div>
-      Products:{" "}
-      {products
-        .map(({ piece, price }) => `${piece.title} (${price})`)
-        .join(", ")}
+      Products: {products.map(({ piece, price }) => `${piece.title} (${price})`).join(", ")}
       <ImageMasonry images={images} />
     </div>
   );

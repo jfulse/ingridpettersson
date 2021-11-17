@@ -1,23 +1,31 @@
-import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { useWindowSize } from "react-use";
 
 import { ResolvedImage } from "../types";
-import isServer from "../utils/isServer";
+import { getColors } from "../style/theme";
 import Image from "./Image";
 
+// https://css-tricks.com/auto-sizing-columns-css-grid-auto-fill-vs-auto-fit/
 const Wrapper = styled.div`
   width: 100%;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  grid-auto-flow: row;
+  margin-top: 1rem;
+  gap: 1rem;
+
+  @media only screen and (max-width: 480px) {
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    gap: 0.25rem;
+  }
 `;
 
-const CenteredImage = styled(Image)`
+const ImageWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   height: auto;
+  background-color: ${(props) => getColors(props, "background")};
 `;
 
 type Props = {
@@ -31,13 +39,9 @@ const ImageMasonry = ({ images, onClick }: Props) => {
   return (
     <Wrapper>
       {images?.map((image, idx) => (
-        <CenteredImage
-          key={image?.ownerId ?? `image-${idx}`}
-          image={image}
-          width={50}
-          gap="0.5rem"
-          onClick={onClick}
-        />
+        <ImageWrapper key={image?.ownerId ?? `image-${idx}`}>
+          <Image image={image} onClick={onClick} />
+        </ImageWrapper>
       ))}
     </Wrapper>
   );

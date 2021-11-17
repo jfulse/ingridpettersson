@@ -11,15 +11,10 @@ const PROJECT_QUERY = `*[ _type == "project" && !(_id in path('drafts.**'))]{
   year
 }`;
 
-export default async (
-  req: NextApiRequest,
-  res: NextApiResponse<ResolvedProject | string>
-) => {
+export default async (req: NextApiRequest, res: NextApiResponse<ResolvedProject | string>) => {
   const { slug } = req.query;
   const projects = await sanityClient.fetch(PROJECT_QUERY);
-  const project = projects.find(
-    ({ title }: ResolvedProject) => slugify(title) === slug
-  );
+  const project = projects.find(({ title }: ResolvedProject) => slugify(title) === slug);
 
   if (!project) {
     res.status(404).send(`Project "${slug}" not found`);

@@ -63,10 +63,7 @@ const Header = (props: Props<ResolvedProject[]>) => {
   const projects = (data || props.data) ?? EMPTY_ARRAY;
 
   const isMobile = useIsMobile();
-  const headerMenuItems = useMemo(
-    () => getHeaderMenuItems(projects),
-    [projects]
-  );
+  const headerMenuItems = useMemo(() => getHeaderMenuItems(projects), [projects]);
 
   if (isMobile) {
     return (
@@ -90,9 +87,7 @@ const Header = (props: Props<ResolvedProject[]>) => {
             <MenuButton onClick={onClick}>{title}</MenuButton>
           );
 
-          return (
-            <DropdownMenu key={title} items={menuItems} component={Component} />
-          );
+          return <DropdownMenu key={title} items={menuItems} component={Component} />;
         }
 
         return (

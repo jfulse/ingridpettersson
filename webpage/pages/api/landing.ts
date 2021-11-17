@@ -10,10 +10,7 @@ const LANDING_QUERY = `*[ _type == "frontPage" && !(_id in path('drafts.**'))]{
   }
 }[0]`;
 
-export default async (
-  req: NextApiRequest,
-  res: NextApiResponse<ResolvedProject | string>
-) => {
+export default async (req: NextApiRequest, res: NextApiResponse<ResolvedProject | string>) => {
   const landing = await sanityClient.fetch(LANDING_QUERY);
 
   if (!landing) {

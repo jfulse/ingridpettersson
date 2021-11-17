@@ -14,20 +14,9 @@ type ImageWrapperProps = {
   onClick?: (id?: string) => void;
 };
 
-const getDimensions = ({
-  aspectRatio,
-  height,
-  width,
-  gap,
-}: ImageWrapperProps) => {
-  if (!height && !width) {
-    console.error("Specified neither height nor width for image");
-    return "";
-  }
-
-  if (height && width) {
-    console.error("Specified both height and width for image");
-  }
+const getDimensions = ({ aspectRatio, height, width, gap }: ImageWrapperProps) => {
+  if (!height && !width) return "";
+  if (height && width) console.error("Specified both height and width for image");
 
   if (height) {
     return css`
@@ -36,7 +25,6 @@ const getDimensions = ({
     `;
   }
 
-  // TODO: Worry about rightmost gap for masonry
   return css`
     width: calc(${width}vw - ${gap});
     height: calc(${width! / aspectRatio}vw - ${gap});
@@ -64,21 +52,11 @@ type Props = {
   className?: string;
 };
 
-const Image = ({
-  image,
-  height,
-  width,
-  onClick,
-  className,
-  gap = "1.5rem",
-}: Props) => {
+const Image = ({ image, height, width, onClick, className, gap = "0" }: Props) => {
   const imageProps = useNextSanityImage(sanityClient, image?.asset ?? {});
   const aspectRatio = image.asset?.metadata?.dimensions?.aspectRatio;
 
-  const handleClick = useCallback(
-    () => onClick?.(image.ownerId),
-    [image, onClick]
-  );
+  const handleClick = useCallback(() => onClick?.(image.ownerId), [image, onClick]);
 
   if (!aspectRatio) {
     console.error("Image without aspect ratio:", image);

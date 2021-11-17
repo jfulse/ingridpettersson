@@ -18,10 +18,7 @@ const PIECE_QUERY = `*[ _type == "piece" && _id == $pieceId ]{
   }
 }[0]`;
 
-export default async (
-  req: NextApiRequest,
-  res: NextApiResponse<ResolvedPiece | string>
-) => {
+export default async (req: NextApiRequest, res: NextApiResponse<ResolvedPiece | string>) => {
   const { pieceId } = req.query;
   const piece: ResolvedPiece = await sanityClient.fetch(PIECE_QUERY, {
     pieceId,

@@ -9,10 +9,7 @@ const PROJECTS_QUERY = `*[ _type == "project" && !(_id in path('drafts.**'))]{
   year
 }`;
 
-export default async (
-  req: NextApiRequest,
-  res: NextApiResponse<ResolvedProject[]>
-) => {
+export default async (req: NextApiRequest, res: NextApiResponse<ResolvedProject[]>) => {
   const projects = await sanityClient.fetch(PROJECTS_QUERY);
 
   res.status(200).json(projects);
