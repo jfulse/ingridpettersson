@@ -1,12 +1,21 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { ResolvedImage } from "../types";
 
 import Image from "./Image";
+
+const easeIn = css`
+  transition: opacity 0.3s ease-in;
+`;
+
+const easeOut = css`
+  transition: opacity 0.3s ease-out;
+`;
 
 const StyledImage = styled(Image)<{ primary?: boolean; secondary?: boolean }>`
   width: 100%;
   height: 100%;
   margin: auto;
+  ${easeIn}
 
   ${({ secondary }) =>
     secondary &&
@@ -15,6 +24,7 @@ const StyledImage = styled(Image)<{ primary?: boolean; secondary?: boolean }>`
         position: absolute;
         top: 0;
         left: 0;
+        ${easeOut}
     `};
 `;
 
@@ -30,6 +40,8 @@ const Wrapper = styled.div<{ singleImage: boolean }>`
     top: 1rem;
     left: 1rem;
     z-index: 1;
+    ${easeOut}
+    text-shadow: -5px -5px 10px white, 5px -5px 10px white, -5px 5px 10px white, 5px 5px 10px white;
 
     & + h4 {
       top: unset;
@@ -46,6 +58,7 @@ const Wrapper = styled.div<{ singleImage: boolean }>`
 
     h4 {
       opacity: 1;
+      ${easeIn}
     }
 
     ${StyledImage}:last-child {
