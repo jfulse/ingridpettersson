@@ -13,7 +13,7 @@ const Wrapper = styled.div`
 `;
 
 type Props = {
-  images: ResolvedImage[];
+  imageObjects: { image: ResolvedImage; href?: string }[];
   onClick?: (id?: string) => void;
   maxHeight?: number;
 };
@@ -22,32 +22,30 @@ type Props = {
 // there is more to the right.
 const MAX_IMAGE_VIEW_WIDTH = 80;
 
-const getHeight = (images: ResolvedImage[], windowHeight: number, windowWidth: number, maxHeight: number): number => {
-  const firstImageDimensions = images?.[0]?.asset?.metadata?.dimensions;
+const getHeight = (windowHeight: number, windowWidth: number, maxHeight: number, image?: ResolvedImage): number => {
+  const firstImageDimensions = image?.asset?.metadata?.dimensions;
 
   if (!firstImageDimensions) return 80;
 
   const firstImageAspectRatio = firstImageDimensions.aspectRatio;
-  const firstImageHeight = firstImageDimensions.height;
-  const firstImageWidth = firstImageDimensions.width;
   const firstImageMaxHeight = (windowWidth * MAX_IMAGE_VIEW_WIDTH) / (windowHeight * firstImageAspectRatio);
 
   return Math.min(firstImageMaxHeight, maxHeight);
 };
 
-const ImageBeam = ({ images, onClick, maxHeight = 80 }: Props) => {
+const ImageBeam = ({ imageObjects, maxHeight = 80 }: Props) => {
   const { height: windowHeight, width: windowWidth } = useWindowSize();
   const [height, setHeight] = useState(maxHeight);
   const server = isServer();
 
   useEffect(() => {
-    if (!server) setHeight(getHeight(images, windowHeight, windowWidth, maxHeight));
-  }, [images, maxHeight, server, windowHeight, windowWidth]);
+    if (!server) setHeight(getHeight(windowHeight, windowWidth, maxHeight, imageObjects?.[0]?.image));
+  }, [imageObjects, maxHeight, server, windowHeight, windowWidth]);
 
   return (
     <Wrapper>
-      {images?.map((image) => (
-        <Image key={image?.ownerId} image={image} height={height} onClick={onClick} gap="1.5rem" />
+      {imageObjects?.map(({ image, href }, idx) => (
+        <Image key={image?._key ?? idx} image={image} height={height} href={href} gap="1.5rem" />
       ))}
     </Wrapper>
   );

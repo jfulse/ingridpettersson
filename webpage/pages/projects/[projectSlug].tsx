@@ -1,6 +1,7 @@
+import { useMemo } from "react";
 import { GetServerSidePropsContext } from "next";
 
-import { ResolvedProject } from "../../types";
+import { ResolvedImage, ResolvedProject } from "../../types";
 import makeGetServerSideProps, { Props } from "../../utils/makeGetServerSideProps";
 import getApiUrl from "../../utils/getApiUrl";
 import useData from "../../hooks/useData";
@@ -29,6 +30,8 @@ const Project = (props: Props<ResolvedProject>) => {
   const { data } = useData(props.apiUrl);
   const project = data || props.data;
 
+  const imageObjects = useMemo(() => project.images.map((image: ResolvedImage) => ({ image })), [project]);
+
   return (
     <Wrapper>
       <h2>
@@ -36,7 +39,7 @@ const Project = (props: Props<ResolvedProject>) => {
       </h2>
       <br />
       <br />
-      <ImageBeam images={project.images} maxHeight={70} />
+      <ImageBeam imageObjects={imageObjects} maxHeight={70} />
     </Wrapper>
   );
 };

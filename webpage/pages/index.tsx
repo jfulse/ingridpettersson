@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import { EMPTY_ARRAY } from "../constants";
 import makeGetServerSideProps, { Props } from "../utils/makeGetServerSideProps";
 import getApiUrl from "../utils/getApiUrl";
-import filterTruthy from "../utils/filterTruthy";
 import { ResolvedPiece } from "../types";
 import useData from "../hooks/useData";
 import ImageBeam from "../components/ImageBeam";
@@ -21,14 +20,12 @@ const Index = (props: Props<{ pieces: ResolvedPiece[] }>) => {
   const { data } = useData(getLandingApiUrl());
   const pieces: ResolvedPiece[] = (data || props.data)?.pieces ?? EMPTY_ARRAY;
 
-  const images = useMemo(
+  const imageObjects = useMemo(
     () =>
-      filterTruthy(
-        pieces.map(({ firstImage = {}, _id }) => ({
-          ownerId: _id,
-          ...firstImage,
-        }))
-      ),
+      pieces.map(({ firstImage = {}, _id }) => ({
+        href: `pieces/${_id}`,
+        image: firstImage,
+      })),
     [pieces]
   );
 
@@ -37,7 +34,7 @@ const Index = (props: Props<{ pieces: ResolvedPiece[] }>) => {
   return (
     <>
       <br />
-      <ImageBeam images={images} onClick={onClick} />
+      <ImageBeam imageObjects={imageObjects} onClick={onClick} />
     </>
   );
 };

@@ -1,10 +1,10 @@
 import { useNextSanityImage } from "next-sanity-image";
 import NextImage from "next/image";
-import { useCallback } from "react";
 import styled, { css } from "styled-components";
 
 import { ResolvedImage } from "../types";
 import { sanityClient } from "../utils/sanityClient";
+import MaybeLink from "./MaybeLink";
 
 type ImageWrapperProps = {
   height?: number;
@@ -48,15 +48,13 @@ type Props = {
   height?: number;
   width?: number;
   gap?: string;
-  onClick?: (id?: string) => void;
+  href?: string;
   className?: string;
 };
 
-const Image = ({ image, height, width, onClick, className, gap = "0" }: Props) => {
+const Image = ({ image, height, width, href, className, gap = "0" }: Props) => {
   const imageProps = useNextSanityImage(sanityClient, image?.asset ?? {});
   const aspectRatio = image.asset?.metadata?.dimensions?.aspectRatio;
-
-  const handleClick = useCallback(() => onClick?.(image.ownerId), [image, onClick]);
 
   if (!aspectRatio) {
     console.error("Image without aspect ratio:", image);
@@ -64,16 +62,11 @@ const Image = ({ image, height, width, onClick, className, gap = "0" }: Props) =
   }
 
   return (
-    <ImageWrapper
-      aspectRatio={aspectRatio}
-      height={height}
-      width={width}
-      gap={gap}
-      onClick={handleClick}
-      className={className}
-    >
-      {/* TODO: If we want speed instead of data saving we can use loading="eager" */}
-      <NextImage {...imageProps} layout="responsive" placeholder="blur" />
+    <ImageWrapper aspectRatio={aspectRatio} height={height} width={width} gap={gap} className={className}>
+      <MaybeLink href={href}>
+        {/* TODO: If we want speed instead of data saving we can use loading="eager" */}
+        <NextImage {...imageProps} layout="responsive" placeholder="blur" />
+      </MaybeLink>
     </ImageWrapper>
   );
 };
