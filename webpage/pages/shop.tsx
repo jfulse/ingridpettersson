@@ -21,7 +21,6 @@ const Shop = (props: Props<{ pieces: ResolvedProduct[] }>) => {
 
   return (
     <div>
-      Products: {products.map(({ piece, price }) => `${piece.title} (${price})`).join(", ")}
       <ImageGrid images={images} />
     </div>
   );
