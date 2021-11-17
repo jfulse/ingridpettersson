@@ -36,6 +36,7 @@ export type ResolvedPiece = {
   title: string;
   category?: string;
   firstImage?: ResolvedImage;
+  secondImage?: ResolvedImage;
   images?: ResolvedImage[];
   description?: string;
   colour?: string;

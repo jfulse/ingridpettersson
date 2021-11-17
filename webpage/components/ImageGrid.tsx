@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 import { ResolvedImage } from "../types";
 import { getColors } from "../style/theme";
-import Image from "./Image";
+import DecoratedImage, { DecoratedImageProps } from "./DecoratedImage";
 
 // https://css-tricks.com/auto-sizing-columns-css-grid-auto-fill-vs-auto-fit/
 const Wrapper = styled.div`
@@ -26,21 +26,27 @@ const ImageWrapper = styled.div`
   justify-content: center;
   height: auto;
   background-color: ${(props) => getColors(props, "background")};
+  position: relative;
 `;
 
 type Props = {
-  images: ResolvedImage[];
-  onClick?: (id?: string) => void;
+  imageObjects: DecoratedImageProps[];
   maxHeight?: number;
 };
 
-// TODO: secondImage
-const ImageGrid = ({ images, onClick }: Props) => {
+const ImageGrid = ({ imageObjects }: Props) => {
   return (
     <Wrapper>
-      {images?.map((image, idx) => (
-        <ImageWrapper key={image?.ownerId ?? `image-${idx}`}>
-          <Image image={image} onClick={onClick} />
+      {imageObjects?.map(({ id, image, secondaryImage, title, subtitle, onClick }) => (
+        <ImageWrapper key={id}>
+          <DecoratedImage
+            id={id}
+            image={image}
+            secondaryImage={secondaryImage}
+            onClick={onClick}
+            title={title}
+            subtitle={subtitle}
+          />
         </ImageWrapper>
       ))}
     </Wrapper>

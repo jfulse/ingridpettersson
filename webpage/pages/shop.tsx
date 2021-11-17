@@ -16,12 +16,23 @@ const Shop = (props: Props<{ pieces: ResolvedProduct[] }>) => {
   const { data } = useData(getShopApiUrl());
   const products: ResolvedProduct[] = (data || props.data)?.products ?? EMPTY_ARRAY;
 
-  const images = useMemo(() => filterTruthy(products.map(({ piece }) => piece.firstImage)), [products]);
-  console.log("🐸 images", images);
+  const imageObjects = useMemo(
+    () =>
+      products
+        .filter(({ stock }) => stock > 0)
+        .map(({ piece: { firstImage, secondImage, _id, title }, price }) => ({
+          image: firstImage,
+          secondaryImage: secondImage,
+          title: title,
+          subtitle: `${price} NOK`,
+          id: _id,
+        })),
+    [products]
+  );
 
   return (
     <div>
-      <ImageGrid images={images} />
+      <ImageGrid imageObjects={imageObjects} />
     </div>
   );
 };
