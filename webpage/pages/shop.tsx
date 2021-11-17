@@ -1,8 +1,9 @@
-import { identity } from "lodash/fp";
+import { useMemo } from "react";
 
 import { EMPTY_ARRAY } from "../constants";
 import makeGetServerSideProps, { Props } from "../utils/makeGetServerSideProps";
 import getApiUrl from "../utils/getApiUrl";
+import filterTruthy from "../utils/filterTruthy";
 import { ResolvedProduct } from "../types";
 import useData from "../hooks/useData";
 import ImageMasonry from "../components/ImageMasonry";
@@ -16,7 +17,10 @@ const Shop = (props: Props<{ pieces: ResolvedProduct[] }>) => {
   const products: ResolvedProduct[] =
     (data || props.data)?.products ?? EMPTY_ARRAY;
 
-  const images = products.map(({ piece }) => piece.firstImage).filter(identity);
+  const images = useMemo(
+    () => filterTruthy(products.map(({ piece }) => piece.firstImage)),
+    [products]
+  );
   console.log("🐸 images", images);
 
   return (

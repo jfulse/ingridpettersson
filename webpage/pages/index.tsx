@@ -1,10 +1,10 @@
 import { useCallback, useMemo } from "react";
 import { useRouter } from "next/router";
-import { identity } from "lodash/fp";
 
 import { EMPTY_ARRAY } from "../constants";
 import makeGetServerSideProps, { Props } from "../utils/makeGetServerSideProps";
 import getApiUrl from "../utils/getApiUrl";
+import filterTruthy from "../utils/filterTruthy";
 import { ResolvedPiece } from "../types";
 import useData from "../hooks/useData";
 import ImageBeam from "../components/ImageBeam";
@@ -23,9 +23,12 @@ const Index = (props: Props<{ pieces: ResolvedPiece[] }>) => {
 
   const images = useMemo(
     () =>
-      pieces
-        .map(({ firstImage = {}, _id }) => ({ ownerId: _id, ...firstImage }))
-        .filter(identity),
+      filterTruthy(
+        pieces.map(({ firstImage = {}, _id }) => ({
+          ownerId: _id,
+          ...firstImage,
+        }))
+      ),
     [pieces]
   );
 
