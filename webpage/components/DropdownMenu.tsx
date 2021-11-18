@@ -8,6 +8,8 @@ import MaybeLink from "./MaybeLink";
 import MenuItem from "./MenuItem";
 import { getColors } from "../style/theme";
 
+// TODO: Fix click area in sub dropdown
+
 const Wrapper = styled.div`
   position: relative;
 `;
