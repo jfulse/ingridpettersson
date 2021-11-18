@@ -15,7 +15,7 @@ import MaybeLink from "./MaybeLink";
 import DropdownMenu from "./DropdownMenu";
 import { MenuItem, ResolvedProject } from "../types";
 
-export const HEADER_HEIGHT = "3rem";
+export const HEADER_HEIGHT = "4rem";
 
 const Wrapper = styled.div`
   display: flex;
