@@ -15,12 +15,15 @@ const getProjectApiUrl = (context: GetServerSidePropsContext) =>
 
 const Wrapper = styled.div`
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 
   h2 {
     font-size: 1rem;
     font-weight: normal;
     margin: 0;
-    padding: 1rem;
+    padding: 0 1rem;
   }
 `;
 
@@ -37,8 +40,6 @@ const Project = (props: Props<ResolvedProject>) => {
       <h2>
         {project.title} ({project.year})
       </h2>
-      <br />
-      <br />
       <ImageBeam imageObjects={imageObjects} maxHeight={70} />
     </Wrapper>
   );
