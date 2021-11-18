@@ -1,10 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
+import { FILTER_NON_DRAFTS } from "../../../constants";
 import { ResolvedProject } from "../../types";
 import { sanityClient } from "../../utils/sanityClient";
 import slugify from "../../utils/slugify";
 
-const PROJECT_QUERY = `*[ _type == "project" && !(_id in path('drafts.**'))]{
+const PROJECT_QUERY = `*[ _type == "project" && ${FILTER_NON_DRAFTS}]{
   _id,
   title,
   images[] { _key, asset -> },

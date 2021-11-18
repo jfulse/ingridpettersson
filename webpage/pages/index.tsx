@@ -29,12 +29,10 @@ const Index = (props: Props<{ pieces: ResolvedPiece[] }>) => {
     [pieces]
   );
 
-  const onClick = useCallback((pieceId) => router.push(`/pieces/${pieceId}`), [router]);
-
   return (
     <>
       <br />
-      <ImageBeam imageObjects={imageObjects} onClick={onClick} />
+      <ImageBeam imageObjects={imageObjects} />
     </>
   );
 };

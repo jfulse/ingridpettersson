@@ -19,7 +19,7 @@ const Wrapper = styled.div`
   justify-content: space-between;
   align-items: center;
 
-  // Making dropdown goes above images also during the transformation:
+  // Make sure dropdown goes above images also during the transformation:
   position: relative;
   z-index: 1;
 
