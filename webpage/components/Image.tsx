@@ -31,10 +31,11 @@ const getDimensions = ({ aspectRatio, height, width, gap }: ImageWrapperProps) =
   `;
 };
 
-const ImageWrapper = styled.div<ImageWrapperProps>`
+const ImageWrapper = styled.div<ImageWrapperProps & { clickable: boolean }>`
   display: inline-block;
   margin: ${({ gap }) => `0 ${gap} 0 0`};
   position: relative;
+  ${({ clickable }) => clickable && "cursor: pointer"};
 
   ${getDimensions}
 
@@ -62,7 +63,14 @@ const Image = ({ image, height, width, href, className, gap = "0" }: Props) => {
   }
 
   return (
-    <ImageWrapper aspectRatio={aspectRatio} height={height} width={width} gap={gap} className={className}>
+    <ImageWrapper
+      aspectRatio={aspectRatio}
+      height={height}
+      width={width}
+      gap={gap}
+      className={className}
+      clickable={Boolean(href)}
+    >
       <MaybeLink href={href}>
         {/* TODO: If we want speed instead of data saving we can use loading="eager" */}
         <NextImage {...imageProps} layout="responsive" placeholder="blur" />
