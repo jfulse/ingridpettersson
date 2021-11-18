@@ -1,4 +1,6 @@
+import { useMemo } from "react";
 import styled from "styled-components";
+import { get, orderBy } from "lodash/fp";
 
 import { EMPTY_ARRAY } from "../constants";
 import slugify from "../utils/slugify";
@@ -11,7 +13,6 @@ import Link from "../components/Link";
 import MaybeLink from "../components/MaybeLink";
 import DropdownMenu from "../components/DropdownMenu";
 import { MenuItem, ResolvedProject } from "../types";
-import { useMemo } from "react";
 
 const Wrapper = styled.div`
   display: flex;
@@ -58,9 +59,11 @@ const getProjectsApiUrl = () => `${getApiUrl()}/api/projects`;
 
 export const getServerSideProps = makeGetServerSideProps(getProjectsApiUrl);
 
+const orderByYear = orderBy(get("year"), "desc");
+
 const Header = (props: Props<ResolvedProject[]>) => {
   const { data } = useData(getProjectsApiUrl());
-  const projects = (data || props.data) ?? EMPTY_ARRAY;
+  const projects = orderByYear(data || props.data) ?? EMPTY_ARRAY;
 
   const isMobile = useIsMobile();
   const headerMenuItems = useMemo(() => getHeaderMenuItems(projects), [projects]);
