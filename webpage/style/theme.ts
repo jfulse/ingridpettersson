@@ -15,7 +15,7 @@ const theme: Theme = {
     base: {
       background: "#fdfdfd",
       backgroundEmphasized: "#f0f0f0",
-      line: "#2f2f2f",
+      line: "#b9b9b9",
     },
   },
 };

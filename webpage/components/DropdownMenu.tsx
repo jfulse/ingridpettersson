@@ -28,6 +28,7 @@ const Menu = styled.ul<{ open: boolean }>`
   transition: transform 0.26s ease;
   background-color: ${(props) => getColors(props, "background")};
   z-index: 10;
+  box-shadow: -0.25rem 0.5rem 1rem rgba(0, 0, 0, 0.2);
 
   ${({ open }) => open && "transform: scaleY(1);"}
 
@@ -65,9 +66,9 @@ const HamburgerMenu = ({ items, component: Component }: Props) => {
               <div>
                 {title}
                 {menuItems?.map?.((subMenuItem) => (
-                  <MenuItem key={subMenuItem.title} onClick={subMenuItem.onClick}>
-                    <MaybeLink href={subMenuItem.href}>{subMenuItem.title}</MaybeLink>
-                  </MenuItem>
+                  <MaybeLink key={subMenuItem.title} href={subMenuItem.href}>
+                    <MenuItem>{subMenuItem.title}</MenuItem>
+                  </MaybeLink>
                 ))}
               </div>
             ) : (
