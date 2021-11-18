@@ -8,10 +8,10 @@ import getApiUrl from "../utils/getApiUrl";
 import makeGetServerSideProps, { Props } from "../utils/makeGetServerSideProps";
 import useIsMobile from "../hooks/useIsMobile";
 import useData from "../hooks/useData";
-import HamburgerMenu from "../components/HamburgerMenu";
-import Link from "../components/Link";
-import MaybeLink from "../components/MaybeLink";
-import DropdownMenu from "../components/DropdownMenu";
+import HamburgerMenu from "./HamburgerMenu";
+import Link from "./Link";
+import MaybeLink from "./MaybeLink";
+import DropdownMenu from "./DropdownMenu";
 import { MenuItem, ResolvedProject } from "../types";
 
 const Wrapper = styled.div`
