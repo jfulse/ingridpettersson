@@ -1,9 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
+import { FILTER_NON_DRAFTS } from "../../../constants";
 import { ResolvedProject } from "../../types";
 import { sanityClient } from "../../utils/sanityClient";
 
-const PROJECTS_QUERY = `*[ _type == "project" && !(_id in path('drafts.**'))]{
+const PROJECTS_QUERY = `*[ _type == "project" && ${FILTER_NON_DRAFTS}]{
   _id,
   title,
   year

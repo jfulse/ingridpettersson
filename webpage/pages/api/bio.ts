@@ -3,21 +3,19 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { FILTER_NON_DRAFTS } from "../../../constants";
 import { ResolvedProject } from "../../types";
 import { sanityClient } from "../../utils/sanityClient";
-import { pieceProjection } from "../../utils/queries";
 
-const LANDING_QUERY = `*[ _type == "frontPage" && ${FILTER_NON_DRAFTS}]{
-  pieces[] -> {
-    ${pieceProjection}
-  }
+const BIO_QUERY = `*[ _type == "bio" && ${FILTER_NON_DRAFTS} ]{
+  headline,
+  body
 }[0]`;
 
 export default async (req: NextApiRequest, res: NextApiResponse<ResolvedProject | string>) => {
-  const landing = await sanityClient.fetch(LANDING_QUERY);
+  const bio = await sanityClient.fetch(BIO_QUERY);
 
-  if (!landing) {
-    res.status(404).send("Landing not found");
+  if (!bio) {
+    res.status(404).send("Bio found");
     return;
   }
 
-  res.status(200).json(landing);
+  res.status(200).json(bio);
 };

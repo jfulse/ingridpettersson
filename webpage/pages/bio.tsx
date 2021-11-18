@@ -1,7 +1,40 @@
-import type { NextPage } from "next";
+import styled from "styled-components";
 
-const Bio: NextPage = () => {
-  return <div>Bio</div>;
+import { EMPTY_OBJECT } from "../constants";
+import useData from "../hooks/useData";
+import makeGetServerSideProps, { Props } from "../utils/makeGetServerSideProps";
+import getApiUrl from "../utils/getApiUrl";
+
+const getIllustrationApiUrl = () => `${getApiUrl()}/api/bio`;
+
+export const getServerSideProps = makeGetServerSideProps(getIllustrationApiUrl);
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 2rem;
+  line-height: 1.5rem;
+
+  h3 {
+    font-weight: 600;
+  }
+`;
+
+type Bio = { headline: string; body: string };
+
+const Bio = (props: Props<Bio>) => {
+  const { data } = useData(getIllustrationApiUrl());
+  const { headline, body } = (data || props.data) ?? EMPTY_OBJECT;
+
+  if (!headline || !body) return null;
+
+  return (
+    <Wrapper>
+      <h3>{headline}</h3>
+      {body}
+    </Wrapper>
+  );
 };
 
 export default Bio;
