@@ -1,6 +1,5 @@
 import styled from "styled-components";
 
-import { ResolvedImage } from "../types";
 import { getColors } from "../style/theme";
 import DecoratedImage, { DecoratedImageProps } from "./DecoratedImage";
 

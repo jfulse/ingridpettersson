@@ -29,11 +29,7 @@ const Shop = (props: Props<{ pieces: ResolvedProduct[] }>) => {
     [products]
   );
 
-  return (
-    <div>
-      <ImageGrid imageObjects={imageObjects} />
-    </div>
-  );
+  return <ImageGrid imageObjects={imageObjects} />;
 };
 
 export default Shop;

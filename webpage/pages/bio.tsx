@@ -13,11 +13,14 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  padding: 2rem;
+  padding: 1rem 2rem;
   line-height: 1.5rem;
+  height: 100%;
 
   h3 {
     font-weight: 600;
+    font-size: 1rem;
+    margin: 0.5rem 0 0;
   }
 `;
 

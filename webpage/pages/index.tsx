@@ -29,12 +29,7 @@ const Index = (props: Props<{ pieces: ResolvedPiece[] }>) => {
     [pieces]
   );
 
-  return (
-    <>
-      <br />
-      <ImageBeam imageObjects={imageObjects} />
-    </>
-  );
+  return <ImageBeam imageObjects={imageObjects} />;
 };
 
 export default Index;

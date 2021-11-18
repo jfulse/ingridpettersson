@@ -1,16 +1,29 @@
 import type { AppProps } from "next/app";
 import { ThemeProvider } from "styled-components";
+import styled from "styled-components";
 
 import theme from "../style/theme";
 import GlobalStyle from "../style/global";
-import Header from "../components/Header";
+import Header, { HEADER_HEIGHT } from "../components/Header";
+import Footer, { FOOTER_HEIGHT } from "../components/Footer";
+
+const Content = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100vh;
+  padding: ${HEADER_HEIGHT} 0 ${FOOTER_HEIGHT};
+`;
 
 function App({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider theme={theme}>
-      <Header />
-      <Component {...pageProps} />
       <GlobalStyle />
+      <Header />
+      <Content>
+        <Component {...pageProps} />
+      </Content>
+      <Footer />
     </ThemeProvider>
   );
 }

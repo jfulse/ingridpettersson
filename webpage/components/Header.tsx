@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import styled from "styled-components";
 import { get, orderBy } from "lodash/fp";
 
+import { getColors } from "../style/theme";
 import { EMPTY_ARRAY } from "../constants";
 import slugify from "../utils/slugify";
 import getApiUrl from "../utils/getApiUrl";
@@ -14,14 +15,19 @@ import MaybeLink from "./MaybeLink";
 import DropdownMenu from "./DropdownMenu";
 import { MenuItem, ResolvedProject } from "../types";
 
+export const HEADER_HEIGHT = "3rem";
+
 const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: fixed;
+  width: 100%;
+  height: ${HEADER_HEIGHT};
+  background-color: ${(props) => getColors(props, "background")};
 
-  // Make sure dropdown goes above images also during the transformation:
-  position: relative;
-  z-index: 1;
+  // Make sure dropdown goes above image hover title
+  z-index: 10;
 
   span:last-child {
     margin-right: 1rem;
