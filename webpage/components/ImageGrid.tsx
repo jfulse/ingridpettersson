@@ -36,15 +36,15 @@ type Props = {
 const ImageGrid = ({ imageObjects }: Props) => {
   return (
     <Wrapper>
-      {imageObjects?.map(({ id, image, secondaryImage, title, subtitle, onClick }) => (
+      {imageObjects?.map(({ id, image, secondaryImage, title, subtitle, href }) => (
         <ImageWrapper key={id}>
           <DecoratedImage
             id={id}
             image={image}
             secondaryImage={secondaryImage}
-            onClick={onClick}
             title={title}
             subtitle={subtitle}
+            href={href}
           />
         </ImageWrapper>
       ))}

@@ -25,6 +25,7 @@ const Shop = (props: Props<{ pieces: ResolvedProduct[] }>) => {
           title: title,
           subtitle: `${price} NOK`,
           id: _id,
+          href: `pieces/${_id}`,
         })),
     [products]
   );

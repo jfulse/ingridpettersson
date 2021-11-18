@@ -73,18 +73,18 @@ export type DecoratedImageProps = {
   secondaryImage?: ResolvedImage;
   title?: string;
   subtitle?: string;
-  onClick?: (id?: string) => void;
+  href?: string;
 };
 
-const DecoratedImage = ({ image, secondaryImage, title, subtitle }: DecoratedImageProps) => {
+const DecoratedImage = ({ image, secondaryImage, title, subtitle, href }: DecoratedImageProps) => {
   if (!image) return null;
 
   return (
     <Wrapper singleImage={!secondaryImage}>
-      <StyledImage image={image} primary />
+      <StyledImage image={image} primary href={href} />
       {title && <h4>{title}</h4>}
       {subtitle && <h4>{subtitle}</h4>}
-      {secondaryImage && <StyledImage image={secondaryImage} secondary />}
+      {secondaryImage && <StyledImage image={secondaryImage} secondary href={href} />}
     </Wrapper>
   );
 };
