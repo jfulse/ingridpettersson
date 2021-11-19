@@ -6,6 +6,7 @@ export type MenuItem = {
 };
 
 export type ResolvedAsset = {
+  url: string;
   metadata: {
     dimensions: { aspectRatio: number; height: number; width: number };
   };

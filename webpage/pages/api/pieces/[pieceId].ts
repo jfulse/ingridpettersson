@@ -15,7 +15,7 @@ const PIECE_QUERY = `*[ _type == "piece" && _id == $pieceId ]{
   images {
     _key,
     asset ->
-  }
+  }[]
 }[0]`;
 
 export default async (req: NextApiRequest, res: NextApiResponse<ResolvedPiece | string>) => {
