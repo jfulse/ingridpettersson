@@ -1,4 +1,4 @@
-import { ReactChild, useMemo } from "react";
+import { useMemo } from "react";
 import { GetServerSidePropsContext } from "next";
 import { Carousel } from "react-responsive-carousel";
 import styled from "styled-components";
@@ -12,6 +12,8 @@ import getApiUrl from "../../utils/getApiUrl";
 import makeGetServerSideProps, { Props } from "../../utils/makeGetServerSideProps";
 import { EMPTY_ARRAY } from "../../constants";
 import AddToCart from "../../components/AddToCart";
+
+// TODO: Fix styling here. Try removing style and relying on package props?
 
 const getPieceSlug = (context: GetServerSidePropsContext) => context.query?.pieceId;
 
