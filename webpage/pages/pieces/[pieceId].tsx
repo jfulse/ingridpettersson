@@ -30,24 +30,48 @@ const Wrapper = styled.div`
   }
 `;
 
+const InfoWrapper = styled.div`
+  margin: 0;
+  padding: 0 1rem;
+  white-space: nowrap;
+`;
+
 const Title = styled.h2`
   margin: 0;
   padding: 0;
+`;
+
+const SubTitle = styled.h3`
+  margin: 1rem 0;
+  padding: 0;
+`;
+
+const Info = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 `;
 
 const CarouselWrapper = styled.div`
   height: 100%;
 
   & > div:first-child {
-    display: grid;
-    grid-template-columns: 1fr auto;
+    display: flex;
 
-    & > div:nth-child(2) > div:first-child > ul {
-      display: flex;
-      flex-direction: column;
-      margin: 0;
-      padding: 0;
-      transform: none !important;
+    & > div:first-child {
+      flex-grow: 1;
+    }
+
+    & > div:nth-child(2) {
+      flex-shrink: 1;
+
+      & > div:first-child > ul {
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        padding: 0;
+        transform: none !important;
+      }
     }
   }
 `;
@@ -79,7 +103,17 @@ const Piece = (props: Props<ResolvedPiece>) => {
           ))}
         </Carousel>
       </CarouselWrapper>
-      <Title>{piece.title}</Title>
+      <InfoWrapper>
+        <Title>{piece.title}</Title>
+        <Info>
+          {piece.category && <SubTitle>{piece.category}</SubTitle>}
+          {piece.description && <div>{piece.description}</div>}
+          {piece.material && <div>{piece.material}</div>}
+          {piece.size && <div>{piece.size}</div>}
+          {piece.care && <div>{piece.care}</div>}
+          {piece.size && <div>size: {piece.size}</div>}
+        </Info>
+      </InfoWrapper>
     </Wrapper>
   );
 };
