@@ -27,7 +27,7 @@ export type ResolvedProject = {
 
 export type ResolvedProduct = {
   _id: string;
-  piece: ResolvedPiece;
+  piece?: ResolvedPiece;
   price: number;
   stock: number;
   reserved: number;
@@ -45,4 +45,5 @@ export type ResolvedPiece = {
   material?: string;
   care?: string;
   size?: number;
+  product?: ResolvedProduct;
 };

@@ -11,6 +11,7 @@ import useData from "../../hooks/useData";
 import getApiUrl from "../../utils/getApiUrl";
 import makeGetServerSideProps, { Props } from "../../utils/makeGetServerSideProps";
 import { EMPTY_ARRAY } from "../../constants";
+import AddToCart from "../../components/AddToCart";
 
 const getPieceSlug = (context: GetServerSidePropsContext) => context.query?.pieceId;
 
@@ -90,7 +91,8 @@ const Piece = (props: Props<ResolvedPiece>) => {
     () => filterWithAsset(piece.images || EMPTY_ARRAY),
     [piece]
   );
-  console.log("✅", { piece, data, props, images });
+
+  const product = useMemo(() => (piece.product ? { ...piece.product, piece } : undefined), [piece]);
 
   return (
     <Wrapper>
@@ -113,6 +115,12 @@ const Piece = (props: Props<ResolvedPiece>) => {
           {piece.care && <div>{piece.care}</div>}
           {piece.size && <div>size: {piece.size}</div>}
         </Info>
+        {product && (
+          <>
+            <br />
+            <AddToCart product={product} />
+          </>
+        )}
       </InfoWrapper>
     </Wrapper>
   );

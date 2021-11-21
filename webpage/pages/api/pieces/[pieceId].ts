@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { FILTER_NON_DRAFTS } from "../../../../constants";
 
 import { ResolvedPiece } from "../../../types";
 import { sanityClient } from "../../../utils/sanityClient";
@@ -15,7 +16,13 @@ const PIECE_QUERY = `*[ _type == "piece" && _id == $pieceId ]{
   images {
     _key,
     asset ->
-  }[]
+  }[],
+  'product': *[ _type == 'product' && piece._ref == $pieceId && ${FILTER_NON_DRAFTS}] {
+    _id,
+    price,
+    stock,
+    reserved
+  }[0]
 }[0]`;
 
 export default async (req: NextApiRequest, res: NextApiResponse<ResolvedPiece | string>) => {

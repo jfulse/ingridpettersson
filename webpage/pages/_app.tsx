@@ -6,6 +6,7 @@ import theme from "../style/theme";
 import GlobalStyle from "../style/global";
 import Header, { HEADER_HEIGHT } from "../components/Header";
 import Footer, { FOOTER_HEIGHT } from "../components/Footer";
+import { ContextProvider } from "../context";
 
 const Content = styled.div`
   display: flex;
@@ -17,14 +18,16 @@ const Content = styled.div`
 
 function App({ Component, pageProps }: AppProps) {
   return (
-    <ThemeProvider theme={theme}>
-      <GlobalStyle />
-      <Header />
-      <Content>
-        <Component {...pageProps} />
-      </Content>
-      <Footer />
-    </ThemeProvider>
+    <ContextProvider>
+      <ThemeProvider theme={theme}>
+        <GlobalStyle />
+        <Header />
+        <Content>
+          <Component {...pageProps} />
+        </Content>
+        <Footer />
+      </ThemeProvider>
+    </ContextProvider>
   );
 }
 
