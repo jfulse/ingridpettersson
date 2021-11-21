@@ -37,6 +37,12 @@ export default {
     }),
     field("price", { type: "number", required: true }),
     field("stock", { type: "number", required: true }),
+    field("reserved", {
+      type: "number",
+      required: true,
+      initialValue: 0,
+      hidden: true,
+    }),
   ],
   preview: {
     select: {

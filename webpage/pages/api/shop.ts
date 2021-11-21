@@ -10,6 +10,7 @@ const SHOP_QUERY = `*[ _type == "shop" && ${FILTER_NON_DRAFTS} ]{
     _id,
     price,
     stock,
+    reserved,
     "piece": piece -> {
       ${pieceProjection}
     }

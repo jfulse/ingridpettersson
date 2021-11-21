@@ -30,6 +30,7 @@ export type ResolvedProduct = {
   piece: ResolvedPiece;
   price: number;
   stock: number;
+  reserved: number;
 };
 
 export type ResolvedPiece = {
