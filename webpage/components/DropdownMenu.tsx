@@ -62,22 +62,24 @@ const HamburgerMenu = ({ items, component: Component }: Props) => {
     <Wrapper ref={ref}>
       <Component onClick={toggle} />
       <Menu open={isOpen}>
-        {items.map(({ title, href, onClick, menuItems }) => (
-          <MenuItem key={title} onClick={onClick} toggle={toggle} group={hasSubmenu(menuItems)}>
-            {hasSubmenu(menuItems) ? (
-              <div>
-                {title}
-                {menuItems?.map?.((subMenuItem) => (
-                  <MaybeLink key={subMenuItem.title} href={subMenuItem.href}>
-                    <MenuItem>{subMenuItem.title}</MenuItem>
-                  </MaybeLink>
-                ))}
-              </div>
-            ) : (
-              <MaybeLink href={href}>{title}</MaybeLink>
-            )}
-          </MenuItem>
-        ))}
+        {items
+          .filter(({ hidden }) => !hidden)
+          .map(({ title, href, onClick, menuItems }) => (
+            <MenuItem key={title} onClick={onClick} toggle={toggle} group={hasSubmenu(menuItems)}>
+              {hasSubmenu(menuItems) ? (
+                <div>
+                  {title}
+                  {menuItems?.map?.((subMenuItem) => (
+                    <MaybeLink key={subMenuItem.title} href={subMenuItem.href}>
+                      <MenuItem>{subMenuItem.title}</MenuItem>
+                    </MaybeLink>
+                  ))}
+                </div>
+              ) : (
+                <MaybeLink href={href}>{title}</MaybeLink>
+              )}
+            </MenuItem>
+          ))}
       </Menu>
     </Wrapper>
   );

@@ -3,6 +3,7 @@ export type MenuItem = {
   href?: string;
   onClick?: () => void;
   menuItems?: MenuItem[];
+  hidden?: boolean;
 };
 
 export type ResolvedAsset = {
