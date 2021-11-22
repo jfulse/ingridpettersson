@@ -1,9 +1,12 @@
 import { useMemo } from "react";
 import { GetServerSidePropsContext } from "next";
-import { Carousel } from "react-responsive-carousel";
 import styled from "styled-components";
-import { filter, get } from "lodash/fp";
-import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { compose, filter, get, maxBy, minBy } from "lodash/fp";
+// import { Carousel } from "react-responsive-carousel";
+// import "react-responsive-carousel/lib/styles/carousel.min.css";
+// import Slider from "react-slick";
+import ImageGallery from "react-image-gallery";
+import { useMeasure, useSize } from "react-use";
 
 import { ResolvedAsset, ResolvedImage, ResolvedPiece } from "../../types";
 import useData from "../../hooks/useData";
@@ -55,10 +58,18 @@ const Info = styled.div`
   gap: 1rem;
 `;
 
-const CarouselWrapper = styled.div`
-  height: 100%;
+const CarouselWrapper = styled.div<{ width?: number }>`
+  width: ${({ width }) => `${width}px`};
 
   & > div:first-child {
+    height: 100%;
+
+    & > div:first-child {
+      height: 100%;
+    }
+  }
+
+  /* & > div:first-child {
     display: flex;
 
     & > div:first-child {
@@ -76,36 +87,92 @@ const CarouselWrapper = styled.div`
         transform: none !important;
       }
     }
-  }
+  } */
 `;
 
 const ImageWrapper = styled.div`
   height: 100%;
 `;
 
+const Measure = styled.div`
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+`;
+
 const filterWithAsset = filter(get("asset"));
+
+const dimensionsPath = "asset.metadata.dimensions";
+
+const getMinAspectRatioDimensions = compose(get(dimensionsPath), minBy(`${dimensionsPath}.aspectRatio`));
+const getMaxAspectRatioDimensions = compose(get(dimensionsPath), maxBy(`${dimensionsPath}.aspectRatio`));
 
 const Piece = (props: Props<ResolvedPiece>) => {
   const { data } = useData(props.apiUrl);
   const piece = data || props.data;
 
-  const images: (ResolvedImage & { asset: ResolvedAsset })[] = useMemo(
-    () => filterWithAsset(piece.images || EMPTY_ARRAY),
+  const product = useMemo(() => (piece.product ? { ...piece.product, piece } : undefined), [piece]);
+
+  const images = useMemo(
+    () =>
+      filterWithAsset(piece.images || EMPTY_ARRAY).map(({ asset }) => ({ original: asset.url, thumbnail: asset.url })),
     [piece]
   );
 
-  const product = useMemo(() => (piece.product ? { ...piece.product, piece } : undefined), [piece]);
+  const minAspectRatio = Math.min(
+    ...(piece.images ?? []).map(({ asset }: ResolvedImage) => asset?.metadata?.dimensions?.aspectRatio ?? Infinity)
+  );
+
+  const minAspectRatioDimensions = minBy(get("asset.metadata.dimensions.aspectRatio"))(piece.images);
+  const maxAspectRatioDimensions = maxBy(get("asset.metadata.dimensions.aspectRatio"))(piece.images);
+
+  const maxAspectRatio = Math.max(
+    ...(piece.images ?? []).map(({ asset }: ResolvedImage) => asset?.metadata?.dimensions?.aspectRatio ?? 0)
+  );
+  // console.log("🥶🥶🥶", {
+  //   piece,
+  //   minAspectRatio,
+  //   MAPPED: (piece.images ?? []).map(
+  //     ({ asset }: ResolvedImage) => asset?.metadata?.dimensions?.aspectRatio ?? Infinity
+  //   ),
+  // });
+
+  // const [sized, { height }] = useSize(() => <Measure />, { width: 100, height: 100 });
+  const [ref, { height: maxHeight }] = useMeasure<HTMLDivElement>();
+
+  // AR = W / H => W = AR * H
+
+  // const { aspectRatio, height: imageHeight, width: imageWidth } = getMinAspectRatioDimensions(piece.images ?? []);
+  // const width = (imageWidth * maxHeight) / (imageHeight * aspectRatio);
+  // const width = (imageWidth * maxHeight * aspectRatio) / imageHeight;
+  // const width = Math.min(maxHeight * aspectRatio, maxHeight);
+  const { aspectRatio, height: imageHeight, width: imageWidth } = getMaxAspectRatioDimensions(piece.images ?? []);
+  // const width = (imageWidth * maxHeight * aspectRatio) / imageHeight;
+  // const width = (imageWidth * maxHeight) / (imageHeight * aspectRatio);
+  // const width = maxHeight * aspectRatio;
+
+  // TODO: This isn't quite right yet
+  const width = Math.min(maxHeight * aspectRatio, maxHeight);
+
+  // console.log("🎉", {
+  //   width,
+  //   maxHeight,
+  //   imageHeight,
+  //   imageWidth,
+  //   minAspectRatio,
+  //   maxAspectRatio,
+  //   minAspectRatioDimensions,
+  //   maxAspectRatioDimensions,
+  //   getMinAspectRatioDimensions: getMinAspectRatioDimensions(piece.images ?? []),
+  //   getMaxAspectRatioDimensions: getMaxAspectRatioDimensions(piece.images ?? []),
+  // });
 
   return (
-    <Wrapper>
-      <CarouselWrapper>
-        <Carousel infiniteLoop dynamicHeight transitionTime={600} showStatus={false} showIndicators={false}>
-          {images.map(({ _key, asset }) => (
-            <ImageWrapper key={_key}>
-              <img src={asset.url} />
-            </ImageWrapper>
-          ))}
-        </Carousel>
+    <Wrapper ref={ref}>
+      <CarouselWrapper width={width}>
+        <ImageGallery items={images} showPlayButton={false} showFullscreenButton={false} thumbnailPosition="right" />
+        {/*sized*/}
       </CarouselWrapper>
       <InfoWrapper>
         <Title>{piece.title}</Title>

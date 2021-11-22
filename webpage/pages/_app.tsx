@@ -7,6 +7,7 @@ import GlobalStyle from "../style/global";
 import Header, { HEADER_HEIGHT } from "../components/Header";
 import Footer, { FOOTER_HEIGHT } from "../components/Footer";
 import { ContextProvider } from "../context";
+import "./reactImageGallery.css";
 
 const Content = styled.div`
   display: flex;
