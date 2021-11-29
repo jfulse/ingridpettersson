@@ -1,22 +1,17 @@
 import { useMemo } from "react";
 import { GetServerSidePropsContext } from "next";
 import styled from "styled-components";
-import { compose, filter, get, maxBy, minBy } from "lodash/fp";
-// import { Carousel } from "react-responsive-carousel";
-// import "react-responsive-carousel/lib/styles/carousel.min.css";
-// import Slider from "react-slick";
+import { compose, filter, get, minBy } from "lodash/fp";
 import ImageGallery from "react-image-gallery";
-import { useMeasure, useSize } from "react-use";
+import { useMeasure } from "react-use";
 
-import { ResolvedAsset, ResolvedImage, ResolvedPiece } from "../../types";
+import { ResolvedPiece } from "../../types";
 import useData from "../../hooks/useData";
 
 import getApiUrl from "../../utils/getApiUrl";
 import makeGetServerSideProps, { Props } from "../../utils/makeGetServerSideProps";
 import { EMPTY_ARRAY } from "../../constants";
 import AddToCart from "../../components/AddToCart";
-
-// TODO: Fix styling here. Try removing style and relying on package props?
 
 const getPieceSlug = (context: GetServerSidePropsContext) => context.query?.pieceId;
 
@@ -58,47 +53,24 @@ const Info = styled.div`
   gap: 1rem;
 `;
 
-const CarouselWrapper = styled.div<{ width?: number }>`
+const THUMBNAILS_WIDTH_PX = 100;
+
+const CarouselWrapper = styled.div<{ thumbnailsWidthPx: number; width?: number }>`
   width: ${({ width }) => `${width}px`};
 
   & > div:first-child {
-    height: 100%;
+    width: 100%;
 
     & > div:first-child {
-      height: 100%;
-    }
-  }
+      width: 100%;
+      display: flex;
+      flex-direction: row;
 
-  /* & > div:first-child {
-    display: flex;
-
-    & > div:first-child {
-      flex-grow: 1;
-    }
-
-    & > div:nth-child(2) {
-      flex-shrink: 1;
-
-      & > div:first-child > ul {
-        display: flex;
-        flex-direction: column;
-        margin: 0;
-        padding: 0;
-        transform: none !important;
+      & > div:first-child {
+        ${({ thumbnailsWidthPx }) => `width: calc(100% - ${thumbnailsWidthPx}px)`};
       }
     }
-  } */
-`;
-
-const ImageWrapper = styled.div`
-  height: 100%;
-`;
-
-const Measure = styled.div`
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
+  }
 `;
 
 const filterWithAsset = filter(get("asset"));
@@ -106,7 +78,6 @@ const filterWithAsset = filter(get("asset"));
 const dimensionsPath = "asset.metadata.dimensions";
 
 const getMinAspectRatioDimensions = compose(get(dimensionsPath), minBy(`${dimensionsPath}.aspectRatio`));
-const getMaxAspectRatioDimensions = compose(get(dimensionsPath), maxBy(`${dimensionsPath}.aspectRatio`));
 
 const Piece = (props: Props<ResolvedPiece>) => {
   const { data } = useData(props.apiUrl);
@@ -120,58 +91,24 @@ const Piece = (props: Props<ResolvedPiece>) => {
     [piece]
   );
 
-  const minAspectRatio = Math.min(
-    ...(piece.images ?? []).map(({ asset }: ResolvedImage) => asset?.metadata?.dimensions?.aspectRatio ?? Infinity)
-  );
+  const thumbnailsWidthPx = images.length > 1 ? THUMBNAILS_WIDTH_PX : 0;
+  const [ref, { height: screenHeight, width: screenWidth }] = useMeasure<HTMLDivElement>();
+  const { aspectRatio, height: imageHeight, width: imageWidth } = getMinAspectRatioDimensions(piece.images ?? []);
 
-  const minAspectRatioDimensions = minBy(get("asset.metadata.dimensions.aspectRatio"))(piece.images);
-  const maxAspectRatioDimensions = maxBy(get("asset.metadata.dimensions.aspectRatio"))(piece.images);
-
-  const maxAspectRatio = Math.max(
-    ...(piece.images ?? []).map(({ asset }: ResolvedImage) => asset?.metadata?.dimensions?.aspectRatio ?? 0)
-  );
-  // console.log("🥶🥶🥶", {
-  //   piece,
-  //   minAspectRatio,
-  //   MAPPED: (piece.images ?? []).map(
-  //     ({ asset }: ResolvedImage) => asset?.metadata?.dimensions?.aspectRatio ?? Infinity
-  //   ),
-  // });
-
-  // const [sized, { height }] = useSize(() => <Measure />, { width: 100, height: 100 });
-  const [ref, { height: maxHeight }] = useMeasure<HTMLDivElement>();
-
-  // AR = W / H => W = AR * H
-
-  // const { aspectRatio, height: imageHeight, width: imageWidth } = getMinAspectRatioDimensions(piece.images ?? []);
-  // const width = (imageWidth * maxHeight) / (imageHeight * aspectRatio);
-  // const width = (imageWidth * maxHeight * aspectRatio) / imageHeight;
-  // const width = Math.min(maxHeight * aspectRatio, maxHeight);
-  const { aspectRatio, height: imageHeight, width: imageWidth } = getMaxAspectRatioDimensions(piece.images ?? []);
-  // const width = (imageWidth * maxHeight * aspectRatio) / imageHeight;
-  // const width = (imageWidth * maxHeight) / (imageHeight * aspectRatio);
-  // const width = maxHeight * aspectRatio;
-
-  // TODO: This isn't quite right yet
-  const width = Math.min(maxHeight * aspectRatio, maxHeight);
-
-  // console.log("🎉", {
-  //   width,
-  //   maxHeight,
-  //   imageHeight,
-  //   imageWidth,
-  //   minAspectRatio,
-  //   maxAspectRatio,
-  //   minAspectRatioDimensions,
-  //   maxAspectRatioDimensions,
-  //   getMinAspectRatioDimensions: getMinAspectRatioDimensions(piece.images ?? []),
-  //   getMaxAspectRatioDimensions: getMaxAspectRatioDimensions(piece.images ?? []),
-  // });
+  const maxWidth = screenWidth - thumbnailsWidthPx;
+  const desiredWidth = aspectRatio <= 1 ? screenHeight * aspectRatio : maxWidth;
+  const width = Math.min(desiredWidth, maxWidth) + thumbnailsWidthPx;
 
   return (
     <Wrapper ref={ref}>
-      <CarouselWrapper width={width}>
-        <ImageGallery items={images} showPlayButton={false} showFullscreenButton={false} thumbnailPosition="right" />
+      <CarouselWrapper width={width} thumbnailsWidthPx={thumbnailsWidthPx}>
+        <ImageGallery
+          items={images}
+          showPlayButton={false}
+          showFullscreenButton={false}
+          thumbnailPosition="right"
+          showThumbnails={images.length > 1}
+        />
         {/*sized*/}
       </CarouselWrapper>
       <InfoWrapper>
