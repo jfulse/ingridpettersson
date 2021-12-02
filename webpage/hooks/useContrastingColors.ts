@@ -65,7 +65,7 @@ const useContrastingColors = (colors: Color[] | undefined): { color: string; bac
   const [contrastingColors, setContrastingColors] = useState<Color[] | undefined>(undefined);
 
   useEffect(() => {
-    if (!colors || isServer()) return;
+    if (!colors) return;
     const colorsNotGraytone = colors.filter(isNotGrayTone);
 
     const testResults = range(3, 8).map((nColors) => tryGettingContrastingColors(colorsNotGraytone.slice(0, nColors)));
