@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 import useShoppingCart from "../hooks/useShoppingCart";
 import { ResolvedProduct } from "../types";
+import Button from "./Button";
 
 const Wrapper = styled.div`
   display: flex;
@@ -10,11 +11,9 @@ const Wrapper = styled.div`
   gap: 1rem;
 `;
 
-const Button = styled.button``;
+type Props = { product: ResolvedProduct; color?: string; backgroundColor?: string };
 
-type Props = { product: ResolvedProduct };
-
-const AddToCart = ({ product }: Props) => {
+const AddToCart = ({ product, color, backgroundColor }: Props) => {
   const { countInCart, addToCart, removeFromCart } = useShoppingCart();
   const inShoppinCart = countInCart(product);
 
@@ -30,7 +29,9 @@ const AddToCart = ({ product }: Props) => {
 
   return (
     <Wrapper>
-      <Button onClick={onClickAddToCart}>Add to cart</Button>
+      <Button onClick={onClickAddToCart} mode="callToAction" color={color} backgroundColor={backgroundColor}>
+        Add to cart
+      </Button>
       {Boolean(inShoppinCart) && `In cart${inShoppinCart > 1 ? `: ${inShoppinCart}` : ""}`}
       {Boolean(inShoppinCart) && <Button onClick={onClickRemoveFromCart}>Remove</Button>}
     </Wrapper>

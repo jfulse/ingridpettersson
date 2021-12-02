@@ -1,13 +1,14 @@
 import NextLink from "next/link";
+import styled from "styled-components";
 import { useRouter } from "next/router";
 import { ReactNode } from "react";
 
-import styled from "styled-components";
+import { getColors } from "../style/theme";
 
 const Wrapper = styled.span<{ isActive: boolean }>`
   a {
     /* TODO: Active color */
-    color: ${({ isActive }) => (isActive ? "#169dff" : "initial")};
+    color: ${({ isActive, ...props }) => (isActive ? getColors(props, "selected") : "initial")};
     text-decoration: none;
   }
 `;

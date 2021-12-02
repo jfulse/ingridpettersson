@@ -12,6 +12,8 @@
   "dependencies": {
     "@stripe/react-stripe-js": "^1.6.0",
     "@stripe/stripe-js": "^1.21.1",
+    "image-palette": "^2.1.0",
+    "image-pixels": "^2.2.2",
     "lodash": "^4.17.21",
     "next": "^12.0.3",
     "next-sanity": "^0.4.0",
