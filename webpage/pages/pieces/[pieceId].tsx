@@ -46,6 +46,11 @@ const InfoWrapper = styled.div<{ background?: string; color?: string }>`
   ${({ color }) => color && `color: ${color};`}
   ${({ background }) => background && `background-color: ${background};`}
   transition: color 1s ease-in, background-color 1s ease-in;
+
+  @media only screen and (max-width: 480px) {
+    margin: 2rem 0 0 0;
+    padding-bottom: 5rem;
+  }
 `;
 
 const Title = styled.h2<{ color?: string }>`
