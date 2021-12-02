@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { maxBy, mean, minBy, prop, range } from "lodash/fp";
 import { Color } from "./useColorsFromImage";
-import isServer from "../utils/isServer";
 
 const minContrast = 4;
 
@@ -60,7 +59,7 @@ const chooseColors = (contrastingColors?: Color[]): { color: string; background:
   return { color: colors[1], background: colors[0] };
 };
 
-// Use some heuristics to get 3, 2 or 1 color(s) that are prominent and have high contrast
+// Use some heuristics to get two or one color(s) that are prominent and have high contrast
 const useContrastingColors = (colors: Color[] | undefined): { color: string; background: string } => {
   const [contrastingColors, setContrastingColors] = useState<Color[] | undefined>(undefined);
 
