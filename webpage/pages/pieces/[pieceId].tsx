@@ -13,7 +13,7 @@ import getApiUrl from "../../utils/getApiUrl";
 import makeGetServerSideProps, { Props } from "../../utils/makeGetServerSideProps";
 import { EMPTY_ARRAY } from "../../constants";
 import AddToCart from "../../components/AddToCart";
-import useContrastingColors from "./useContrastingColors";
+import useContrastingColors from "../../hooks/useContrastingColors";
 
 // TODO: Abstract out all the color stuff
 // TODO: Use lower quality image for color stuff

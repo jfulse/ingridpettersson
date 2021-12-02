@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { maxBy, mean, minBy, prop, range } from "lodash/fp";
-import { Color } from "../../hooks/useColorsFromImage";
+import { Color } from "./useColorsFromImage";
+import isServer from "../utils/isServer";
 
 const minContrast = 4;
 
@@ -64,7 +65,7 @@ const useContrastingColors = (colors: Color[] | undefined): { color: string; bac
   const [contrastingColors, setContrastingColors] = useState<Color[] | undefined>(undefined);
 
   useEffect(() => {
-    if (!colors) return;
+    if (!colors || isServer()) return;
     const colorsNotGraytone = colors.filter(isNotGrayTone);
 
     const testResults = range(3, 8).map((nColors) => tryGettingContrastingColors(colorsNotGraytone.slice(0, nColors)));
