@@ -1,10 +1,12 @@
 import { GetStaticPropsResult, GetStaticPropsContext } from "next";
+import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 import { get, orderBy } from "lodash/fp";
 
 import { ResolvedProject } from "../types";
+import getProjects from "../queries/getProjects";
 import { EMPTY_ARRAY } from "../constants";
 import fetcher from "./fetcher";
-import getProjectsApiUrl from "./getProjectsApiUrl";
+import { Params } from "next/dist/server/router";
 
 // - getStaticProps with 'revalidate' like 10 etc (10s)
 // - getStaticPaths with 'paths' like something in the example after
@@ -15,39 +17,31 @@ type ContextToString = (context: GetStaticPropsContext) => string | undefined;
 type ContextToStringOrStringArray = (context: GetStaticPropsContext) => string | string[] | undefined;
 
 export type Props<T = null> = {
-  slug?: string | null;
-  dataUrl: string;
+  slug: string | string[] | null;
   data: T | null;
   projects: ResolvedProject[];
+  params: NextParsedUrlQuery | null;
 };
 
 const orderByYear = orderBy(get("year"), "desc");
 
 const makeGetStaticProps =
-  <T>(getDataUrl?: ContextToString, getSlug?: ContextToStringOrStringArray) =>
+  <T>(
+    getData?: (params: NextParsedUrlQuery | null) => Promise<T>,
+    getSlug?: (params: NextParsedUrlQuery | null) => string | string[] | null
+  ) =>
   async (context: GetStaticPropsContext): Promise<GetStaticPropsResult<Props<T>>> => {
     try {
-      const dataUrl = getDataUrl?.(context) ?? "";
+      const { params = null } = context;
+      const data = (await getData?.(params)) ?? null;
+      const slug = getSlug?.(params) ?? null;
 
-      if (getDataUrl && !dataUrl) {
-        throw new Error("Could not get api url server side");
-      }
+      if (getData && !data) throw new Error("Could not get data server side");
+      if (getSlug && !slug) throw new Error("Could not get slug server side");
 
-      const slug = getSlug?.(context) ?? null;
+      const projects = orderByYear(await getProjects()) ?? EMPTY_ARRAY;
 
-      if (slug && typeof slug !== "string") {
-        throw new Error("Slug should be a string");
-      }
-
-      const data = dataUrl ? await fetcher<T>(dataUrl) : null;
-      const projectsData = await fetcher<ResolvedProject[]>(getProjectsApiUrl());
-      const projects = orderByYear(projectsData) ?? EMPTY_ARRAY;
-
-      if (getDataUrl && !data) {
-        throw new Error("Could not get data server side");
-      }
-
-      return { props: { slug, data, dataUrl, projects }, revalidate: 10 };
+      return { props: { data, projects, params, slug }, revalidate: 10 };
     } catch (err) {
       console.error(err);
       return { notFound: true };

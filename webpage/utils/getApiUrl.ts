@@ -1,3 +1,5 @@
+// TODO: Delete?
+
 const getApiUrl = (): string => {
   const verceuUrl = process.env.NEXT_PUBLIC_VERCEL_URL;
   if (verceuUrl) return `https://${verceuUrl}`;

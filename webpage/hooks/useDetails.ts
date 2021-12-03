@@ -4,7 +4,7 @@ import isEmail from "is-email";
 
 const areNumbers = (text = "") => text.match(/[\d]+/);
 
-export default () => {
+const useDetails = () => {
   const [name, setName] = useState("");
   const updateName = useCallback(({ target }) => setName(target.value), []);
   const [email, setEmail] = useState("");
@@ -45,3 +45,5 @@ export default () => {
     detailsReady,
   };
 };
+
+export default useDetails;

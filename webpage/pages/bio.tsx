@@ -3,12 +3,11 @@ import styled from "styled-components";
 import { EMPTY_OBJECT } from "../constants";
 import useData from "../hooks/useData";
 import makeGetStaticProps, { Props } from "../utils/makeGetStaticProps";
-import getApiUrl from "../utils/getApiUrl";
+import getBio from "../queries/getBio";
 import Layout from "../components/Layout";
+import { ResolvedBio } from "../types";
 
-const getIllustrationApiUrl = () => `${getApiUrl()}/api/bio`;
-
-export const getStaticProps = makeGetStaticProps(getIllustrationApiUrl);
+export const getStaticProps = makeGetStaticProps(getBio);
 
 const Wrapper = styled.div`
   display: flex;
@@ -26,11 +25,9 @@ const Wrapper = styled.div`
   }
 `;
 
-type Bio = { headline?: string; body?: string };
-
-const Bio = (props: Props<Bio>) => {
-  const { data } = useData<Bio>(props.dataUrl);
-  const { headline, body } = (data || props.data) ?? (EMPTY_OBJECT as Bio);
+const Bio = (props: Props<ResolvedBio>) => {
+  const { data } = useData<ResolvedBio>(getBio, "bio");
+  const { headline, body } = (data || props.data) ?? (EMPTY_OBJECT as ResolvedBio);
 
   if (!headline || !body) return null;
 

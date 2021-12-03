@@ -2,21 +2,18 @@ import { useMemo } from "react";
 
 import { EMPTY_ARRAY } from "../constants";
 import makeGetStaticProps, { Props } from "../utils/makeGetStaticProps";
-import getApiUrl from "../utils/getApiUrl";
+import getLanding from "../queries/getLanding";
 import { ResolvedPiece } from "../types";
 import useData from "../hooks/useData";
 import ImageBeam from "../components/ImageBeam";
 import Layout from "../components/Layout";
 
-// TODO: Can I make dataset public and then do queries directly from the frontend?
-// Maybe wait with this until image credits etc are up
+export const getStaticProps = makeGetStaticProps(getLanding);
 
-const getLandingApiUrl = () => `${getApiUrl()}/api/landing`;
+type Landing = { pieces: ResolvedPiece[] };
 
-export const getStaticProps = makeGetStaticProps(getLandingApiUrl);
-
-const Index = (props: Props<{ pieces: ResolvedPiece[] }>) => {
-  const { data } = useData<{ pieces: ResolvedPiece[] }>(props.dataUrl);
+const Index = (props: Props<Landing>) => {
+  const { data } = useData<Landing>(getLanding, "landing");
   const pieces: ResolvedPiece[] = (data || props.data)?.pieces ?? EMPTY_ARRAY;
 
   const imageObjects = useMemo(

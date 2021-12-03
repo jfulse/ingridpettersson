@@ -48,3 +48,8 @@ export type ResolvedPiece = {
   size?: number;
   product?: ResolvedProduct;
 };
+
+export type ResolvedBio = {
+  headline: string;
+  body: string;
+};

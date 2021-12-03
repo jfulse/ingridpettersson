@@ -1,22 +1,19 @@
 import { useMemo } from "react";
-import { GetStaticPathsResult, GetStaticPropsContext } from "next";
+import { GetStaticPathsResult } from "next";
 
 import { ResolvedImage, ResolvedProject } from "../../types";
 import makeGetStaticProps, { Props } from "../../utils/makeGetStaticProps";
-import getApiUrl from "../../utils/getApiUrl";
-import fetcher from "../../utils/fetcher";
+import getProject from "../../queries/getProject";
+import getProjects from "../../queries/getProjects";
 import slugify from "../../utils/slugify";
-import getProjectsApiUrl from "../../utils/getProjectsApiUrl";
 import useData from "../../hooks/useData";
 import styled from "styled-components";
 import ImageBeam from "../../components/ImageBeam";
 import Layout from "../../components/Layout";
 import { EMPTY_ARRAY } from "../../constants";
+import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 
-const getProjectSlug = (context: GetStaticPropsContext) => context.params?.projectSlug;
-
-const getProjectApiUrl = (context: GetStaticPropsContext) =>
-  `${getApiUrl()}/api/project?slug=${getProjectSlug(context)}`;
+const getProjectSlug = (params: NextParsedUrlQuery | null) => params?.projectSlug ?? null;
 
 const Wrapper = styled.div`
   height: 100%;
@@ -33,16 +30,16 @@ const Wrapper = styled.div`
 `;
 
 export const getStaticPaths = async (): Promise<GetStaticPathsResult> => {
-  const projects = await fetcher<ResolvedProject[]>(getProjectsApiUrl());
+  const projects = await getProjects();
   const paths = projects.map(({ title }) => `/projects/${slugify(title)}`);
 
   return { paths, fallback: "blocking" };
 };
 
-export const getStaticProps = makeGetStaticProps(getProjectApiUrl, getProjectSlug);
+export const getStaticProps = makeGetStaticProps(getProject, getProjectSlug);
 
 const Project = (props: Props<ResolvedProject>) => {
-  const { data } = useData<ResolvedProject>(props.dataUrl);
+  const { data } = useData<ResolvedProject>(getProject, `projects/${props.slug}`, props.params);
   const project = data || props.data;
 
   const imageObjects = useMemo(

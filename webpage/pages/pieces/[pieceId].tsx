@@ -6,16 +6,15 @@ import ImageGallery from "react-image-gallery";
 import { useMeasure } from "react-use";
 
 import { ResolvedPiece } from "../../types";
-import useColorsFromImage, { Color } from "../../hooks/useColorsFromImage";
+import useColorsFromImage from "../../hooks/useColorsFromImage";
 import useData from "../../hooks/useData";
-
-import getApiUrl from "../../utils/getApiUrl";
-import fetcher from "../../utils/fetcher";
 import makeGetStaticProps, { Props } from "../../utils/makeGetStaticProps";
+import getPiece from "../../queries/getPiece";
 import { EMPTY_ARRAY } from "../../constants";
 import AddToCart from "../../components/AddToCart";
 import useContrastingColors from "../../hooks/useContrastingColors";
 import Layout from "../../components/Layout";
+import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 
 // TODO: Use lower quality image for color stuff
 // TODO: Only use color stuff on illustrations?
@@ -24,11 +23,9 @@ export const getStaticPaths = (): GetStaticPathsResult => ({ paths: [], fallback
 
 // export const getStaticPaths = (): GetStaticPathsResult => ({ paths: [], fallback: "blocking" });
 
-const getPieceSlug = (context: GetStaticPropsContext) => context.params?.pieceId;
+const getPieceSlug = (params: NextParsedUrlQuery | null) => params?.pieceId ?? null;
 
-const getPieceApiUrl = (context: GetStaticPropsContext) => `${getApiUrl()}/api/pieces/${getPieceSlug(context)}`;
-
-export const getStaticProps = makeGetStaticProps(getPieceApiUrl, getPieceSlug);
+export const getStaticProps = makeGetStaticProps(getPiece, getPieceSlug);
 
 const Wrapper = styled.div`
   width: 100%;
@@ -103,7 +100,7 @@ const dimensionsPath = "asset.metadata.dimensions";
 const getMinAspectRatioDimensions = compose(get(dimensionsPath), minBy(`${dimensionsPath}.aspectRatio`));
 
 const Piece = (props: Props<ResolvedPiece>) => {
-  const { data } = useData<ResolvedPiece>(props.dataUrl);
+  const { data } = useData<ResolvedPiece>(getPiece, `pieces/${props.slug}`, props.params);
   const piece = data || props.data;
 
   const product = useMemo(() => (piece?.product ? { ...piece.product, piece } : undefined), [piece]);
