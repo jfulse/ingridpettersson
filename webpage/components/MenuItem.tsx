@@ -36,16 +36,19 @@ const StyledMenuItem = styled.li<{ group?: boolean }>`
 
 type Props = {
   toggle?: () => void;
-  onClick?: () => void;
+  onClick?: (event: Event) => void;
   children: ReactNode;
   group?: boolean;
 };
 
 const MenuItem = ({ toggle, onClick, children, group }: Props) => {
-  const handleClick = useCallback(() => {
-    toggle?.();
-    onClick?.();
-  }, [onClick, toggle]);
+  const handleClick = useCallback(
+    (event) => {
+      toggle?.();
+      onClick?.(event);
+    },
+    [onClick, toggle]
+  );
 
   return (
     <StyledMenuItem group={group} onClick={handleClick}>
