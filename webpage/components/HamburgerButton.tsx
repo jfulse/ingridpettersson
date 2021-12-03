@@ -1,3 +1,4 @@
+import { MouseEventHandler } from "react";
 import styled from "styled-components";
 
 const Button = styled.button`
@@ -17,7 +18,7 @@ const Button = styled.button`
   }
 `;
 
-const HamburgerButton = ({ onClick }: { onClick?: () => void }) => (
+const HamburgerButton = ({ onClick }: { onClick?: MouseEventHandler<HTMLButtonElement> }) => (
   <Button onClick={onClick}>
     <div />
     <div />

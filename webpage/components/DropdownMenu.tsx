@@ -1,4 +1,4 @@
-import { ComponentType, useCallback, useRef, useState } from "react";
+import { ComponentType, MouseEventHandler, useCallback, useRef, useState } from "react";
 import styled from "styled-components";
 import { useClickAway } from "react-use";
 
@@ -45,12 +45,12 @@ const Menu = styled.ul<{ open: boolean }>`
 
 type Props = {
   items: MenuItemType[];
-  component: ComponentType<{ onClick?: () => void }>;
+  component: ComponentType<{ onClick?: MouseEventHandler<HTMLButtonElement> }>;
 };
 
 const hasSubmenu = (menuItems?: MenuItemType[]) => menuItems && menuItems.length > 0;
 
-const HamburgerMenu = ({ items, component: Component }: Props) => {
+const DropdownMenu = ({ items, component: Component }: Props) => {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const toggle = useCallback(() => setIsOpen((current) => !current), []);
@@ -85,4 +85,4 @@ const HamburgerMenu = ({ items, component: Component }: Props) => {
   );
 };
 
-export default HamburgerMenu;
+export default DropdownMenu;

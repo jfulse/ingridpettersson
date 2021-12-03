@@ -1,4 +1,4 @@
-import { ReactNode, useCallback } from "react";
+import { MouseEventHandler, ReactNode, useCallback } from "react";
 import styled from "styled-components";
 
 import { getColors } from "../style/theme";
@@ -36,7 +36,7 @@ const StyledMenuItem = styled.li<{ group?: boolean }>`
 
 type Props = {
   toggle?: () => void;
-  onClick?: (event: Event) => void;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
   children: ReactNode;
   group?: boolean;
 };

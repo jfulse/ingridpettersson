@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { MouseEventHandler, useMemo } from "react";
 import styled from "styled-components";
 
 import { getColors } from "../style/theme";
@@ -88,7 +88,7 @@ const Header = ({ projects }: Props) => {
       </Link>
       {headerMenuItems.map(({ title, href, menuItems, hidden }) => {
         if (menuItems && menuItems.length > 0) {
-          const Component = ({ onClick }: { onClick?: () => void }) => (
+          const Component = ({ onClick }: { onClick?: MouseEventHandler<HTMLButtonElement> }) => (
             <MenuButton onClick={onClick}>{title}</MenuButton>
           );
 

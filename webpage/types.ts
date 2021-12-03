@@ -1,7 +1,9 @@
+import { MouseEventHandler } from "react";
+
 export type MenuItem = {
   title: string;
   href?: string;
-  onClick?: () => void;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
   menuItems?: MenuItem[];
   hidden?: boolean;
 };
