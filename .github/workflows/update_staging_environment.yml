@@ -1,0 +1,20 @@
+name: Update staging environment branch
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  update-staging:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: setup git config
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"
+      - name: update-staging-branch
+        run: |
+          git checkout -B staging
+          git push origin staging -f
