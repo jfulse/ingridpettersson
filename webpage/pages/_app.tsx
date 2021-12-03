@@ -2,22 +2,11 @@ import type { AppProps } from "next/app";
 import { ThemeProvider } from "styled-components";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import styled from "styled-components";
 
 import theme from "../style/theme";
 import GlobalStyle from "../style/global";
-import Header, { HEADER_HEIGHT } from "../components/Header";
-import Footer, { FOOTER_HEIGHT } from "../components/Footer";
 import { ContextProvider } from "../context";
 import "./reactImageGallery.css";
-
-const Content = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  height: 100vh;
-  padding: ${HEADER_HEIGHT} 0 ${FOOTER_HEIGHT};
-`;
 
 // TODO: Create restricted keys
 
@@ -35,11 +24,7 @@ function App({ Component, pageProps }: AppProps) {
       <ContextProvider>
         <ThemeProvider theme={theme}>
           <GlobalStyle />
-          <Header />
-          <Content>
-            <Component {...pageProps} />
-          </Content>
-          <Footer />
+          <Component {...pageProps} />
         </ThemeProvider>
       </ContextProvider>
     </Elements>

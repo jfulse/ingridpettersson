@@ -2,9 +2,13 @@ import { GetServerSidePropsResult, GetServerSidePropsContext } from "next";
 
 import fetcher from "./fetcher";
 
-type ContextToString = (
-  context: GetServerSidePropsContext
-) => string | string[] | undefined;
+// TODO: Use getStaticProps and getStaticPaths instead
+// - getStaticProps with 'revalidate' like 10 etc (10s)
+// - getStaticPaths with 'paths' like something in the example after
+// https://nextjs.org/docs/basic-features/data-fetching#fallback-false
+// and fallback: blocking
+
+type ContextToString = (context: GetServerSidePropsContext) => string | string[] | undefined;
 
 export type Props<T> = {
   slug?: string | null;
@@ -14,9 +18,7 @@ export type Props<T> = {
 
 const makeGetServerSideProps =
   <T>(getApiUrl: ContextToString, getSlug?: ContextToString) =>
-  async (
-    context: GetServerSidePropsContext
-  ): Promise<GetServerSidePropsResult<Props<T>>> => {
+  async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<Props<T>>> => {
     try {
       const apiUrl = getApiUrl(context);
 
