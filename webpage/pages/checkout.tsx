@@ -1,15 +1,20 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { debounce, prop } from "lodash/fp";
+import { debounce, prop, props } from "lodash/fp";
 
 import useDetails from "../hooks/useDetails";
 import useShoppingCart from "../hooks/useShoppingCart";
 import ErrorComponent from "../components/ErrorComponent";
+import makeGetStaticProps, { Props } from "../utils/makeGetStaticProps";
+import isServer from "../utils/isServer";
 import Button from "../components/Button";
 import Input from "../components/Input";
+import Layout from "../components/Layout";
 
 // Test card: 4000002760003184
+
+export const getStaticProps = makeGetStaticProps();
 
 const CARD_ELEMENT_OPTIONS = {
   classes: { base: "" }, // TODO
@@ -38,7 +43,7 @@ const InputWrapper = styled.div`
   }
 `;
 
-const Checkout = () => {
+const Checkout = (props: Props) => {
   const [error, setError] = useState<string | undefined>(undefined);
   const [processing, setProcessing] = useState(false);
   const [clientSecret, setClientSecret] = useState("");
@@ -173,41 +178,44 @@ const Checkout = () => {
 
   if (nItems < 1) {
     return (
-      <Wrapper>
-        <h4>No items in cart</h4>
-      </Wrapper>
+      <Layout projects={props.projects}>
+        <Wrapper>
+          <h4>No items in cart</h4>
+        </Wrapper>
+      </Layout>
     );
   }
 
   return (
-    <Wrapper>
-      <div>
-        <form onSubmit={handleSubmit}>
-          <h4>Details</h4>
-          <InputWrapper>
-            <Input label="name" value={name} onChange={updateName} />
-            <Input label="addressLine1" value={addressLine1} onChange={updateAddressLine1} />
-            <Input label="email" value={email} onChange={updateEmail} type="email" />
-            <Input label="addressLine2" value={addressLine2} onChange={updateAddressLine2} />
-            <Input label="country" value={country} onChange={updateCountry} />
-            <Input label="city" value={city} onChange={updateCity} />
-            <Input label="state" value={state} onChange={updateState} />
-            <Input label="postalCode" value={postalCode} onChange={updatePostalCode} type="number" />
-          </InputWrapper>
-          <h4>Bank card</h4>
-          <CardWrapper>
-            <CardElement options={CARD_ELEMENT_OPTIONS} />
-          </CardWrapper>
-          {stripe && (
-            <Button type="submit" disabled={!clientSecret || processing || !detailsReady}>
-              {processing ? "Checking out..." : "Checkout"}
-            </Button>
-          )}
-        </form>
-        <ErrorComponent error={error} />
-        <h4>Total price: {totalPrice}NOK</h4>
-        <h4>Items in cart ({nItems})</h4>
-        {/*<div className={styles.carouselWrapper}> TODO
+    <Layout projects={props.projects}>
+      <Wrapper>
+        <div>
+          <form onSubmit={handleSubmit}>
+            <h4>Details</h4>
+            <InputWrapper>
+              <Input label="name" value={name} onChange={updateName} />
+              <Input label="addressLine1" value={addressLine1} onChange={updateAddressLine1} />
+              <Input label="email" value={email} onChange={updateEmail} type="email" />
+              <Input label="addressLine2" value={addressLine2} onChange={updateAddressLine2} />
+              <Input label="country" value={country} onChange={updateCountry} />
+              <Input label="city" value={city} onChange={updateCity} />
+              <Input label="state" value={state} onChange={updateState} />
+              <Input label="postalCode" value={postalCode} onChange={updatePostalCode} type="number" />
+            </InputWrapper>
+            <h4>Bank card</h4>
+            <CardWrapper>
+              <CardElement options={CARD_ELEMENT_OPTIONS} />
+            </CardWrapper>
+            {stripe && (
+              <Button type="submit" disabled={!clientSecret || processing || !detailsReady}>
+                {processing ? "Checking out..." : "Checkout"}
+              </Button>
+            )}
+          </form>
+          <ErrorComponent error={error} />
+          <h4>Total price: {totalPrice}NOK</h4>
+          <h4>Items in cart ({nItems})</h4>
+          {/*<div className={styles.carouselWrapper}> TODO
           <Carousel infiniteLoop dynamicHeight transitionTime={600} showStatus={false} showIndicators={false}>
             {shoppingCart.items.map((item) => (
               <div key={item.id}>
@@ -220,9 +228,12 @@ const Checkout = () => {
             ))}
           </Carousel>
             </div>*/}
-      </div>
-    </Wrapper>
+        </div>
+      </Wrapper>
+    </Layout>
   );
 };
 
-export default Checkout;
+const Noop = () => null;
+
+export default isServer() ? Noop : Checkout;

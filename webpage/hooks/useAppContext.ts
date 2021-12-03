@@ -2,7 +2,9 @@ import { useContext } from "react";
 
 import Context from "../context";
 
-export default () => {
+const useAppContext = () => {
   const appContext = useContext(Context);
   return appContext;
 };
+
+export default useAppContext;

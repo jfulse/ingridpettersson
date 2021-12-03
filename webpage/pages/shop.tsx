@@ -1,19 +1,20 @@
 import { useMemo } from "react";
 
 import { EMPTY_ARRAY } from "../constants";
-import makeGetServerSideProps, { Props } from "../utils/makeGetServerSideProps";
+import makeGetStaticProps, { Props } from "../utils/makeGetStaticProps";
 import getApiUrl from "../utils/getApiUrl";
 import filterTruthy from "../utils/filterTruthy";
 import { ResolvedProduct } from "../types";
 import useData from "../hooks/useData";
 import ImageGrid from "../components/ImageGrid";
+import Layout from "../components/Layout";
 
 const getShopApiUrl = () => `${getApiUrl()}/api/shop`;
 
-export const getServerSideProps = makeGetServerSideProps(getShopApiUrl);
+export const getStaticProps = makeGetStaticProps(getShopApiUrl);
 
-const Shop = (props: Props<{ pieces: ResolvedProduct[] }>) => {
-  const { data } = useData(getShopApiUrl());
+const Shop = (props: Props<{ products: ResolvedProduct[] }>) => {
+  const { data } = useData<{ products: ResolvedProduct[] }>(props.dataUrl);
   const products: ResolvedProduct[] = (data || props.data)?.products ?? EMPTY_ARRAY;
 
   const imageObjects = useMemo(
@@ -38,7 +39,11 @@ const Shop = (props: Props<{ pieces: ResolvedProduct[] }>) => {
     [products]
   );
 
-  return <ImageGrid imageObjects={imageObjects} />;
+  return (
+    <Layout projects={props.projects}>
+      <ImageGrid imageObjects={imageObjects} />
+    </Layout>
+  );
 };
 
 export default Shop;

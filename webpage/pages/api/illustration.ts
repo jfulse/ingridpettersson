@@ -11,7 +11,6 @@ const ILLUSTRATIONS_QUERY = `*[ _type == "piece" && ${FILTER_NON_DRAFTS} && cate
 
 export default async (req: NextApiRequest, res: NextApiResponse<ResolvedPiece | string>) => {
   const illustrations = await sanityClient.fetch(ILLUSTRATIONS_QUERY);
-  console.log("🤬 illustrations", illustrations);
 
   res.status(200).json(illustrations);
 };

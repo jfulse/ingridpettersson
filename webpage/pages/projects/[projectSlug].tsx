@@ -1,16 +1,21 @@
 import { useMemo } from "react";
-import { GetServerSidePropsContext } from "next";
+import { GetStaticPathsResult, GetStaticPropsContext } from "next";
 
 import { ResolvedImage, ResolvedProject } from "../../types";
-import makeGetServerSideProps, { Props } from "../../utils/makeGetServerSideProps";
+import makeGetStaticProps, { Props } from "../../utils/makeGetStaticProps";
 import getApiUrl from "../../utils/getApiUrl";
+import fetcher from "../../utils/fetcher";
+import slugify from "../../utils/slugify";
+import getProjectsApiUrl from "../../utils/getProjectsApiUrl";
 import useData from "../../hooks/useData";
 import styled from "styled-components";
 import ImageBeam from "../../components/ImageBeam";
+import Layout from "../../components/Layout";
+import { EMPTY_ARRAY } from "../../constants";
 
-const getProjectSlug = (context: GetServerSidePropsContext) => context.query?.projectSlug;
+const getProjectSlug = (context: GetStaticPropsContext) => context.params?.projectSlug;
 
-const getProjectApiUrl = (context: GetServerSidePropsContext) =>
+const getProjectApiUrl = (context: GetStaticPropsContext) =>
   `${getApiUrl()}/api/project?slug=${getProjectSlug(context)}`;
 
 const Wrapper = styled.div`
@@ -27,21 +32,33 @@ const Wrapper = styled.div`
   }
 `;
 
-export const getServerSideProps = makeGetServerSideProps(getProjectApiUrl, getProjectSlug);
+export const getStaticPaths = async (): Promise<GetStaticPathsResult> => {
+  const projects = await fetcher<ResolvedProject[]>(getProjectsApiUrl());
+  const paths = projects.map(({ title }) => `/projects/${slugify(title)}`);
+
+  return { paths, fallback: "blocking" };
+};
+
+export const getStaticProps = makeGetStaticProps(getProjectApiUrl, getProjectSlug);
 
 const Project = (props: Props<ResolvedProject>) => {
-  const { data } = useData(props.apiUrl);
+  const { data } = useData<ResolvedProject>(props.dataUrl);
   const project = data || props.data;
 
-  const imageObjects = useMemo(() => project.images.map((image: ResolvedImage) => ({ image })), [project]);
+  const imageObjects = useMemo(
+    () => project?.images?.map((image: ResolvedImage) => ({ image })) ?? EMPTY_ARRAY,
+    [project]
+  );
 
   return (
-    <Wrapper>
-      <h2>
-        {project.title} ({project.year})
-      </h2>
-      <ImageBeam imageObjects={imageObjects} maxHeight={70} />
-    </Wrapper>
+    <Layout projects={props.projects}>
+      <Wrapper>
+        <h2>
+          {project?.title} ({project?.year})
+        </h2>
+        <ImageBeam imageObjects={imageObjects} maxHeight={70} />
+      </Wrapper>
+    </Layout>
   );
 };
 

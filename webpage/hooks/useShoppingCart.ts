@@ -14,7 +14,7 @@ const getPersistedShoppingCart = () => {
   return shoppingCart ? JSON.parse(shoppingCart) : undefined;
 };
 
-export default () => {
+const useShoppingCart = () => {
   const [{ shoppingCart }, setContext] = useAppContext();
   const [loading, setLoading] = useState(true);
   const nItems = shoppingCart.items?.length ?? 0;
@@ -75,3 +75,5 @@ export default () => {
 
   return { shoppingCart, countInCart, addToCart, removeFromCart, onSuccess, nItems, loading };
 };
+
+export default useShoppingCart;

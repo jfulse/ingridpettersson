@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import styled from "styled-components";
 
 import { ResolvedProject } from "../types";
-import Header2, { HEADER_HEIGHT } from "./Header2";
+import Header, { HEADER_HEIGHT } from "./Header";
 import Footer, { FOOTER_HEIGHT } from "./Footer";
 
 const Content = styled.div`
@@ -21,7 +21,7 @@ type Props = {
 const Layout = ({ children, projects }: Props) => {
   return (
     <>
-      <Header2 projects={projects} />
+      <Header projects={projects} />
       <Content>{children}</Content>
       <Footer />
     </>

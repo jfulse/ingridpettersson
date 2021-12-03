@@ -16,7 +16,7 @@ const getLandingApiUrl = () => `${getApiUrl()}/api/landing`;
 export const getStaticProps = makeGetStaticProps(getLandingApiUrl);
 
 const Index = (props: Props<{ pieces: ResolvedPiece[] }>) => {
-  const { data } = useData(getLandingApiUrl());
+  const { data } = useData<{ pieces: ResolvedPiece[] }>(props.dataUrl);
   const pieces: ResolvedPiece[] = (data || props.data)?.pieces ?? EMPTY_ARRAY;
 
   const imageObjects = useMemo(

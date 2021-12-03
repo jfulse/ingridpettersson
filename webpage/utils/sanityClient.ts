@@ -14,10 +14,8 @@ export const sanityConfig: ClientConfig = {
   projectId: "js8cabp8",
   apiVersion: "2021-11-11",
   useCdn: process.env.NODE_ENV === "production",
-  token: process.env.SANITY_TOKEN,
 };
 
-export const imageUrlBuilder = (source: any) =>
-  createImageUrlBuilder(sanityConfig).image(source);
+export const imageUrlBuilder = (source: any) => createImageUrlBuilder(sanityConfig).image(source);
 
 export const sanityClient = createClient(sanityConfig);

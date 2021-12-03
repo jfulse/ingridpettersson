@@ -1,19 +1,20 @@
 import { useMemo } from "react";
 
 import { EMPTY_ARRAY } from "../constants";
-import makeGetServerSideProps, { Props } from "../utils/makeGetServerSideProps";
+import makeGetStaticProps, { Props } from "../utils/makeGetStaticProps";
 import getApiUrl from "../utils/getApiUrl";
 import { ResolvedPiece } from "../types";
 import useData from "../hooks/useData";
 import ImageBeam from "../components/ImageBeam";
+import Layout from "../components/Layout";
 
 const getIllustrationApiUrl = () => `${getApiUrl()}/api/illustration`;
 
-export const getServerSideProps = makeGetServerSideProps(getIllustrationApiUrl);
+export const getStaticProps = makeGetStaticProps(getIllustrationApiUrl);
 
-const Illustration = (props: Props<{ pieces: ResolvedPiece[] }>) => {
-  const { data } = useData(getIllustrationApiUrl());
-  const illustrations: ResolvedPiece[] = (data || props.data) ?? EMPTY_ARRAY;
+const Illustration = (props: Props<ResolvedPiece[]>) => {
+  const { data } = useData<ResolvedPiece[]>(props.dataUrl);
+  const illustrations = (data || props.data) ?? EMPTY_ARRAY;
 
   const imageObjects = useMemo(
     () =>
@@ -24,7 +25,11 @@ const Illustration = (props: Props<{ pieces: ResolvedPiece[] }>) => {
     [illustrations]
   );
 
-  return <ImageBeam imageObjects={imageObjects} />;
+  return (
+    <Layout projects={props.projects}>
+      <ImageBeam imageObjects={imageObjects} />
+    </Layout>
+  );
 };
 
 export default Illustration;

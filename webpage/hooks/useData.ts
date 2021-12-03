@@ -2,8 +2,15 @@ import useSWR from "swr";
 
 import fetcher from "../utils/fetcher";
 
-const useData = (url?: string) => {
-  const { data, error, mutate } = useSWR(url ?? "", fetcher);
+type Result<T> = {
+  data?: T;
+  error?: string;
+  loading: boolean;
+  refetch: () => void;
+};
+
+const useData = <T>(url?: string): Result<T> => {
+  const { data, error, mutate } = useSWR<T>(url ?? "", fetcher);
   const loading = !error && !data;
 
   return { data, loading, error: error?.message, refetch: mutate };

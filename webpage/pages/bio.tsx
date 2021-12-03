@@ -2,12 +2,13 @@ import styled from "styled-components";
 
 import { EMPTY_OBJECT } from "../constants";
 import useData from "../hooks/useData";
-import makeGetServerSideProps, { Props } from "../utils/makeGetServerSideProps";
+import makeGetStaticProps, { Props } from "../utils/makeGetStaticProps";
 import getApiUrl from "../utils/getApiUrl";
+import Layout from "../components/Layout";
 
 const getIllustrationApiUrl = () => `${getApiUrl()}/api/bio`;
 
-export const getServerSideProps = makeGetServerSideProps(getIllustrationApiUrl);
+export const getStaticProps = makeGetStaticProps(getIllustrationApiUrl);
 
 const Wrapper = styled.div`
   display: flex;
@@ -16,6 +17,7 @@ const Wrapper = styled.div`
   padding: 1rem 2rem;
   line-height: 1.5rem;
   height: 100%;
+  overflow-y: auto;
 
   h3 {
     font-weight: 600;
@@ -24,19 +26,21 @@ const Wrapper = styled.div`
   }
 `;
 
-type Bio = { headline: string; body: string };
+type Bio = { headline?: string; body?: string };
 
 const Bio = (props: Props<Bio>) => {
-  const { data } = useData(getIllustrationApiUrl());
-  const { headline, body } = (data || props.data) ?? EMPTY_OBJECT;
+  const { data } = useData<Bio>(props.dataUrl);
+  const { headline, body } = (data || props.data) ?? (EMPTY_OBJECT as Bio);
 
   if (!headline || !body) return null;
 
   return (
-    <Wrapper>
-      <h3>{headline}</h3>
-      {body}
-    </Wrapper>
+    <Layout projects={props.projects}>
+      <Wrapper>
+        <h3>{headline}</h3>
+        {body}
+      </Wrapper>
+    </Layout>
   );
 };
 

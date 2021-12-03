@@ -1,14 +1,9 @@
 import { useMemo } from "react";
 import styled from "styled-components";
-import { get, orderBy } from "lodash/fp";
 
 import { getColors } from "../style/theme";
-import { EMPTY_ARRAY } from "../constants";
 import slugify from "../utils/slugify";
-import getApiUrl from "../utils/getApiUrl";
-import makeGetServerSideProps, { Props } from "../utils/makeGetServerSideProps";
 import useIsMobile from "../hooks/useIsMobile";
-import useData from "../hooks/useData";
 import HamburgerMenu from "./HamburgerMenu";
 import Link from "./Link";
 import MaybeLink from "./MaybeLink";
@@ -67,15 +62,9 @@ const getHeaderMenuItems = (projects: ResolvedProject[], nItems: number): MenuIt
   { title: `checkout${nItems > 0 ? ` (${nItems})` : ""}`, href: "/checkout", hidden: nItems === 0 },
 ];
 
-const getProjectsApiUrl = () => `${getApiUrl()}/api/projects`;
+type Props = { projects: ResolvedProject[] };
 
-export const getServerSideProps = makeGetServerSideProps(getProjectsApiUrl);
-
-const orderByYear = orderBy(get("year"), "desc");
-
-const Header = (props: Props<ResolvedProject[]>) => {
-  const { data } = useData(getProjectsApiUrl());
-  const projects = orderByYear(data || props.data) ?? EMPTY_ARRAY;
+const Header = ({ projects }: Props) => {
   const { nItems } = useShoppingCart();
 
   const isMobile = useIsMobile();
