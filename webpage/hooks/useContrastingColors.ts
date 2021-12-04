@@ -54,14 +54,13 @@ const DEFAULT_BRIGHT_COLOR = "rgba(255, 255, 255, 255)";
 
 const chooseColors = (contrastingColors?: Color[]): { color: string; background: string } => {
   if (!contrastingColors) return { color: DEFAULT_DARK_COLOR, background: DEFAULT_BRIGHT_COLOR };
+  const colors = contrastingColors.map(rgbaToColorString);
 
   if (contrastingColors.length === 1) {
-    const color = rgbaToColorString(contrastingColors[0]);
-    if (contrastingColors[0].luma < 0.5) return { color: DEFAULT_BRIGHT_COLOR, background: color };
-    return { color: DEFAULT_DARK_COLOR, background: color };
+    if (contrastingColors[0].luma < 0.5) return { color: DEFAULT_BRIGHT_COLOR, background: colors[0] };
+    return { color: DEFAULT_DARK_COLOR, background: colors[0] };
   }
 
-  const colors = contrastingColors.map(rgbaToColorString);
   return { color: colors[1], background: colors[0] };
 };
 
