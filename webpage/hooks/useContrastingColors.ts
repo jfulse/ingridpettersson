@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { maxBy, mean, minBy, prop, range } from "lodash/fp";
 import { RGBA } from "image-palette";
 
-import { Color } from "./useColorsFromImage";
+import { Color } from "../types";
 
 const minContrast = 4;
 

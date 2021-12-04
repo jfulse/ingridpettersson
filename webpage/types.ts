@@ -1,4 +1,5 @@
 import { MouseEventHandler } from "react";
+import { RGBA } from "image-palette";
 
 export type MenuItem = {
   title: string;
@@ -55,3 +56,5 @@ export type ResolvedBio = {
   headline: string;
   body: string;
 };
+
+export type Color = { rgba: RGBA; luma: number; amount: number };

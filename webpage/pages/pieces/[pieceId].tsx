@@ -5,11 +5,12 @@ import { compose, filter, get, minBy } from "lodash/fp";
 import ImageGallery from "react-image-gallery";
 import { useMeasure } from "react-use";
 
-import { ResolvedPiece } from "../../types";
-import useColorsFromImage from "../../hooks/useColorsFromImage";
+import { Color, ResolvedPiece } from "../../types";
 import useData from "../../hooks/useData";
 import makeGetStaticProps, { Props } from "../../utils/makeGetStaticProps";
+import getColorsFromImage from "../../utils/getColorsFromImage";
 import getPiece from "../../queries/getPiece";
+import getPieceIds from "../../queries/getPieceIds";
 import { EMPTY_ARRAY } from "../../constants";
 import AddToCart from "../../components/AddToCart";
 import useContrastingColors from "../../hooks/useContrastingColors";
@@ -20,13 +21,30 @@ import useIsMobile from "../../hooks/useIsMobile";
 // TODO: Use lower quality image for color stuff
 // TODO: Only use color stuff on illustrations?
 
-export const getStaticPaths = (): GetStaticPathsResult => ({ paths: [], fallback: "blocking" });
+export const getStaticPaths = async (): Promise<GetStaticPathsResult> => {
+  const pieceIds = await getPieceIds();
+  const paths = pieceIds.map((id) => `/pieces/${id}`);
 
-// export const getStaticPaths = (): GetStaticPathsResult => ({ paths: [], fallback: "blocking" });
+  return { paths, fallback: "blocking" };
+};
 
 const getPieceSlug = (params: NextParsedUrlQuery | null) => params?.pieceId ?? null;
 
-export const getStaticProps = makeGetStaticProps(getPiece, getPieceSlug);
+type Data = {
+  piece: ResolvedPiece | null;
+  colors?: Color[];
+};
+
+const getData = async (params: NextParsedUrlQuery | null, skipColors = false): Promise<Data> => {
+  const piece = await getPiece(params);
+  const firstImageUrl = piece?.images?.[0]?.asset?.url;
+  if (!firstImageUrl) return { piece };
+
+  const colors = await getColorsFromImage(firstImageUrl);
+  return { piece, colors };
+};
+
+export const getStaticProps = makeGetStaticProps(getData, getPieceSlug);
 
 const Wrapper = styled.div`
   width: 100%;
@@ -105,10 +123,11 @@ const dimensionsPath = "asset.metadata.dimensions";
 
 const getMinAspectRatioDimensions = compose(get(dimensionsPath), minBy(`${dimensionsPath}.aspectRatio`));
 
-const Piece = (props: Props<ResolvedPiece>) => {
+const Piece = (props: Props<Data>) => {
   const isMobile = useIsMobile();
-  const { data } = useData<ResolvedPiece>(getPiece, `pieces/${props.slug}`, props.params);
-  const piece = data || props.data;
+  const { data } = useData<Data>(getData, `pieces/${props.slug}`, props.params);
+  const piece = data?.piece || props.data?.piece;
+  const colors = data?.colors || props.data?.colors;
 
   const product = useMemo(() => (piece?.product ? { ...piece.product, piece } : undefined), [piece]);
 
@@ -118,7 +137,6 @@ const Piece = (props: Props<ResolvedPiece>) => {
     [piece]
   );
 
-  const colors = useColorsFromImage(piece?.images?.[0]?.asset?.url);
   const { color, background } = useContrastingColors(colors);
 
   const thumbnailsWidthPx = images.length > 1 ? THUMBNAILS_WIDTH_PX : 0;
@@ -143,7 +161,6 @@ const Piece = (props: Props<ResolvedPiece>) => {
             thumbnailPosition="right"
             showThumbnails={images.length > 1}
           />
-          {/*sized*/}
         </CarouselWrapper>
         <InfoWrapper background={background} color={color}>
           <Title color={color}>{piece?.title}</Title>
