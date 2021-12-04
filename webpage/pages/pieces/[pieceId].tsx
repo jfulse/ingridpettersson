@@ -92,6 +92,10 @@ const CarouselWrapper = styled.div<{ thumbnailsWidthPx: number; width?: number }
       }
     }
   }
+
+  @media only screen and (max-width: 480px) {
+    margin: auto;
+  }
 `;
 
 const filterWithAsset = filter(get("asset"));
