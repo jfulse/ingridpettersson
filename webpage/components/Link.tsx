@@ -16,8 +16,8 @@ const Wrapper = styled.span<{ isActive: boolean }>`
 type Props = { href: string; children: ReactNode; exact?: boolean };
 
 const Link = ({ href, children, exact }: Props) => {
-  const { pathname } = useRouter();
-  const isActive = exact ? pathname === href : pathname.startsWith(href);
+  const { asPath } = useRouter();
+  const isActive = exact ? asPath === href : asPath.startsWith(href);
 
   return (
     <Wrapper isActive={isActive}>

@@ -1,6 +1,5 @@
 import { ReactNode } from "react";
 import Link from "./Link";
-import NextLink from "next/link";
 
 type Props = {
   href?: string;
