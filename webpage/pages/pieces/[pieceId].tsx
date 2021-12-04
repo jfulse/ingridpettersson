@@ -15,6 +15,7 @@ import AddToCart from "../../components/AddToCart";
 import useContrastingColors from "../../hooks/useContrastingColors";
 import Layout from "../../components/Layout";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import useIsMobile from "../../hooks/useIsMobile";
 
 // TODO: Use lower quality image for color stuff
 // TODO: Only use color stuff on illustrations?
@@ -105,6 +106,7 @@ const dimensionsPath = "asset.metadata.dimensions";
 const getMinAspectRatioDimensions = compose(get(dimensionsPath), minBy(`${dimensionsPath}.aspectRatio`));
 
 const Piece = (props: Props<ResolvedPiece>) => {
+  const isMobile = useIsMobile();
   const { data } = useData<ResolvedPiece>(getPiece, `pieces/${props.slug}`, props.params);
   const piece = data || props.data;
 
@@ -125,7 +127,9 @@ const Piece = (props: Props<ResolvedPiece>) => {
   const { aspectRatio } = getMinAspectRatioDimensions(piece?.images ?? EMPTY_ARRAY);
 
   const maxWidth = screenWidth - thumbnailsWidthPx;
-  const desiredWidth = aspectRatio <= 1 ? screenHeight * aspectRatio : maxWidth;
+  // TODO: Not sure about the mobile height here
+  const maxHeight = isMobile ? screenHeight - 90 : screenHeight;
+  const desiredWidth = aspectRatio <= 1 ? maxHeight * aspectRatio : maxWidth;
   const width = Math.min(desiredWidth, maxWidth) + thumbnailsWidthPx;
 
   return (
