@@ -1,13 +1,19 @@
 import { useEffect, useState } from "react";
 import { maxBy, mean, minBy, prop, range } from "lodash/fp";
+import { RGBA } from "image-palette";
+
 import { Color } from "./useColorsFromImage";
 
 const minContrast = 4;
 
 type ItemWithLuma = { luma: number };
 
-const getContrast = ({ luma: luma1 }: ItemWithLuma, { luma: luma2 }: ItemWithLuma): number =>
-  Math.max(luma1, luma2) / Math.min(luma1, luma2);
+const EMPTY_COLOR = { luma: -1, rgba: [0, 0, 0, 0] as RGBA, amount: 0 };
+
+const getContrast = (
+  { luma: luma1 }: ItemWithLuma = EMPTY_COLOR,
+  { luma: luma2 }: ItemWithLuma = EMPTY_COLOR
+): number => Math.max(luma1, luma2) / Math.min(luma1, luma2);
 
 const tryGettingContrastingColors = (colors: Color[]): Color[] | undefined => {
   const brightestColor = maxBy(prop("luma"), colors)!;
@@ -25,7 +31,7 @@ const tryGettingContrastingColors = (colors: Color[]): Color[] | undefined => {
   return [darkestColor];
 };
 
-const rgbaToColorString = ({ rgba: [R, G, B, A] }: Color): string => `rgba(${R}, ${G}, ${B}, ${A})`;
+const rgbaToColorString = ({ rgba: [R, G, B, A] }: Color = EMPTY_COLOR): string => `rgba(${R}, ${G}, ${B}, ${A})`;
 
 const isNotGrayTone = ({ luma, rgba: [R, G, B] }: Color): boolean => {
   // We count very bright or dark colors as graytone
