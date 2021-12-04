@@ -61,6 +61,7 @@ const Wrapper = styled.div`
 
   @media only screen and (max-width: 480px) {
     flex-direction: column;
+    align-items: center;
   }
 `;
 
@@ -114,10 +115,6 @@ const CarouselWrapper = styled.div<{ thumbnailsWidthPx: number; width?: number }
         ${({ thumbnailsWidthPx }) => `width: calc(100% - ${thumbnailsWidthPx}px)`};
       }
     }
-  }
-
-  @media only screen and (max-width: 480px) {
-    margin: auto;
   }
 `;
 
