@@ -42,12 +42,12 @@ const Wrapper = styled.div`
 const InfoWrapper = styled.div<{ background?: string; color?: string }>`
   margin: 0;
   padding: 2rem;
-  white-space: nowrap;
   flex-grow: 1;
   margin: 0 0 0 2rem;
   ${({ color }) => color && `color: ${color};`}
   ${({ background }) => background && `background-color: ${background};`}
   transition: color 1s ease-in, background-color 1s ease-in;
+  line-height: 1.5rem;
 
   @media only screen and (max-width: 480px) {
     margin: 2rem 0 0 0;
@@ -60,6 +60,7 @@ const Title = styled.h2<{ color?: string }>`
   padding: 0;
   ${({ color }) => color && `color: ${color};`}
   transition: color 1s ease-in, background-color 1s ease-in;
+  line-height: 1.75rem;
 `;
 
 const SubTitle = styled.h3`
