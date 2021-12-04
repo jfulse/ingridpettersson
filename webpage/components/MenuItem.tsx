@@ -31,6 +31,10 @@ const StyledMenuItem = styled.li<{ group?: boolean }>`
 
   &:hover {
     ${(props) => `background-color: ${getColors(props, "backgroundEmphasized")};`}
+
+    @media only screen and (max-width: 480px) {
+      background-color: unset;
+    }
   }
 `;
 

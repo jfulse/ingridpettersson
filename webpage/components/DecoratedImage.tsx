@@ -1,4 +1,5 @@
 import styled, { css } from "styled-components";
+import useIsMobile from "../hooks/useIsMobile";
 import { ResolvedImage } from "../types";
 
 import Image from "./Image";
@@ -64,6 +65,10 @@ const Wrapper = styled.div<{ singleImage: boolean }>`
     ${StyledImage}:last-child {
       opacity: 1;
     }
+
+    @media only screen and (max-width: 480px) {
+      opacity: 1;
+    }
   }
 `;
 
@@ -77,14 +82,19 @@ export type DecoratedImageProps = {
 };
 
 const DecoratedImage = ({ image, secondaryImage, title, subtitle, href }: DecoratedImageProps) => {
+  const isMobile = useIsMobile();
   if (!image) return null;
 
   return (
     <Wrapper singleImage={!secondaryImage}>
       <StyledImage image={image} primary href={href} />
-      {title && <h4>{title}</h4>}
-      {subtitle && <h4>{subtitle}</h4>}
-      {secondaryImage && <StyledImage image={secondaryImage} secondary href={href} />}
+      {!isMobile && (
+        <>
+          {title && <h4>{title}</h4>}
+          {subtitle && <h4>{subtitle}</h4>}
+          {secondaryImage && <StyledImage image={secondaryImage} secondary href={href} />}
+        </>
+      )}
     </Wrapper>
   );
 };

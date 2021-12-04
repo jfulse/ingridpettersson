@@ -77,6 +77,7 @@ const InfoWrapper = styled.div<{ background?: string; color?: string }>`
   @media only screen and (max-width: 480px) {
     margin: 2rem 0 0 0;
     padding-bottom: 5rem;
+    width: 100%;
   }
 `;
 

@@ -20,6 +20,10 @@ const Wrapper = styled.div`
 
     &:hover {
       opacity: 0.6;
+
+      @media only screen and (max-width: 480px) {
+        opacity: unset;
+      }
     }
   }
 `;
