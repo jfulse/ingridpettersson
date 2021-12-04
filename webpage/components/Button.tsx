@@ -18,7 +18,6 @@ const Button = styled.button<Props>`
   border: 1px solid gray;
   border-radius: 0.25rem;
   cursor: pointer;
-  transition: color 1s ease-in, background-color 1s ease-in;
   background-color: ${getBackgroundColor};
   ${({ color }) =>
     color &&

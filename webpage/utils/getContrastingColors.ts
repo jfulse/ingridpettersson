@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { maxBy, mean, minBy, prop, range } from "lodash/fp";
 import { RGBA } from "image-palette";
 
@@ -65,19 +64,14 @@ const chooseColors = (contrastingColors?: Color[]): { color: string; background:
 };
 
 // Use some heuristics to get two or one color(s) that are prominent and have high contrast
-const useContrastingColors = (colors: Color[] | undefined): { color: string; background: string } => {
-  const [contrastingColors, setContrastingColors] = useState<Color[] | undefined>(undefined);
+const getContrastingColors = (colors: Color[] | undefined): { color: string; background: string } => {
+  if (!colors) return chooseColors();
 
-  useEffect(() => {
-    if (!colors) return;
-    const colorsNotGraytone = colors.filter(isNotGrayTone);
+  const colorsNotGraytone = colors.filter(isNotGrayTone);
+  const testResults = range(3, 8).map((nColors) => tryGettingContrastingColors(colorsNotGraytone.slice(0, nColors)));
+  const contrasting = testResults.find(hasTwo) || testResults.find(hasOne);
 
-    const testResults = range(3, 8).map((nColors) => tryGettingContrastingColors(colorsNotGraytone.slice(0, nColors)));
-
-    setContrastingColors(testResults.find(hasTwo) || testResults.find(hasOne));
-  }, [colors]);
-
-  return chooseColors(contrastingColors);
+  return chooseColors(contrasting);
 };
 
-export default useContrastingColors;
+export default getContrastingColors;

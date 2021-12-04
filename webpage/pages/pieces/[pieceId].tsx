@@ -1,11 +1,11 @@
 import { useMemo } from "react";
-import { GetStaticPathsResult, GetStaticPropsContext } from "next";
+import { GetStaticPathsResult } from "next";
 import styled from "styled-components";
 import { compose, filter, get, minBy } from "lodash/fp";
 import ImageGallery from "react-image-gallery";
 import { useMeasure } from "react-use";
 
-import { Color, ResolvedPiece } from "../../types";
+import { ResolvedPiece } from "../../types";
 import useData from "../../hooks/useData";
 import makeGetStaticProps, { Props } from "../../utils/makeGetStaticProps";
 import getColorsFromImage from "../../utils/getColorsFromImage";
@@ -13,10 +13,10 @@ import getPiece from "../../queries/getPiece";
 import getPieceIds from "../../queries/getPieceIds";
 import { EMPTY_ARRAY } from "../../constants";
 import AddToCart from "../../components/AddToCart";
-import useContrastingColors from "../../hooks/useContrastingColors";
 import Layout from "../../components/Layout";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 import useIsMobile from "../../hooks/useIsMobile";
+import getContrastingColors from "../../utils/getContrastingColors";
 
 // TODO: Use lower quality image for color stuff
 // TODO: Only use color stuff on illustrations?
@@ -32,16 +32,22 @@ const getPieceSlug = (params: NextParsedUrlQuery | null) => params?.pieceId ?? n
 
 type Data = {
   piece: ResolvedPiece | null;
-  colors?: Color[];
+  contrastingColors: { color: string; background: string };
 };
 
 const getData = async (params: NextParsedUrlQuery | null, skipColors = false): Promise<Data> => {
   const piece = await getPiece(params);
   const firstImageUrl = piece?.images?.[0]?.asset?.url;
-  if (!firstImageUrl) return { piece };
+  const colors = firstImageUrl ? await getColorsFromImage(firstImageUrl) : undefined;
+  const contrastingColors = getContrastingColors(colors);
 
-  const colors = await getColorsFromImage(firstImageUrl);
-  return { piece, colors };
+  return { piece, contrastingColors };
+};
+
+const getPieceOnly = async (params: NextParsedUrlQuery | null, skipColors = false): Promise<Partial<Data>> => {
+  const piece = await getPiece(params);
+
+  return { piece };
 };
 
 export const getStaticProps = makeGetStaticProps(getData, getPieceSlug);
@@ -65,7 +71,6 @@ const InfoWrapper = styled.div<{ background?: string; color?: string }>`
   margin: 0 0 0 2rem;
   ${({ color }) => color && `color: ${color};`}
   ${({ background }) => background && `background-color: ${background};`}
-  transition: color 1s ease-in, background-color 1s ease-in;
   line-height: 1.5rem;
 
   @media only screen and (max-width: 480px) {
@@ -78,7 +83,6 @@ const Title = styled.h2<{ color?: string }>`
   margin: 0;
   padding: 0;
   ${({ color }) => color && `color: ${color};`}
-  transition: color 1s ease-in, background-color 1s ease-in;
   line-height: 1.75rem;
 `;
 
@@ -125,9 +129,10 @@ const getMinAspectRatioDimensions = compose(get(dimensionsPath), minBy(`${dimens
 
 const Piece = (props: Props<Data>) => {
   const isMobile = useIsMobile();
-  const { data } = useData<Data>(getData, `pieces/${props.slug}`, props.params);
+  const { data } = useData<Partial<Data>>(getPieceOnly, `pieces/${props.slug}`, props.params);
   const piece = data?.piece || props.data?.piece;
-  const colors = data?.colors || props.data?.colors;
+  // We don't recalculate colors, to save cpu
+  const { color, background } = props.data?.contrastingColors || {};
 
   const product = useMemo(() => (piece?.product ? { ...piece.product, piece } : undefined), [piece]);
 
@@ -136,8 +141,6 @@ const Piece = (props: Props<Data>) => {
       filterWithAsset(piece?.images ?? EMPTY_ARRAY).map(({ asset }) => ({ original: asset.url, thumbnail: asset.url })),
     [piece]
   );
-
-  const { color, background } = useContrastingColors(colors);
 
   const thumbnailsWidthPx = images.length > 1 ? THUMBNAILS_WIDTH_PX : 0;
   const [ref, { height: screenHeight, width: screenWidth }] = useMeasure<HTMLDivElement>();
