@@ -21,6 +21,9 @@ const Wrapper = styled.div`
   width: 100%;
   height: ${HEADER_HEIGHT};
   background-color: ${(props) => getColors(props, "background")};
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 500;
 
   // Make sure dropdown goes above image hover title
   z-index: 10;
@@ -33,7 +36,7 @@ const Wrapper = styled.div`
 const Name = styled.h1`
   margin: 0;
   padding: 1rem 1rem 1rem 1.5rem;
-  font-size: 1.2rem;
+  font-size: 1rem;
   cursor: pointer;
 `;
 

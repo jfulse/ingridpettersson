@@ -1,19 +1,31 @@
 import { createGlobalStyle, css } from "styled-components";
 import { Theme, getColors } from "./theme";
 
-const fontFamily = css`
-  font-family: Georgia, Helvetica, sans-serif;
-`;
-
 const fontSize = css`
   font-size: 18px;
 `;
 
 const GlobalStyle = createGlobalStyle<{ theme: Theme }>`
+  @font-face {
+    font-family: "PTSans";
+    src: url("/fonts/PTSans/PTSans-Regular.ttf");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "PTSans";
+    src: url("/fonts/PTSans/PTSans-Bold.ttf");
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+  }
+
   html {
     ${fontSize}
-    ${fontFamily}
-    background-color: ${(props) => getColors(props, "background")}
+    font-family: PTSans;
+    background-color: ${(props) => getColors(props, "background")};
     height: 100vh;
     width: 100vw;
     
@@ -30,7 +42,7 @@ const GlobalStyle = createGlobalStyle<{ theme: Theme }>`
 
   input, select, button {
     ${fontSize}
-    ${fontFamily}
+    font-family: PTSans;
   }
 `;
 
