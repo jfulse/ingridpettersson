@@ -12,6 +12,7 @@ const Wrapper = styled.div`
   width: 100%;
   overflow-x: auto;
   white-space: nowrap;
+  margin-left: 1.5rem;
 `;
 
 type Props = {

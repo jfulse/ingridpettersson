@@ -32,7 +32,7 @@ const Wrapper = styled.div`
 
 const Name = styled.h1`
   margin: 0;
-  padding: 1rem;
+  padding: 1rem 1rem 1rem 1.5rem;
   font-size: 1.2rem;
   cursor: pointer;
 `;
