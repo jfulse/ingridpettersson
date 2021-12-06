@@ -6,6 +6,8 @@ import { ResolvedImage } from "../types";
 import isServer from "../utils/isServer";
 import Image from "./Image";
 
+// Check if imagebeam can be taller on e.g. project She gets high
+
 const Wrapper = styled.div`
   width: 100%;
   overflow-x: auto;

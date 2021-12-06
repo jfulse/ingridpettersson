@@ -20,13 +20,6 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-
-  h2 {
-    font-size: 1rem;
-    font-weight: normal;
-    margin: 0;
-    padding: 0 1rem;
-  }
 `;
 
 export const getStaticPaths = async (): Promise<GetStaticPathsResult> => {
@@ -50,9 +43,6 @@ const Project = (props: Props<ResolvedProject>) => {
   return (
     <Layout projects={props.projects}>
       <Wrapper>
-        <h2>
-          {project?.title} ({project?.year})
-        </h2>
         <ImageBeam imageObjects={imageObjects} maxHeight={70} />
       </Wrapper>
     </Layout>
