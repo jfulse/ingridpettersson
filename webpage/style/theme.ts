@@ -17,7 +17,7 @@ const theme: Theme = {
       backgroundEmphasized: "#f0f0f0",
       line: "#b9b9b9",
       callToAction: "#e1e3ce",
-      selected: "#169dff",
+      selected: "#60f74b",
     },
   },
 };

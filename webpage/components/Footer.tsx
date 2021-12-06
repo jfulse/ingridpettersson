@@ -11,12 +11,15 @@ const Wrapper = styled.div`
   width: 100%;
   display: flex;
   height: ${FOOTER_HEIGHT};
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
   background-color: ${(props) => getColors(props, "background")};
+  gap: 0.5rem;
+  font-size: 0.8rem;
 
   a {
     text-decoration: none;
+    color: initial;
 
     &:hover {
       opacity: 0.6;
@@ -32,7 +35,8 @@ const Footer = () => {
   return (
     <Wrapper>
       <a href="https://www.instagram.com/ingridpettersson00/">instagram</a>
-      <span>shop{/* TODO */}</span>
+      {"/"}
+      <a href="https://jfcurated.no/designer/ingrid-pettersson/">stockist</a>
     </Wrapper>
   );
 };
