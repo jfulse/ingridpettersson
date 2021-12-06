@@ -71,7 +71,7 @@ const DropdownMenu = ({ items, component: Component }: Props) => {
                   {title}
                   {menuItems?.map?.((subMenuItem) => (
                     <MaybeLink key={subMenuItem.title} href={subMenuItem.href}>
-                      <MenuItem>{subMenuItem.title}</MenuItem>
+                      <MenuItem submenuItem>{subMenuItem.title}</MenuItem>
                     </MaybeLink>
                   ))}
                 </div>

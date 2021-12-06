@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 import { getColors } from "../style/theme";
 
-const StyledMenuItem = styled.li<{ group?: boolean }>`
+const StyledMenuItem = styled.li<{ group?: boolean; submenuItem?: boolean }>`
   list-style: none;
   white-space: nowrap;
   padding: 0.5rem 1.5rem;
@@ -18,10 +18,11 @@ const StyledMenuItem = styled.li<{ group?: boolean }>`
     padding-bottom: 1rem;
   }
 
+  ${({ submenuItem }) => submenuItem && `font-style: italic`};
+
   ${({ group }) =>
     group &&
     `
-    font-weight: bold;
     padding-bottom: 0;
     
     & + li {
@@ -43,9 +44,10 @@ type Props = {
   onClick?: MouseEventHandler<HTMLButtonElement>;
   children: ReactNode;
   group?: boolean;
+  submenuItem?: boolean;
 };
 
-const MenuItem = ({ toggle, onClick, children, group }: Props) => {
+const MenuItem = ({ toggle, onClick, children, group, submenuItem }: Props) => {
   const handleClick = useCallback(
     (event) => {
       toggle?.();
@@ -55,7 +57,7 @@ const MenuItem = ({ toggle, onClick, children, group }: Props) => {
   );
 
   return (
-    <StyledMenuItem group={group} onClick={handleClick}>
+    <StyledMenuItem group={group} onClick={handleClick} submenuItem={submenuItem}>
       {children}
     </StyledMenuItem>
   );

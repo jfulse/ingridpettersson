@@ -22,6 +22,22 @@ const GlobalStyle = createGlobalStyle<{ theme: Theme }>`
     font-display: swap;
   }
 
+  @font-face {
+    font-family: "PTSans";
+    src: url("/fonts/PTSans/PTSans-Italic.ttf");
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "PTSans";
+    src: url("/fonts/PTSans/PTSans-BoldItalic.ttf");
+    font-style: italic;
+    font-weight: 500;
+    font-display: swap;
+  }
+
   html {
     ${fontSize}
     font-family: PTSans;
