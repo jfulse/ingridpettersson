@@ -10,8 +10,8 @@ const Wrapper = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
   grid-auto-flow: row;
-  margin-top: 1rem;
   gap: 1rem;
+  padding: 0 1.5rem;
 
   @media only screen and (max-width: 480px) {
     grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
