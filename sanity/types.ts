@@ -26,6 +26,7 @@ export type FieldConfig = {
 
 export type SchemaType =
   | "array"
+  | "block"
   | "reference"
   | "image"
   | "string"

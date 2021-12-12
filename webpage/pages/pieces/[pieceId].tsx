@@ -4,6 +4,8 @@ import styled from "styled-components";
 import { compose, filter, get, minBy } from "lodash/fp";
 import ImageGallery from "react-image-gallery";
 import { useMeasure } from "react-use";
+// @ts-ignore
+import BlockContent from "@sanity/block-content-to-react";
 
 import { ResolvedPiece } from "../../types";
 import useData from "../../hooks/useData";
@@ -86,7 +88,7 @@ const InfoWrapper = styled.div<{ background?: string; color?: string }>`
 `;
 
 const Title = styled.h2<{ color?: string }>`
-  margin: 0;
+  margin: 0 0 1rem;
   padding: 0;
   ${({ color }) => color && `color: ${color};`}
   line-height: 1.75rem;
@@ -170,12 +172,7 @@ const Piece = (props: Props<Data>) => {
         <InfoWrapper background={background} color={color}>
           <Title color={color}>{piece?.title}</Title>
           <Info>
-            {piece?.category && <SubTitle>{piece?.category}</SubTitle>}
-            {piece?.description && <div>{piece?.description}</div>}
-            {piece?.material && <div>{piece?.material}</div>}
-            {piece?.size && <div>{piece?.size}</div>}
-            {piece?.care && <div>{piece?.care}</div>}
-            {piece?.size && <div>size: {piece?.size}</div>}
+            <BlockContent blocks={piece?.description} />
           </Info>
           {product && (
             <>

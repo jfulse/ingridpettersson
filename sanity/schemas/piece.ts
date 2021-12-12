@@ -2,10 +2,6 @@ import { BsCardImage } from "react-icons/bs";
 
 import field from "../utils/field";
 
-// TODO: Hardcode categories? Then we can hide fields
-
-const notForSale = ({ document }) => !document.forSale;
-
 export default {
   name: "piece",
   title: "Pieces",
@@ -18,12 +14,7 @@ export default {
       to: [{ type: "category" }],
       required: true,
     }),
-    field("description"),
-    field("colour"),
-    field("material"),
-    field("care"),
-    field("size"),
-    field("project", { type: "reference", to: [{ type: "project" }] }),
+    field("description", { type: "array", of: [{ type: "block" }] }),
     field("images", {
       type: "array",
       of: [{ type: "image", fields: [field("title")] }],
