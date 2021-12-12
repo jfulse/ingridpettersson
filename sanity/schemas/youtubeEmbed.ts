@@ -1,4 +1,4 @@
-import YoutubePreview from "../../components/YoutubePreview";
+import YoutubePreview from "../components/YoutubePreview";
 
 export default {
   name: "youtubeEmbed",

@@ -1,3 +1,4 @@
+// @ts-ignore
 import React from "react"; // eslint-disable-line no-use-before-define
 import getYouTubeId from "get-youtube-id";
 import YouTube from "react-youtube";

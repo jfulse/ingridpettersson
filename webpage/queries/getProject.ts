@@ -7,8 +7,8 @@ import slugify from "../utils/slugify";
 const PROJECT_QUERY = `*[ _type == "project" && ${FILTER_NON_DRAFTS}]{
   _id,
   title,
-  images[] { _key, asset -> },
-  year
+  year,
+  images[] { _key, _type, url, asset -> }
 }`;
 
 const getProject = async (params: NextParsedUrlQuery | null): Promise<ResolvedProject | null> => {

@@ -18,7 +18,8 @@ export type ResolvedAsset = {
 
 export type ResolvedImage = {
   _key?: string;
-  ownerId?: string;
+  _type?: "image" | "youtubeEmbed";
+  url?: string;
   asset?: ResolvedAsset;
 };
 
