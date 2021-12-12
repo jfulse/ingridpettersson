@@ -4,7 +4,8 @@ import { sanityClient } from "../utils/sanityClient";
 
 const BIO_QUERY = `*[ _type == "bio" && ${FILTER_NON_DRAFTS} ]{
   headline,
-  body
+  body,
+  image { asset -> }
 }[0]`;
 
 const getBio = (): Promise<ResolvedBio> => sanityClient.fetch(BIO_QUERY);

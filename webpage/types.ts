@@ -55,6 +55,7 @@ export type ResolvedPiece = {
 export type ResolvedBio = {
   headline: string;
   body: string;
+  image?: ResolvedImage;
 };
 
 export type Color = { rgba: RGBA; luma: number; amount: number };

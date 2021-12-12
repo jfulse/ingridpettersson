@@ -7,9 +7,9 @@ const Button = styled.button`
   justify-content: space-between;
   border: none;
   background: none;
-  padding: 1rem;
+  padding: 1rem 1.5rem 1rem 0;
   height: 3rem;
-  width: 4rem;
+  width: 3.5rem;
 
   div {
     background-color: black;

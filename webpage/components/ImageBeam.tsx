@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { useWindowSize } from "react-use";
 
 import { ResolvedImage } from "../types";
-import isServer from "../utils/isServer";
+import useImageHeight from "../hooks/useImageHeight";
 import Image from "./Image";
 
 // Check if imagebeam can be taller on e.g. project She gets high
@@ -25,25 +23,8 @@ type Props = {
 // there is more to the right.
 const MAX_IMAGE_VIEW_WIDTH = 80;
 
-const getHeight = (windowHeight: number, windowWidth: number, maxHeight: number, image?: ResolvedImage): number => {
-  const firstImageDimensions = image?.asset?.metadata?.dimensions;
-
-  if (!firstImageDimensions) return 80;
-
-  const firstImageAspectRatio = firstImageDimensions.aspectRatio;
-  const firstImageMaxHeight = (windowWidth * MAX_IMAGE_VIEW_WIDTH) / (windowHeight * firstImageAspectRatio);
-
-  return Math.min(firstImageMaxHeight, maxHeight);
-};
-
 const ImageBeam = ({ imageObjects, maxHeight = 80 }: Props) => {
-  const { height: windowHeight, width: windowWidth } = useWindowSize();
-  const [height, setHeight] = useState(maxHeight);
-  const server = isServer();
-
-  useEffect(() => {
-    if (!server) setHeight(getHeight(windowHeight, windowWidth, maxHeight, imageObjects?.[0]?.image));
-  }, [imageObjects, maxHeight, server, windowHeight, windowWidth]);
+  const height = useImageHeight(imageObjects?.[0]?.image, maxHeight, MAX_IMAGE_VIEW_WIDTH);
 
   return (
     <Wrapper>

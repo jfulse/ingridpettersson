@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 import { getColors } from "../style/theme";
 
-export const FOOTER_HEIGHT = "3rem";
+export const FOOTER_HEIGHT_REM = 3;
 
 const Wrapper = styled.div`
   position: fixed;
@@ -10,7 +10,7 @@ const Wrapper = styled.div`
   left: 0;
   width: 100%;
   display: flex;
-  height: ${FOOTER_HEIGHT};
+  height: ${FOOTER_HEIGHT_REM}rem;
   justify-content: center;
   align-items: center;
   background-color: ${(props) => getColors(props, "background")};

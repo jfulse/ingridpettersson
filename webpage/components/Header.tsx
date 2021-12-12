@@ -11,7 +11,7 @@ import DropdownMenu from "./DropdownMenu";
 import { MenuItem, ResolvedProject } from "../types";
 import useShoppingCart from "../hooks/useShoppingCart";
 
-export const HEADER_HEIGHT = "4rem";
+export const HEADER_HEIGHT_REM = 4;
 
 const Wrapper = styled.div`
   display: flex;
@@ -19,7 +19,7 @@ const Wrapper = styled.div`
   align-items: center;
   position: fixed;
   width: 100%;
-  height: ${HEADER_HEIGHT};
+  height: ${HEADER_HEIGHT_REM}rem;
   background-color: ${(props) => getColors(props, "background")};
   text-transform: uppercase;
   letter-spacing: 1px;

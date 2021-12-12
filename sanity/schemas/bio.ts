@@ -11,8 +11,9 @@ export default {
   fields: [
     field("headline", { type: "text" }),
     field("body", { type: "text" }),
+    field("image", { type: "image", fields: [field("title")] }),
   ],
   preview: {
-    select: { title: "headline" },
+    select: { title: "headline", media: "image" },
   },
 };
