@@ -62,7 +62,7 @@ const Headline = styled.h3`
     position: absolute;
     font-size: 1.4rem;
     line-height: 1.8rem;
-    margin: 1rem 2rem;
+    margin: 1.5rem 2rem 0;
   }
 `;
 
@@ -92,7 +92,7 @@ const Bio = (props: Props<ResolvedBio>) => {
   if (!headline || !body) return null;
 
   return (
-    <Layout projects={props.projects}>
+    <Layout projects={props.projects} footerAlwaysVisible>
       <Wrapper>
         {aspectRatio && (
           <ImageWrapper height={height} aspectRatio={aspectRatio}>
