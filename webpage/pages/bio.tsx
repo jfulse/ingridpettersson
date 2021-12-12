@@ -13,6 +13,8 @@ import { FOOTER_HEIGHT_REM } from "../components/Footer";
 import { HEADER_HEIGHT_REM } from "../components/Header";
 import { sanityClient } from "../utils/sanityClient";
 
+// TODO: Looks like https://ingridpettersson.com/about.html has a different font
+
 export const getStaticProps = makeGetStaticProps(getBio);
 
 const Wrapper = styled.div`
