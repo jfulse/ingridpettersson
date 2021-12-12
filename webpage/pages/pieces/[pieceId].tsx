@@ -94,11 +94,6 @@ const Title = styled.h2<{ color?: string }>`
   line-height: 1.75rem;
 `;
 
-const SubTitle = styled.h3`
-  margin: 1rem 0;
-  padding: 0;
-`;
-
 const Info = styled.div`
   display: flex;
   flex-direction: column;

@@ -3,7 +3,7 @@ import { FILTER_NON_DRAFTS } from "../../constants";
 import { sanityClient } from "../utils/sanityClient";
 import { pieceProjection } from "../utils/queries";
 
-const ILLUSTRATIONS_QUERY = `*[ _type == "piece" && ${FILTER_NON_DRAFTS} && category -> title == "Illustration" ]{
+const ILLUSTRATIONS_QUERY = `*[ _type == 'illustrations' && ${FILTER_NON_DRAFTS}][0].pieces[]->{
   ${pieceProjection}
 }`;
 

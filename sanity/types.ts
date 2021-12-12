@@ -1,13 +1,6 @@
 import { SanityDocument } from "@sanity/client";
 
-export type DocumentType =
-  | "bio"
-  | "category"
-  | "frontPage"
-  | "piece"
-  | "product"
-  | "project"
-  | "shop";
+export type DocumentType = "bio" | "category" | "frontPage" | "piece" | "product" | "project" | "shop";
 
 export type FieldConfig = {
   name?: string;
@@ -22,6 +15,7 @@ export type FieldConfig = {
   options?: { filter: string };
   initialValue?: any;
   hidden?: boolean | (({ document }: { document: SanityDocument }) => boolean);
+  filter?: string;
 };
 
 export type SchemaType =
@@ -38,10 +32,7 @@ export type SchemaType =
   | "youtubeEmbed"
   | DocumentType;
 
-export type CustomRuleCallback = (
-  field: any,
-  meta: any
-) => true | string | Error | Promise<true | string | Error>;
+export type CustomRuleCallback = (field: any, meta: any) => true | string | Error | Promise<true | string | Error>;
 
 export type RuleType = {
   required: () => RuleType;

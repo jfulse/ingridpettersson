@@ -4,6 +4,7 @@ import schemaTypes from "all:part:@sanity/base/schema-type";
 import bio from "./bio";
 import category from "./category";
 import frontPage from "./frontPage";
+import illustrations from "./illustrations";
 import piece from "./piece";
 import product from "./product";
 import project from "./project";
@@ -16,6 +17,7 @@ export default createSchema({
   types: schemaTypes.concat([
     bio,
     piece,
+    illustrations,
     product,
     category,
     frontPage,
