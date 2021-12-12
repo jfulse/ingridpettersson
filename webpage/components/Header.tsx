@@ -44,6 +44,9 @@ const MenuButton = styled.button`
   background: none;
   cursor: pointer;
   border: none;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 500;
 `;
 
 const MaybeHidden = styled.div<{ hide?: boolean }>`
