@@ -11,14 +11,14 @@ const getImageHeight = (
   image?: ResolvedImage,
   maxImageWidthPercentage = 100
 ): number => {
-  const firstImageDimensions = image?.asset?.metadata?.dimensions;
+  const imageDimensions = image?.asset?.metadata?.dimensions;
 
-  if (!firstImageDimensions) return maxHeight;
+  if (!imageDimensions) return maxHeight;
 
-  const firstImageAspectRatio = firstImageDimensions.aspectRatio;
-  const firstImageMaxHeight = (windowWidth * maxImageWidthPercentage) / (windowHeight * firstImageAspectRatio);
+  const imageAspectRatio = imageDimensions.aspectRatio;
+  const imageMaxHeight = (windowWidth * maxImageWidthPercentage) / (windowHeight * imageAspectRatio);
 
-  return Math.min(firstImageMaxHeight, maxHeight);
+  return Math.min(imageMaxHeight, maxHeight);
 };
 
 const useImageHeight = (image?: ResolvedImage, maxHeightPercentage = 100, maxWidthPercentage = 100): number => {
