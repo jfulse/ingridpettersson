@@ -6,7 +6,7 @@ import getShop from "../queries/getShop";
 import filterTruthy from "../utils/filterTruthy";
 import { ResolvedProduct } from "../types";
 import useData from "../hooks/useData";
-import ImageGrid from "../components/ImageGrid";
+import ProductGrid from "../components/ProductGrid";
 import Layout from "../components/Layout";
 
 export const getStaticProps = makeGetStaticProps(getShop);
@@ -24,14 +24,14 @@ const Shop = (props: Props<Shop>) => {
           .filter(({ stock }) => stock > 0)
           .map(({ piece, price }) => {
             if (!piece) return undefined;
-            const { firstImage, secondImage, _id, title } = piece;
+            const { firstImage, _id, title, category } = piece;
 
             return {
               image: firstImage,
-              secondaryImage: secondImage,
               title: title,
-              subtitle: `${price} NOK`,
+              price,
               id: _id,
+              category,
               href: `pieces/${_id}`,
             };
           })
@@ -41,7 +41,7 @@ const Shop = (props: Props<Shop>) => {
 
   return (
     <Layout projects={props.projects}>
-      <ImageGrid imageObjects={imageObjects} />
+      <ProductGrid imageObjects={imageObjects} />
     </Layout>
   );
 };

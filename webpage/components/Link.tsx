@@ -13,14 +13,14 @@ const Wrapper = styled.span<{ isActive: boolean }>`
   }
 `;
 
-type Props = { href: string; children: ReactNode; exact?: boolean };
+type Props = { href: string; children: ReactNode; exact?: boolean; className?: string };
 
-const Link = ({ href, children, exact }: Props) => {
+const Link = ({ href, children, exact, className }: Props) => {
   const { asPath } = useRouter();
   const isActive = exact ? asPath === href : asPath.startsWith(href);
 
   return (
-    <Wrapper isActive={isActive}>
+    <Wrapper isActive={isActive} className={className}>
       <NextLink href={href}>{children}</NextLink>
     </Wrapper>
   );

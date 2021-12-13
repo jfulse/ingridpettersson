@@ -4,6 +4,8 @@ import getYouTubeId from "get-youtube-id";
 import YouTube from "react-youtube";
 import styled from "styled-components";
 
+// TOOD: Fix display on mobile
+
 const Wrapper = styled.div<{ moveUp?: boolean }>`
   display: inline-block;
   margin-right: 1.5rem;
