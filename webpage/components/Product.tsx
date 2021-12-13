@@ -21,11 +21,12 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  transition: opacity 0.3s ease-in;
+  transition: opacity 0.3s ease-in, color 0.3s ease-in;
 
   &:hover {
     opacity: 0.6;
-    transition: opacity 0.3s ease-out;
+    transition: opacity 0.3s ease-out, color 0.3s ease-out;
+    color: gray;
 
     @media only screen and (max-width: 480px) {
       opacity: unset;
