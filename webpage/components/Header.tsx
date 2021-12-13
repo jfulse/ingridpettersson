@@ -29,7 +29,7 @@ const Wrapper = styled.div`
   z-index: 10;
 
   span:last-child {
-    margin-right: 1rem;
+    margin-right: 1.5rem;
   }
 `;
 
