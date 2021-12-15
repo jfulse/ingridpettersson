@@ -11,6 +11,16 @@ const Wrapper = styled.div`
   gap: 1rem;
 `;
 
+const ButtonsWrapper = styled.div`
+  display: flex;
+  gap: 0.25rem;
+
+  button {
+    font-size: 1.3rem;
+    line-height: 1.3rem;
+  }
+`;
+
 type Props = { product: ResolvedProduct; color?: string; backgroundColor?: string };
 
 const AddToCart = ({ product, color, backgroundColor }: Props) => {
@@ -29,14 +39,26 @@ const AddToCart = ({ product, color, backgroundColor }: Props) => {
 
   return (
     <Wrapper>
-      <Button onClick={onClickAddToCart} mode="callToAction" color={color} backgroundColor={backgroundColor}>
-        Add to cart
-      </Button>
-      {Boolean(inShoppinCart) && `In cart${inShoppinCart > 1 ? `: ${inShoppinCart}` : ""}`}
-      {Boolean(inShoppinCart) && (
-        <Button onClick={onClickRemoveFromCart} color={color} backgroundColor={backgroundColor}>
-          Remove
+      {!inShoppinCart && (
+        <Button onClick={onClickAddToCart} mode="callToAction" color={color} backgroundColor={backgroundColor}>
+          Add to cart
         </Button>
+      )}
+      {Boolean(inShoppinCart) && (
+        <Button as="a" href="/checkout" mode="callToAction" color={color} backgroundColor={backgroundColor}>
+          Checkout
+        </Button>
+      )}
+      {Boolean(inShoppinCart) && `In cart: ${inShoppinCart}`}
+      {Boolean(inShoppinCart) && (
+        <ButtonsWrapper>
+          <Button onClick={onClickAddToCart} color={color} backgroundColor={backgroundColor}>
+            +
+          </Button>
+          <Button onClick={onClickRemoveFromCart} color={color} backgroundColor={backgroundColor}>
+            -
+          </Button>
+        </ButtonsWrapper>
       )}
     </Wrapper>
   );

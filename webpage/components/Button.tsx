@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import { getColors, Theme } from "../style/theme";
 
@@ -12,13 +12,15 @@ const getBackgroundColor = ({ backgroundColor, mode = "default", ...props }: Pro
   return getColors(props, "backgroundEmphasized");
 };
 
-const Button = styled.button<Props>`
+export const buttonMixin = css<Props>`
   width: fit-content;
   padding: 0.25rem 0.5rem;
   border: 1px solid gray;
   border-radius: 0.25rem;
   cursor: pointer;
   background-color: ${getBackgroundColor};
+  text-decoration: none;
+
   ${({ color }) =>
     color &&
     `
@@ -33,6 +35,10 @@ const Button = styled.button<Props>`
       opacity: unset;
     }
   }
+`;
+
+const Button = styled.button<Props>`
+  ${buttonMixin}
 `;
 
 export default Button;
