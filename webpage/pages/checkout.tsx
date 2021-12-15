@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { debounce, prop, props } from "lodash/fp";
+import { debounce, prop } from "lodash/fp";
+import "react-responsive-modal/styles.css";
+import { Modal } from "react-responsive-modal";
 
 import useDetails from "../hooks/useDetails";
 import useShoppingCart from "../hooks/useShoppingCart";
@@ -43,10 +45,23 @@ const InputWrapper = styled.div`
   }
 `;
 
+const ModalWrapper = styled.div`
+  margin: 1rem 3rem;
+
+  @media only screen and (max-width: 480px) {
+    margin: 1rem;
+    font-size: 2rem;
+  }
+`;
+
 const Checkout = (props: Props) => {
   const [error, setError] = useState<string | undefined>(undefined);
   const [processing, setProcessing] = useState(false);
   const [clientSecret, setClientSecret] = useState("");
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const openModal = useCallback(() => setModalOpen(true), []);
+  const closeModal = useCallback(() => setModalOpen(false), []);
 
   const {
     name,
@@ -63,8 +78,6 @@ const Checkout = (props: Props) => {
     updatePostalCode,
     state,
     updateState,
-    country,
-    updateCountry,
     detailsReady,
   } = useDetails();
 
@@ -114,7 +127,7 @@ const Checkout = (props: Props) => {
       city,
       postalCode,
       state,
-      country,
+      country: "Norway",
     };
 
     debouncedGetClientSecret(email, address, shoppingCart?.items, totalPrice);
@@ -129,7 +142,6 @@ const Checkout = (props: Props) => {
     city,
     postalCode,
     state,
-    country,
     email,
     totalPrice,
   ]);
@@ -197,9 +209,9 @@ const Checkout = (props: Props) => {
               <Input label="addressLine1" value={addressLine1} onChange={updateAddressLine1} />
               <Input label="email" value={email} onChange={updateEmail} type="email" />
               <Input label="addressLine2" value={addressLine2} onChange={updateAddressLine2} />
-              <Input label="country" value={country} onChange={updateCountry} />
+              <Input label="country" value="Norway" noChange onClick={openModal} />
               <Input label="city" value={city} onChange={updateCity} />
-              <Input label="state" value={state} onChange={updateState} />
+              <Input label="state or province" value={state} onChange={updateState} />
               <Input label="postalCode" value={postalCode} onChange={updatePostalCode} type="number" />
             </InputWrapper>
             <h4>Bank card</h4>
@@ -230,6 +242,12 @@ const Checkout = (props: Props) => {
             </div>*/}
         </div>
       </Wrapper>
+      <Modal open={modalOpen} onClose={closeModal} center>
+        <ModalWrapper>
+          For shipping outside Norway send a mail to{" "}
+          <a href="mailto:ingridpettersson.r@gmail.com">ingridpettersson.r@gmail.com</a>
+        </ModalWrapper>
+      </Modal>
     </Layout>
   );
 };

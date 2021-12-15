@@ -19,11 +19,9 @@ const useDetails = () => {
   const updatePostalCode = useCallback(({ target }) => setPostalCode(target.value), []);
   const [state, setState] = useState("");
   const updateState = useCallback(({ target }) => setState(target.value), []);
-  const [country, setCountry] = useState("");
-  const updateCountry = useCallback(({ target }) => setCountry(target.value), []);
 
   const detailsReady =
-    name && email && isEmail(email) && addressLine1 && city && postalCode && areNumbers(postalCode) && state && country;
+    name && email && isEmail(email) && addressLine1 && city && postalCode && areNumbers(postalCode) && state;
 
   return {
     name,
@@ -40,8 +38,6 @@ const useDetails = () => {
     updatePostalCode,
     state,
     updateState,
-    country,
-    updateCountry,
     detailsReady,
   };
 };

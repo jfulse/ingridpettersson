@@ -4,6 +4,8 @@ import styled from "styled-components";
 
 import camelToName from "../utils/camelToName";
 
+const noop = () => null;
+
 const StyledInput = styled.input`
   border-style: solid;
   margin-left: 1rem;
@@ -12,17 +14,27 @@ const StyledInput = styled.input`
 type Props = {
   label: string;
   value: string;
-  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  noChange?: boolean;
+  onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+  onClick?: () => void;
   type?: HTMLInputTypeAttribute;
 };
 
-const Input = ({ label, value, onChange, type = "text" }: Props) => {
+const Input = ({ label, value, onChange, onClick, noChange, type = "text" }: Props) => {
   const inputId = `checkout-input-${label}`;
 
   return (
     <>
       <label htmlFor={inputId}>{camelToName(label)}</label>
-      <StyledInput id={inputId} name={label} value={value} onChange={onChange} type={type} />
+      <StyledInput
+        id={inputId}
+        name={label}
+        value={value}
+        onChange={noChange ? noop : onChange}
+        type={type}
+        onClick={onClick}
+        readOnly={noChange}
+      />
     </>
   );
 };
