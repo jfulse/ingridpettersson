@@ -9,12 +9,15 @@ import useDetails from "../hooks/useDetails";
 import useShoppingCart from "../hooks/useShoppingCart";
 import ErrorComponent from "../components/ErrorComponent";
 import makeGetStaticProps, { Props } from "../utils/makeGetStaticProps";
+import { HEADER_HEIGHT_REM } from "../components/Header";
 import isServer from "../utils/isServer";
 import Button from "../components/Button";
 import Input from "../components/Input";
 import Layout from "../components/Layout";
 
 // Test card: 4000002760003184
+
+// TODO: Add names to input fields as a guide to password managers etc
 
 export const getStaticProps = makeGetStaticProps();
 
@@ -26,31 +29,75 @@ const CARD_ELEMENT_OPTIONS = {
   hidePostalCode: true,
 };
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  /* padding: ${HEADER_HEIGHT_REM}rem 2rem 2rem; */
+  padding: 0 1.5rem;
+`;
 
 const CardWrapper = styled.div``;
 
 const InputWrapper = styled.div`
   display: grid;
   grid-template-columns: auto auto auto auto;
-  gap: 0.5rem 1rem;
-  margin-right: 3rem;
+  gap: 0.5rem 2rem;
 
   label {
     white-space: nowrap;
+  }
 
-    &:nth-child(2n + 1) {
-      text-align: right;
+  @media only screen and (max-width: 480px) {
+    display: flex;
+    flex-direction: column;
+
+    label {
+      margin-top: 0.5rem;
+    }
+
+    input,
+    label {
+      order: 7;
+    }
+
+    & > label:nth-child(1) {
+      order: 1;
+    }
+
+    & > input:nth-child(2) {
+      order: 2;
+    }
+
+    & > label:nth-child(3) {
+      order: 5;
+    }
+
+    & > input:nth-child(4) {
+      order: 6;
+    }
+
+    & > label:nth-child(5) {
+      order: 3;
+    }
+
+    & > input:nth-child(6) {
+      order: 4;
+    }
+
+    & > label:nth-child(13) {
+      order: 10;
+    }
+
+    & > input:nth-child(14) {
+      order: 10;
     }
   }
 `;
 
 const ModalWrapper = styled.div`
   margin: 1rem 3rem;
+  line-height: 1.5rem;
 
   @media only screen and (max-width: 480px) {
     margin: 1rem;
-    font-size: 2rem;
   }
 `;
 
@@ -201,33 +248,32 @@ const Checkout = (props: Props) => {
   return (
     <Layout projects={props.projects}>
       <Wrapper>
-        <div>
-          <form onSubmit={handleSubmit}>
-            <h4>Details</h4>
-            <InputWrapper>
-              <Input label="name" value={name} onChange={updateName} />
-              <Input label="addressLine1" value={addressLine1} onChange={updateAddressLine1} />
-              <Input label="email" value={email} onChange={updateEmail} type="email" />
-              <Input label="addressLine2" value={addressLine2} onChange={updateAddressLine2} />
-              <Input label="country" value="Norway" noChange onClick={openModal} />
-              <Input label="city" value={city} onChange={updateCity} />
-              <Input label="state or province" value={state} onChange={updateState} />
-              <Input label="postalCode" value={postalCode} onChange={updatePostalCode} type="number" />
-            </InputWrapper>
-            <h4>Bank card</h4>
-            <CardWrapper>
-              <CardElement options={CARD_ELEMENT_OPTIONS} />
-            </CardWrapper>
-            {stripe && (
-              <Button type="submit" disabled={!clientSecret || processing || !detailsReady}>
-                {processing ? "Checking out..." : "Checkout"}
-              </Button>
-            )}
-          </form>
-          <ErrorComponent error={error} />
-          <h4>Total price: {totalPrice}NOK</h4>
-          <h4>Items in cart ({nItems})</h4>
-          {/*<div className={styles.carouselWrapper}> TODO
+        <form onSubmit={handleSubmit}>
+          <h4>Details</h4>
+          <InputWrapper>
+            <Input label="name" value={name} onChange={updateName} />
+            <Input label="addressLine1" value={addressLine1} onChange={updateAddressLine1} />
+            <Input label="email" value={email} onChange={updateEmail} type="email" />
+            <Input label="addressLine2" value={addressLine2} onChange={updateAddressLine2} />
+            <Input label="state or province" value={state} onChange={updateState} />
+            <Input label="city" value={city} onChange={updateCity} />
+            <Input label="country" value="Norway" noChange onClick={openModal} />
+            <Input label="postalCode" value={postalCode} onChange={updatePostalCode} type="number" />
+          </InputWrapper>
+          <h4>Bank card</h4>
+          <CardWrapper>
+            <CardElement options={CARD_ELEMENT_OPTIONS} />
+          </CardWrapper>
+          {stripe && (
+            <Button type="submit" disabled={!clientSecret || processing || !detailsReady}>
+              {processing ? "Checking out..." : "Checkout"}
+            </Button>
+          )}
+        </form>
+        <ErrorComponent error={error} />
+        <h4>Total price: {totalPrice}NOK</h4>
+        <h4>Items in cart ({nItems})</h4>
+        {/*<div className={styles.carouselWrapper}> TODO
           <Carousel infiniteLoop dynamicHeight transitionTime={600} showStatus={false} showIndicators={false}>
             {shoppingCart.items.map((item) => (
               <div key={item.id}>
@@ -240,7 +286,6 @@ const Checkout = (props: Props) => {
             ))}
           </Carousel>
             </div>*/}
-        </div>
       </Wrapper>
       <Modal open={modalOpen} onClose={closeModal} center>
         <ModalWrapper>

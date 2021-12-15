@@ -10,7 +10,7 @@ const Content = styled.div<{ footerAlwaysVisible?: boolean }>`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  height: 100vh;
+  min-height: 100vh;
   padding: ${HEADER_HEIGHT_REM}rem 0 ${FOOTER_HEIGHT_REM}rem;
 
   @media only screen and (max-width: 480px) {

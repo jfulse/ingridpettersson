@@ -8,7 +8,8 @@ const noop = () => null;
 
 const StyledInput = styled.input`
   border-style: solid;
-  margin-left: 1rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
 `;
 
 type Props = {
