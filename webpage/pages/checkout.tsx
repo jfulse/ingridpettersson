@@ -2,18 +2,16 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { debounce, prop } from "lodash/fp";
-import "react-responsive-modal/styles.css";
-import { Modal } from "react-responsive-modal";
 
-import useDetails from "../hooks/useDetails";
 import useShoppingCart from "../hooks/useShoppingCart";
 import ErrorComponent from "../components/ErrorComponent";
 import makeGetStaticProps, { Props } from "../utils/makeGetStaticProps";
 import { HEADER_HEIGHT_REM } from "../components/Header";
 import isServer from "../utils/isServer";
 import Button from "../components/Button";
-import Input from "../components/Input";
 import Layout from "../components/Layout";
+import Address from "../components/Address";
+import { Address as AddressType } from "../types";
 
 // Test card: 4000002760003184
 
@@ -36,97 +34,15 @@ const Wrapper = styled.div`
 
 const CardWrapper = styled.div``;
 
-const InputWrapper = styled.div`
-  display: grid;
-  grid-template-columns: auto auto auto auto;
-  gap: 0.5rem 2rem;
-
-  label {
-    white-space: nowrap;
-  }
-
-  @media only screen and (max-width: 480px) {
-    display: flex;
-    flex-direction: column;
-
-    label {
-      margin-top: 0.5rem;
-    }
-
-    input,
-    label {
-      order: 7;
-    }
-
-    & > label:nth-child(1) {
-      order: 1;
-    }
-
-    & > input:nth-child(2) {
-      order: 2;
-    }
-
-    & > label:nth-child(3) {
-      order: 5;
-    }
-
-    & > input:nth-child(4) {
-      order: 6;
-    }
-
-    & > label:nth-child(5) {
-      order: 3;
-    }
-
-    & > input:nth-child(6) {
-      order: 4;
-    }
-
-    & > label:nth-child(13) {
-      order: 10;
-    }
-
-    & > input:nth-child(14) {
-      order: 10;
-    }
-  }
-`;
-
-const ModalWrapper = styled.div`
-  margin: 1rem 3rem;
-  line-height: 1.5rem;
-
-  @media only screen and (max-width: 480px) {
-    margin: 1rem;
-  }
-`;
-
 const Checkout = (props: Props) => {
   const [error, setError] = useState<string | undefined>(undefined);
   const [processing, setProcessing] = useState(false);
   const [clientSecret, setClientSecret] = useState("");
 
-  const [modalOpen, setModalOpen] = useState(false);
-  const openModal = useCallback(() => setModalOpen(true), []);
-  const closeModal = useCallback(() => setModalOpen(false), []);
-
-  const {
-    name,
-    updateName,
-    email,
-    updateEmail,
-    addressLine1,
-    updateAddressLine1,
-    addressLine2,
-    updateAddressLine2,
-    city,
-    updateCity,
-    postalCode,
-    updatePostalCode,
-    state,
-    updateState,
-    detailsReady,
-  } = useDetails();
+  const [address, setAddress] = useState<Partial<AddressType>>({});
+  const [email, setEmail] = useState<string | undefined>(undefined);
+  const [ready, setReady] = useState<boolean>(false);
+  console.log("✅ ready", ready);
 
   const { nItems, shoppingCart, removeFromCart, onSuccess } = useShoppingCart();
   const stripe = useStripe();
@@ -165,33 +81,9 @@ const Checkout = (props: Props) => {
   const debouncedGetClientSecret = useMemo(() => debounce(1000, getClientSecret), [getClientSecret]);
 
   useEffect(() => {
-    if (!detailsReady || nItems === 0) return;
-
-    const address = {
-      name,
-      addressLine1,
-      addressLine2,
-      city,
-      postalCode,
-      state,
-      country: "Norway",
-    };
-
+    if (!ready || nItems === 0) return;
     debouncedGetClientSecret(email, address, shoppingCart?.items, totalPrice);
-  }, [
-    detailsReady,
-    nItems,
-    debouncedGetClientSecret,
-    shoppingCart?.items,
-    name,
-    addressLine1,
-    addressLine2,
-    city,
-    postalCode,
-    state,
-    email,
-    totalPrice,
-  ]);
+  }, [ready, nItems, debouncedGetClientSecret, shoppingCart?.items, address, email, totalPrice]);
 
   const handleSubmit = useCallback(
     async (event) => {
@@ -250,22 +142,14 @@ const Checkout = (props: Props) => {
       <Wrapper>
         <form onSubmit={handleSubmit}>
           <h4>Details</h4>
-          <InputWrapper>
-            <Input label="name" value={name} onChange={updateName} />
-            <Input label="addressLine1" value={addressLine1} onChange={updateAddressLine1} />
-            <Input label="email" value={email} onChange={updateEmail} type="email" />
-            <Input label="addressLine2" value={addressLine2} onChange={updateAddressLine2} />
-            <Input label="state or province" value={state} onChange={updateState} />
-            <Input label="city" value={city} onChange={updateCity} />
-            <Input label="country" value="Norway" noChange onClick={openModal} />
-            <Input label="postalCode" value={postalCode} onChange={updatePostalCode} type="number" />
-          </InputWrapper>
+          <Address address={address} setAddress={setAddress} email={email} setEmail={setEmail} setReady={setReady} />
           <h4>Bank card</h4>
           <CardWrapper>
             <CardElement options={CARD_ELEMENT_OPTIONS} />
           </CardWrapper>
           {stripe && (
-            <Button type="submit" disabled={!clientSecret || processing || !detailsReady}>
+            // FIXME: disabled not working
+            <Button type="submit" disabled={!clientSecret || processing || !ready}>
               {processing ? "Checking out..." : "Checkout"}
             </Button>
           )}
@@ -287,16 +171,11 @@ const Checkout = (props: Props) => {
           </Carousel>
             </div>*/}
       </Wrapper>
-      <Modal open={modalOpen} onClose={closeModal} center>
-        <ModalWrapper>
-          For shipping outside Norway send a mail to{" "}
-          <a href="mailto:ingridpettersson.r@gmail.com">ingridpettersson.r@gmail.com</a>
-        </ModalWrapper>
-      </Modal>
     </Layout>
   );
 };
 
 const Noop = () => null;
 
+// TODO: Is this necessary?
 export default isServer() ? Noop : Checkout;

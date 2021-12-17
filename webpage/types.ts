@@ -60,3 +60,13 @@ export type ResolvedBio = {
 };
 
 export type Color = { rgba: RGBA; luma: number; amount: number };
+
+export type Address = {
+  name: string;
+  addressLine1: string;
+  addressLine2?: string;
+  city: string;
+  postalCode: string;
+  state: string;
+  country: string;
+};
