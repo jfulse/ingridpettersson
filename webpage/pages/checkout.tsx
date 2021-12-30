@@ -42,7 +42,6 @@ const Checkout = (props: Props) => {
   const [address, setAddress] = useState<Partial<AddressType>>({});
   const [email, setEmail] = useState<string | undefined>(undefined);
   const [ready, setReady] = useState<boolean>(false);
-  console.log("✅ ready", ready);
 
   const { nItems, shoppingCart, removeFromCart, onSuccess } = useShoppingCart();
   const stripe = useStripe();
@@ -54,8 +53,13 @@ const Checkout = (props: Props) => {
     setError("");
 
     const itemIds = items.map(prop("_id"));
-    const data = JSON.stringify({ itemIds, email: currentEmail, address: currentAddress, total });
     const headers = { "Content-Type": "application/json" };
+    const data = JSON.stringify({
+      itemIds,
+      email: currentEmail,
+      address: { ...currentAddress, country: "norway" },
+      total,
+    });
 
     const response = await fetch("/api/payments/create-intent", {
       method: "POST",
