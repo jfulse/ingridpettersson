@@ -1,14 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { Modal } from "react-responsive-modal";
+import { Control, UseFormRegister, useFormState } from "react-hook-form";
 import "react-responsive-modal/styles.css";
-// @ts-ignore
-import isEmail from "is-email";
 
 import { Address as AddressType } from "../types";
 import Input from "./Input";
-
-const areNumbers = (text = "") => text.match(/[\d]+/);
 
 // FIXME: Ordering in CSS messes with tabbing apparently
 const Wrapper = styled.div`
@@ -78,14 +75,6 @@ const ModalWrapper = styled.div`
 
 type SetAddress = (address: Partial<AddressType> | ((address: Partial<AddressType>) => Partial<AddressType>)) => void;
 
-type Props = {
-  address: Partial<AddressType>;
-  setAddress: SetAddress;
-  email?: string;
-  setEmail: (email: string) => void;
-  setReady: (ready: boolean) => void;
-};
-
 const useUpdateAddressField = (setAddress: SetAddress, field: keyof AddressType) => {
   const updateAddressField = useCallback(
     ({ target }) => setAddress((current) => ({ ...current, [field]: target.value })),
@@ -95,52 +84,74 @@ const useUpdateAddressField = (setAddress: SetAddress, field: keyof AddressType)
   return updateAddressField;
 };
 
-const Address = ({ address, setAddress, email, setEmail, setReady }: Props) => {
+type Props = {
+  register: UseFormRegister<AddressType>;
+  control: Control<AddressType, object>;
+};
+
+const Address = ({ register, control }: Props) => {
   const [modalOpen, setModalOpen] = useState(false);
   const openModal = useCallback(() => setModalOpen(true), []);
   const closeModal = useCallback(() => setModalOpen(false), []);
 
-  const updateName = useUpdateAddressField(setAddress, "name");
-  const updateAddressLine1 = useUpdateAddressField(setAddress, "addressLine1");
-  const updateAddressLine2 = useUpdateAddressField(setAddress, "addressLine2");
-  const updateCity = useUpdateAddressField(setAddress, "city");
-  const updatePostalCode = useUpdateAddressField(setAddress, "postalCode");
-  const updateState = useUpdateAddressField(setAddress, "state");
-
-  const updateEmail = useCallback(({ target }) => setEmail(target.value), [setEmail]);
-
-  useEffect(
-    () =>
-      setReady(
-        Boolean(
-          address.name &&
-            email &&
-            isEmail(email) &&
-            address.addressLine1 &&
-            address.city &&
-            address.postalCode &&
-            areNumbers(address.postalCode) &&
-            address.state
-        )
-      ),
-    [address.name, address.addressLine1, address.city, address.postalCode, address.state, email, setReady]
-  );
+  const { errors, isSubmitted, isSubmitting } = useFormState({ control });
 
   return (
     <Wrapper>
-      <Input label="name" value={address.name ?? ""} onChange={updateName} />
-      <Input label="addressLine1" value={address.addressLine1 ?? ""} onChange={updateAddressLine1} />
+      <Input name="name" register={register} errors={errors} isSubmitted={isSubmitted} readOnly={isSubmitting} />
+      <Input
+        name="addressLine1"
+        register={register}
+        errors={errors}
+        isSubmitted={isSubmitted}
+        readOnly={isSubmitting}
+      />
+      <Input
+        name="email"
+        register={register}
+        errors={errors}
+        isSubmitted={isSubmitted}
+        readOnly={isSubmitting}
+        type="email"
+      />
+      <Input
+        name="addressLine2"
+        register={register}
+        errors={errors}
+        isSubmitted={isSubmitted}
+        readOnly={isSubmitting}
+        required={false}
+      />
+      <Input name="state" register={register} errors={errors} isSubmitted={isSubmitted} readOnly={isSubmitting} />
+      <Input name="city" register={register} errors={errors} isSubmitted={isSubmitted} readOnly={isSubmitting} />
+      <Input
+        name="country"
+        register={register}
+        errors={errors}
+        isSubmitted={isSubmitted}
+        readOnly
+        onClick={openModal}
+      />
+      <Input
+        name="postalCode"
+        register={register}
+        errors={errors}
+        isSubmitted={isSubmitted}
+        readOnly={isSubmitting}
+        type="number"
+      />
+      {/*<Input label="addressLine1" value={address.addressLine1 ?? ""} onChange={updateAddressLine1} />
       <Input label="email" value={email ?? ""} onChange={updateEmail} type="email" />
       <Input label="addressLine2" value={address.addressLine2 ?? ""} onChange={updateAddressLine2} />
       <Input label="state or province" value={address.state ?? ""} onChange={updateState} />
       <Input label="city" value={address.city ?? ""} onChange={updateCity} />
-      <Input label="country" value="Norway" noChange onClick={openModal} />
+      <Input label="country" value="Norway" readOnly onClick={openModal} />
       <Input
         label="postalCode"
         value={address.postalCode?.toString() ?? ""}
         onChange={updatePostalCode}
         type="number"
-      />
+  />*/}
       <Modal open={modalOpen} onClose={closeModal} center>
         <ModalWrapper>
           For shipping outside Norway send a mail to{" "}

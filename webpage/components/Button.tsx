@@ -35,6 +35,11 @@ export const buttonMixin = css<Props>`
       opacity: unset;
     }
   }
+
+  &:disabled {
+    opacity: 1;
+    cursor: default;
+  }
 `;
 
 const Button = styled.button<Props>`

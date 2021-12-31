@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { debounce, prop } from "lodash/fp";
+import { useForm } from "react-hook-form";
+import { debounce, isEmpty, prop } from "lodash/fp";
 
 import useShoppingCart from "../hooks/useShoppingCart";
 import ErrorComponent from "../components/ErrorComponent";
@@ -12,10 +13,9 @@ import Button from "../components/Button";
 import Layout from "../components/Layout";
 import Address from "../components/Address";
 import { Address as AddressType } from "../types";
+import { StripeElements } from "@stripe/stripe-js";
 
 // Test card: 4000002760003184
-
-// TODO: Add names to input fields as a guide to password managers etc
 
 export const getStaticProps = makeGetStaticProps();
 
@@ -34,14 +34,33 @@ const Wrapper = styled.div`
 
 const CardWrapper = styled.div``;
 
+const DEFAULT_ADDRESS_VALUES: AddressType = {
+  name: "",
+  addressLine1: "",
+  email: "",
+  addressLine2: "",
+  state: "",
+  city: "",
+  country: "Norway",
+  postalCode: "",
+};
+
+// const useCardComplete = (elements: StripeElements | null) => {
+//   const card = elements?.getElement(CardElement);
+//   const [complete, setComplete] = useState(false);
+
+//   useEffect(() => {
+//     if (!card) return;
+//     card.on("change", (cardState) => setComplete(cardState.complete));
+//   }, [card]);
+
+//   return complete;
+// };
+
 const Checkout = (props: Props) => {
   const [error, setError] = useState<string | undefined>(undefined);
   const [processing, setProcessing] = useState(false);
   const [clientSecret, setClientSecret] = useState("");
-
-  const [address, setAddress] = useState<Partial<AddressType>>({});
-  const [email, setEmail] = useState<string | undefined>(undefined);
-  const [ready, setReady] = useState<boolean>(false);
 
   const { nItems, shoppingCart, removeFromCart, onSuccess } = useShoppingCart();
   const stripe = useStripe();
@@ -49,15 +68,24 @@ const Checkout = (props: Props) => {
 
   const totalPrice = shoppingCart.items.reduce((total, { price }) => total + price, 0);
 
-  const getClientSecret = useCallback(async (currentEmail, currentAddress, items, total) => {
+  const {
+    control,
+    formState: { errors, isSubmitting, isDirty },
+    handleSubmit: submitWrapper,
+    register,
+    watch,
+  } = useForm({ defaultValues: DEFAULT_ADDRESS_VALUES, mode: "onChange" });
+  const ready = isDirty && isEmpty(errors) && !isSubmitting && nItems > 0;
+
+  const getClientSecret = useCallback(async ({ email, ...address }, items, total) => {
     setError("");
 
     const itemIds = items.map(prop("_id"));
     const headers = { "Content-Type": "application/json" };
     const data = JSON.stringify({
       itemIds,
-      email: currentEmail,
-      address: { ...currentAddress, country: "norway" },
+      email,
+      address,
       total,
     });
 
@@ -84,50 +112,47 @@ const Checkout = (props: Props) => {
 
   const debouncedGetClientSecret = useMemo(() => debounce(1000, getClientSecret), [getClientSecret]);
 
-  useEffect(() => {
-    if (!ready || nItems === 0) return;
-    debouncedGetClientSecret(email, address, shoppingCart?.items, totalPrice);
-  }, [ready, nItems, debouncedGetClientSecret, shoppingCart?.items, address, email, totalPrice]);
+  // FIXME: Does not run when auto-filling from dashlane
+  watch((values) => ready && debouncedGetClientSecret(values, shoppingCart?.items, totalPrice));
 
-  const handleSubmit = useCallback(
-    async (event) => {
-      event.preventDefault();
-      setError("");
-      setProcessing(true);
-      const card = elements?.getElement(CardElement);
+  const submit = useCallback(async () => {
+    setError("");
+    setProcessing(true);
+    const card = elements?.getElement(CardElement);
 
-      if (!card) {
-        setError("Something went wrong");
-        setProcessing(false);
-        return;
-      }
+    if (!card) {
+      setError("Something went wrong");
+      setProcessing(false);
+      return;
+    }
 
-      const data = {
-        payment_method: {
-          card,
-          billing_details: {
-            name: "test",
-          },
+    const data = {
+      payment_method: {
+        card,
+        billing_details: {
+          name: "test",
         },
-      };
+      },
+    };
 
-      const payload = await stripe?.confirmCardPayment(clientSecret, data);
+    const payload = await stripe?.confirmCardPayment(clientSecret, data);
 
-      if (payload?.error) {
-        setError(payload.error.message);
-        setProcessing(false);
-      } else if (payload?.paymentIntent) {
-        setError("");
-        setProcessing(false);
-        onSuccess(payload?.paymentIntent);
-        // push('/checkout/success'); TODO
-      } else {
-        setError("Something went wrong");
-        setProcessing(false);
-      }
-    },
-    [clientSecret, elements, onSuccess, stripe]
-  );
+    // TODO: Display card errors on card input and focus?
+    if (payload?.error) {
+      setError(payload.error.message);
+      setProcessing(false);
+    } else if (payload?.paymentIntent) {
+      setError("");
+      setProcessing(false);
+      onSuccess(payload?.paymentIntent);
+      // push('/checkout/success'); TODO
+    } else {
+      setError("Something went wrong");
+      setProcessing(false);
+    }
+  }, [clientSecret, elements, onSuccess, stripe]);
+
+  const handleSubmit = useMemo(() => submitWrapper(submit), [submit, submitWrapper]);
 
   if (!stripe || !elements) return null;
 
@@ -146,14 +171,13 @@ const Checkout = (props: Props) => {
       <Wrapper>
         <form onSubmit={handleSubmit}>
           <h4>Details</h4>
-          <Address address={address} setAddress={setAddress} email={email} setEmail={setEmail} setReady={setReady} />
+          <Address register={register} control={control} />
           <h4>Bank card</h4>
           <CardWrapper>
             <CardElement options={CARD_ELEMENT_OPTIONS} />
           </CardWrapper>
           {stripe && (
-            // FIXME: disabled not working
-            <Button type="submit" disabled={!clientSecret || processing || !ready}>
+            <Button type="submit" disabled={processing}>
               {processing ? "Checking out..." : "Checkout"}
             </Button>
           )}
