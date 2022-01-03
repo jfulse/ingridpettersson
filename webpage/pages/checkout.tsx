@@ -14,6 +14,7 @@ import Layout from "../components/Layout";
 import Address from "../components/Address";
 import { Address as AddressType } from "../types";
 import { StripeElements } from "@stripe/stripe-js";
+import Link from "../components/Link";
 
 // Test card: 4000002760003184
 
@@ -30,6 +31,29 @@ const CARD_ELEMENT_OPTIONS = {
 const Wrapper = styled.div`
   /* padding: ${HEADER_HEIGHT_REM}rem 2rem 2rem; */
   padding: 0 1.5rem;
+`;
+
+const EmptyStateWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.3rem;
+  gap: 2rem;
+  padding: 3rem;
+
+  a {
+    text-decoration: underline;
+
+    &:hover {
+      cursor: pointer;
+      opacity: 0.5;
+    }
+  }
+
+  @media only screen and (max-width: 480px) {
+    text-align: center;
+  }
 `;
 
 const CardWrapper = styled.div``;
@@ -159,9 +183,12 @@ const Checkout = (props: Props) => {
   if (nItems < 1) {
     return (
       <Layout projects={props.projects}>
-        <Wrapper>
-          <h4>No items in cart</h4>
-        </Wrapper>
+        <EmptyStateWrapper>
+          <span>There are no items in the cart</span>
+          <span>
+            Head over to the <Link href="/shop">shop</Link> to add some
+          </span>
+        </EmptyStateWrapper>
       </Layout>
     );
   }

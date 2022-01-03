@@ -49,11 +49,6 @@ const MenuButton = styled.button`
   font-weight: 500;
 `;
 
-const MaybeHidden = styled.div<{ hide?: boolean }>`
-  transition: transform 0.26s ease; /* TODO: transition doesn't work */
-  ${({ hide }) => hide && "transform: scaleX(0);"}
-`;
-
 const getHeaderMenuItems = (projects: ResolvedProject[], nItems: number): MenuItem[] => [
   { title: "shop", href: "/shop" },
   {
@@ -65,7 +60,7 @@ const getHeaderMenuItems = (projects: ResolvedProject[], nItems: number): MenuIt
   },
   { title: "illustration", href: "/illustration" },
   { title: "bio", href: "/bio" },
-  { title: `checkout${nItems > 0 ? ` (${nItems})` : ""}`, href: "/checkout", hidden: nItems === 0 },
+  { title: `checkout${nItems > 0 ? ` (${nItems})` : ""}`, href: "/checkout" },
 ];
 
 type Props = { projects: ResolvedProject[] };
@@ -92,7 +87,7 @@ const Header = ({ projects }: Props) => {
       <Link href="/">
         <Name>Ingrid Pettersson</Name>
       </Link>
-      {headerMenuItems.map(({ title, href, menuItems, hidden }) => {
+      {headerMenuItems.map(({ title, href, menuItems }) => {
         if (menuItems && menuItems.length > 0) {
           const Component = ({ onClick }: { onClick?: MouseEventHandler<HTMLButtonElement> }) => (
             <MenuButton onClick={onClick}>{title}</MenuButton>
@@ -102,9 +97,9 @@ const Header = ({ projects }: Props) => {
         }
 
         return (
-          <MaybeHidden key={title} hide={hidden}>
+          <div key={title}>
             <MaybeLink href={href}>{title}</MaybeLink>
-          </MaybeHidden>
+          </div>
         );
       })}
     </Wrapper>
