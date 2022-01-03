@@ -1,7 +1,7 @@
 import { ReactElement, useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import { Modal } from "react-responsive-modal";
-import { Control, UseFormRegister, useFormState } from "react-hook-form";
+import { Control } from "react-hook-form";
 import { sortBy } from "lodash/fp";
 import "react-responsive-modal/styles.css";
 
@@ -38,19 +38,7 @@ const ModalWrapper = styled.div`
   }
 `;
 
-type SetAddress = (address: Partial<AddressType> | ((address: Partial<AddressType>) => Partial<AddressType>)) => void;
-
-const useUpdateAddressField = (setAddress: SetAddress, field: keyof AddressType) => {
-  const updateAddressField = useCallback(
-    ({ target }) => setAddress((current) => ({ ...current, [field]: target.value })),
-    [field, setAddress]
-  );
-
-  return updateAddressField;
-};
-
 type Props = {
-  register: UseFormRegister<AddressType>;
   control: Control<AddressType, object>;
 };
 
@@ -68,87 +56,25 @@ const MOBILE_INPUT_ORDER: (keyof AddressType)[] = [
 const orderInputs = (isMobile: boolean, inputs: ReactElement[]) =>
   sortBy((node) => (isMobile ? MOBILE_INPUT_ORDER.indexOf(node?.key as keyof AddressType) : 0), inputs);
 
-const Address = ({ register, control }: Props) => {
+const Address = ({ control }: Props) => {
   const [modalOpen, setModalOpen] = useState(false);
   const openModal = useCallback(() => setModalOpen(true), []);
   const closeModal = useCallback(() => setModalOpen(false), []);
   const isMobile = useIsMobile();
 
-  const { errors, isSubmitted, isSubmitting } = useFormState({ control });
-
   const inputs = useMemo(
     () =>
       orderInputs(isMobile, [
-        <Input
-          key="name"
-          name="name"
-          register={register}
-          errors={errors}
-          isSubmitted={isSubmitted}
-          readOnly={isSubmitting}
-        />,
-        <Input
-          key="addressLine1"
-          name="addressLine1"
-          register={register}
-          errors={errors}
-          isSubmitted={isSubmitted}
-          readOnly={isSubmitting}
-        />,
-        <Input
-          name="email"
-          key="email"
-          register={register}
-          errors={errors}
-          isSubmitted={isSubmitted}
-          readOnly={isSubmitting}
-          type="email"
-        />,
-        <Input
-          name="addressLine2"
-          key="addressLine2"
-          register={register}
-          errors={errors}
-          isSubmitted={isSubmitted}
-          readOnly={isSubmitting}
-          required={false}
-        />,
-        <Input
-          name="state"
-          key="state"
-          register={register}
-          errors={errors}
-          isSubmitted={isSubmitted}
-          readOnly={isSubmitting}
-        />,
-        <Input
-          name="city"
-          key="city"
-          register={register}
-          errors={errors}
-          isSubmitted={isSubmitted}
-          readOnly={isSubmitting}
-        />,
-        <Input
-          name="country"
-          key="country"
-          register={register}
-          errors={errors}
-          isSubmitted={isSubmitted}
-          readOnly
-          onClick={openModal}
-        />,
-        <Input
-          name="postalCode"
-          key="postalCode"
-          register={register}
-          errors={errors}
-          isSubmitted={isSubmitted}
-          readOnly={isSubmitting}
-          type="number"
-        />,
+        <Input key="name" name="name" control={control} />,
+        <Input key="addressLine1" name="addressLine1" control={control} />,
+        <Input name="email" key="email" control={control} type="email" />,
+        <Input name="addressLine2" key="addressLine2" control={control} required={false} />,
+        <Input name="state" key="state" control={control} />,
+        <Input name="city" key="city" control={control} />,
+        <Input name="country" key="country" control={control} readOnly onClick={openModal} />,
+        <Input name="postalCode" key="postalCode" control={control} type="number" />,
       ]),
-    [errors, isMobile, isSubmitted, isSubmitting, openModal, register]
+    [control, isMobile, openModal]
   );
 
   return (

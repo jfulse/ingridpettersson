@@ -1,5 +1,5 @@
 import { HTMLInputTypeAttribute } from "react";
-import { FieldError, UseFormRegister } from "react-hook-form";
+import { Control, useController } from "react-hook-form";
 import styled from "styled-components";
 // @ts-ignore
 import isEmail from "is-email";
@@ -21,11 +21,9 @@ type Props = {
   name: keyof AddressType;
   readOnly?: boolean;
   required?: boolean;
-  errors: { [name: string]: FieldError | undefined };
-  isSubmitted: boolean;
   type?: HTMLInputTypeAttribute;
   onClick?: () => void;
-  register: UseFormRegister<AddressType>;
+  control: Control<AddressType, object>;
 };
 
 const getValidator = (type: HTMLInputTypeAttribute): ((value?: string) => boolean) | undefined => {
@@ -37,30 +35,32 @@ const getValidator = (type: HTMLInputTypeAttribute): ((value?: string) => boolea
   }
 };
 
-const Input = ({ name, register, errors, isSubmitted, readOnly, onClick, required = true, type = "text" }: Props) => {
+const Input = ({ name, control, readOnly, onClick, required = true, type = "text" }: Props) => {
   const inputId = `checkout-input-${name}`;
-  const hasError = isSubmitted && Boolean(errors?.[name]);
 
   const {
-    name: fieldName,
-    onBlur,
-    onChange,
-    ref,
-  } = register(name, {
-    required,
-    validate: getValidator(type),
+    field: { onChange, onBlur, name: fieldName, value, ref },
+    fieldState: { invalid },
+    formState: { isSubmitted, isSubmitting },
+  } = useController({
+    name,
+    control,
+    rules: { required, validate: getValidator(type) },
   });
+
+  const hasError = isSubmitted && invalid;
 
   return (
     <>
       <label htmlFor={inputId}>{camelToName(name)}</label>
       <StyledInput
         id={inputId}
+        value={value}
         name={fieldName}
         onChange={onChange}
         type={type}
         onBlur={onBlur}
-        readOnly={readOnly}
+        readOnly={readOnly || isSubmitting}
         hasError={hasError}
         onClick={onClick}
         ref={ref}

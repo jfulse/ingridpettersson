@@ -1,8 +1,8 @@
-import { useCallback /*, useEffect*/, useMemo, useRef, useState } from "react";
+import { useCallback /*, useEffect*/, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { useForm } from "react-hook-form";
-import { debounce, isEmpty, prop } from "lodash/fp";
+import { debounce, intersection, isEqual, prop } from "lodash/fp";
 // import { StripeElements } from "@stripe/stripe-js";
 
 import useShoppingCart from "../hooks/useShoppingCart";
@@ -27,8 +27,6 @@ const CardWrapper = styled.div`
     height: 3rem !important;
   }
 `;
-
-console.log("✅✅✅", CardWrapper.toString());
 
 const CARD_ELEMENT_OPTIONS = {
   style: { base: { fontSize: "1.5rem", lineHeight: "2rem" } },
@@ -84,6 +82,11 @@ const DEFAULT_ADDRESS_VALUES: AddressType = {
   postalCode: "",
 };
 
+const REQUIRED_FIELDS: (keyof AddressType)[] = ["name", "addressLine1", "email", "state", "city", "postalCode"];
+
+const filledRequiredFields = (dirtyFields: object) =>
+  isEqual(intersection(Object.keys(dirtyFields), REQUIRED_FIELDS), REQUIRED_FIELDS);
+
 // const useCardComplete = (elements: StripeElements | null) => {
 //   const card = elements?.getElement(CardElement);
 //   const [complete, setComplete] = useState(false);
@@ -107,21 +110,9 @@ const Checkout = (props: Props) => {
   const { nItems, shoppingCart, removeFromCart, onSuccess } = useShoppingCart();
   const stripe = useStripe();
   const elements = useElements();
-
   const totalPrice = shoppingCart.items.reduce((total, { price }) => total + price, 0);
 
-  const {
-    control,
-    formState: { errors, isSubmitting, isDirty },
-    handleSubmit: submitWrapper,
-    register,
-    watch,
-  } = useForm({ defaultValues: DEFAULT_ADDRESS_VALUES, mode: "onChange" });
-  const ready = isDirty && isEmpty(errors) && !isSubmitting && nItems > 0;
-
   const getClientSecret = useCallback(async ({ email, ...address }, items, total) => {
-    setError("");
-
     const itemIds = items.map(prop("_id"));
     const headers = { "Content-Type": "application/json" };
     const data = JSON.stringify({
@@ -154,8 +145,19 @@ const Checkout = (props: Props) => {
 
   const debouncedGetClientSecret = useMemo(() => debounce(1000, getClientSecret), [getClientSecret]);
 
-  // FIXME: Does not run when auto-filling from dashlane
-  watch((values) => ready && debouncedGetClientSecret(values, shoppingCart?.items, totalPrice));
+  const {
+    control,
+    formState: { isSubmitting, dirtyFields },
+    getValues,
+    handleSubmit: submitWrapper,
+  } = useForm({ defaultValues: DEFAULT_ADDRESS_VALUES, mode: "onChange" });
+
+  const ready = !isSubmitting && nItems > 0 && filledRequiredFields(dirtyFields);
+
+  useEffect(() => {
+    if (!ready) return;
+    debouncedGetClientSecret(getValues(), shoppingCart?.items, totalPrice);
+  }, [debouncedGetClientSecret, getValues, ready, shoppingCart?.items, totalPrice]);
 
   const submit = useCallback(async () => {
     try {
@@ -239,7 +241,7 @@ const Checkout = (props: Props) => {
       <Wrapper>
         <form onSubmit={handleSubmit}>
           <h4>Details</h4>
-          <Address register={register} control={control} />
+          <Address control={control} />
           <h4>Bank card</h4>
           <CardWrapper>
             <CardElement options={CARD_ELEMENT_OPTIONS} />
