@@ -1,11 +1,13 @@
-import { useCallback, useEffect, useState } from "react";
+import { ReactElement, useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import { Modal } from "react-responsive-modal";
 import { Control, UseFormRegister, useFormState } from "react-hook-form";
+import { sortBy } from "lodash/fp";
 import "react-responsive-modal/styles.css";
 
 import { Address as AddressType } from "../types";
 import Input from "./Input";
+import useIsMobile from "../hooks/useIsMobile";
 
 // FIXME: Ordering in CSS messes with tabbing apparently
 const Wrapper = styled.div`
@@ -23,43 +25,6 @@ const Wrapper = styled.div`
 
     label {
       margin-top: 0.5rem;
-    }
-
-    input,
-    label {
-      order: 7;
-    }
-
-    & > label:nth-child(1) {
-      order: 1;
-    }
-
-    & > input:nth-child(2) {
-      order: 2;
-    }
-
-    & > label:nth-child(3) {
-      order: 5;
-    }
-
-    & > input:nth-child(4) {
-      order: 6;
-    }
-
-    & > label:nth-child(5) {
-      order: 3;
-    }
-
-    & > input:nth-child(6) {
-      order: 4;
-    }
-
-    & > label:nth-child(13) {
-      order: 10;
-    }
-
-    & > input:nth-child(14) {
-      order: 10;
     }
   }
 `;
@@ -89,69 +54,106 @@ type Props = {
   control: Control<AddressType, object>;
 };
 
+const MOBILE_INPUT_ORDER: (keyof AddressType)[] = [
+  "name",
+  "email",
+  "addressLine1",
+  "addressLine2",
+  "city",
+  "postalCode",
+  "state",
+  "country",
+];
+
+const orderInputs = (isMobile: boolean, inputs: ReactElement[]) =>
+  sortBy((node) => (isMobile ? MOBILE_INPUT_ORDER.indexOf(node?.key as keyof AddressType) : 0), inputs);
+
 const Address = ({ register, control }: Props) => {
   const [modalOpen, setModalOpen] = useState(false);
   const openModal = useCallback(() => setModalOpen(true), []);
   const closeModal = useCallback(() => setModalOpen(false), []);
+  const isMobile = useIsMobile();
 
   const { errors, isSubmitted, isSubmitting } = useFormState({ control });
 
+  const inputs = useMemo(
+    () =>
+      orderInputs(isMobile, [
+        <Input
+          key="name"
+          name="name"
+          register={register}
+          errors={errors}
+          isSubmitted={isSubmitted}
+          readOnly={isSubmitting}
+        />,
+        <Input
+          key="addressLine1"
+          name="addressLine1"
+          register={register}
+          errors={errors}
+          isSubmitted={isSubmitted}
+          readOnly={isSubmitting}
+        />,
+        <Input
+          name="email"
+          key="email"
+          register={register}
+          errors={errors}
+          isSubmitted={isSubmitted}
+          readOnly={isSubmitting}
+          type="email"
+        />,
+        <Input
+          name="addressLine2"
+          key="addressLine2"
+          register={register}
+          errors={errors}
+          isSubmitted={isSubmitted}
+          readOnly={isSubmitting}
+          required={false}
+        />,
+        <Input
+          name="state"
+          key="state"
+          register={register}
+          errors={errors}
+          isSubmitted={isSubmitted}
+          readOnly={isSubmitting}
+        />,
+        <Input
+          name="city"
+          key="city"
+          register={register}
+          errors={errors}
+          isSubmitted={isSubmitted}
+          readOnly={isSubmitting}
+        />,
+        <Input
+          name="country"
+          key="country"
+          register={register}
+          errors={errors}
+          isSubmitted={isSubmitted}
+          readOnly
+          onClick={openModal}
+        />,
+        <Input
+          name="postalCode"
+          key="postalCode"
+          register={register}
+          errors={errors}
+          isSubmitted={isSubmitted}
+          readOnly={isSubmitting}
+          type="number"
+        />,
+      ]),
+    [errors, isMobile, isSubmitted, isSubmitting, openModal, register]
+  );
+
   return (
     <Wrapper>
-      <Input name="name" register={register} errors={errors} isSubmitted={isSubmitted} readOnly={isSubmitting} />
-      <Input
-        name="addressLine1"
-        register={register}
-        errors={errors}
-        isSubmitted={isSubmitted}
-        readOnly={isSubmitting}
-      />
-      <Input
-        name="email"
-        register={register}
-        errors={errors}
-        isSubmitted={isSubmitted}
-        readOnly={isSubmitting}
-        type="email"
-      />
-      <Input
-        name="addressLine2"
-        register={register}
-        errors={errors}
-        isSubmitted={isSubmitted}
-        readOnly={isSubmitting}
-        required={false}
-      />
-      <Input name="state" register={register} errors={errors} isSubmitted={isSubmitted} readOnly={isSubmitting} />
-      <Input name="city" register={register} errors={errors} isSubmitted={isSubmitted} readOnly={isSubmitting} />
-      <Input
-        name="country"
-        register={register}
-        errors={errors}
-        isSubmitted={isSubmitted}
-        readOnly
-        onClick={openModal}
-      />
-      <Input
-        name="postalCode"
-        register={register}
-        errors={errors}
-        isSubmitted={isSubmitted}
-        readOnly={isSubmitting}
-        type="number"
-      />
-      {/*<Input label="addressLine1" value={address.addressLine1 ?? ""} onChange={updateAddressLine1} />
-      <Input label="email" value={email ?? ""} onChange={updateEmail} type="email" />
-      <Input label="addressLine2" value={address.addressLine2 ?? ""} onChange={updateAddressLine2} />
-      <Input label="state or province" value={address.state ?? ""} onChange={updateState} />
-      <Input label="city" value={address.city ?? ""} onChange={updateCity} />
-      <Input label="country" value="Norway" readOnly onClick={openModal} />
-      <Input
-        label="postalCode"
-        value={address.postalCode?.toString() ?? ""}
-        onChange={updatePostalCode}
-        type="number"
-  />*/}
+      {inputs}
       <Modal open={modalOpen} onClose={closeModal} center>
         <ModalWrapper>
           For shipping outside Norway send a mail to{" "}
