@@ -22,9 +22,15 @@ import useIsMobile from "../hooks/useIsMobile";
 
 export const getStaticProps = makeGetStaticProps();
 
+const CardWrapper = styled.div`
+  iframe {
+    height: 3rem !important;
+  }
+`;
+
+console.log("✅✅✅", CardWrapper.toString());
+
 const CARD_ELEMENT_OPTIONS = {
-  classes: { base: "" }, // TODO
-  // classes: { base: styles.cardWrapper },
   style: { base: { fontSize: "1.5rem", lineHeight: "2rem" } },
   hideIcon: true,
   hidePostalCode: true,
@@ -66,8 +72,6 @@ const EmptyStateWrapper = styled.div`
     text-align: center;
   }
 `;
-
-const CardWrapper = styled.div``;
 
 const DEFAULT_ADDRESS_VALUES: AddressType = {
   name: "",
@@ -154,37 +158,38 @@ const Checkout = (props: Props) => {
   watch((values) => ready && debouncedGetClientSecret(values, shoppingCart?.items, totalPrice));
 
   const submit = useCallback(async () => {
-    setError("");
-    setProcessing(true);
-    const card = elements?.getElement(CardElement);
-
-    if (!card) {
-      setError("Something went wrong");
-      setProcessing(false);
-      return;
-    }
-
-    const data = {
-      payment_method: {
-        card,
-        billing_details: {
-          name: "test",
-        },
-      },
-    };
-
-    const payload = await stripe?.confirmCardPayment(clientSecret, data);
-
-    if (payload?.error) {
-      setError(payload.error.message);
-      setProcessing(false);
-    } else if (payload?.paymentIntent) {
+    try {
       setError("");
-      setProcessing(false);
-      onSuccess(payload?.paymentIntent);
-      // push('/checkout/success'); TODO
-    } else {
-      setError("Something went wrong");
+      setProcessing(true);
+      const card = elements?.getElement(CardElement);
+
+      if (!card) {
+        setError("Something went wrong");
+        setProcessing(false);
+        return;
+      }
+
+      const data = {
+        payment_method: {
+          card,
+          billing_details: {
+            name: "test",
+          },
+        },
+      };
+
+      const payload = await stripe?.confirmCardPayment(clientSecret, data);
+
+      if (payload?.error) {
+        setError(payload.error.message);
+      } else if (payload?.paymentIntent) {
+        setError("");
+        onSuccess(payload?.paymentIntent);
+        // push('/checkout/success'); TODO
+      } else {
+        setError("Something went wrong");
+      }
+    } finally {
       setProcessing(false);
     }
   }, [clientSecret, elements, onSuccess, stripe]);
