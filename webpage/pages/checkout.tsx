@@ -1,4 +1,4 @@
-import { useCallback /*, useEffect*/, useMemo, useState } from "react";
+import { useCallback /*, useEffect*/, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { useForm } from "react-hook-form";
@@ -96,7 +96,9 @@ const Checkout = (props: Props) => {
   const [error, setError] = useState<string | undefined>(undefined);
   const [processing, setProcessing] = useState(false);
   const [clientSecret, setClientSecret] = useState("");
+
   const isMobile = useIsMobile();
+  const carouselRef = useRef(null);
 
   const { nItems, shoppingCart, removeFromCart, onSuccess } = useShoppingCart();
   const stripe = useStripe();
@@ -173,7 +175,6 @@ const Checkout = (props: Props) => {
 
     const payload = await stripe?.confirmCardPayment(clientSecret, data);
 
-    // TODO: Display card errors on card input and focus?
     if (payload?.error) {
       setError(payload.error.message);
       setProcessing(false);
@@ -190,13 +191,6 @@ const Checkout = (props: Props) => {
 
   const handleSubmit = useMemo(() => submitWrapper(submit), [submit, submitWrapper]);
 
-  // const images = useMemo(
-  //   () =>
-  //     filterWithAsset(piece?.images ?? EMPTY_ARRAY).map(({ asset }) => ({ original: asset.url, thumbnail: asset.url })),
-  //   [piece]
-  // );
-
-  console.log("🤬 shoppingCart.items", shoppingCart.items);
   const images = useMemo(
     () =>
       shoppingCart?.items
@@ -207,6 +201,18 @@ const Checkout = (props: Props) => {
         }),
     [shoppingCart?.items]
   );
+
+  const handleRemove = useCallback(() => {
+    // @ts-ignore
+    const currentIndex = carouselRef?.current?.getCurrentIndex?.();
+
+    if (typeof currentIndex !== "number") {
+      console.error("Could not get index of item for removal");
+      return;
+    }
+
+    removeFromCart(shoppingCart?.items?.[currentIndex]);
+  }, [removeFromCart, shoppingCart?.items]);
 
   if (!stripe || !elements) return null;
 
@@ -248,19 +254,12 @@ const Checkout = (props: Props) => {
             images={images}
             thumbnailsWidthPx={THUMBNAILS_WIDTH_PX}
             showThumbnails={!isMobile}
-          />
+            // @ts-ignore
+            ref={carouselRef}
+          >
+            <Button onClick={handleRemove}>Remove</Button>
+          </Carousel>
         </ItemsWrapper>
-        {/*<Carousel infiniteLoop dynamicHeight transitionTime={600} showStatus={false} showIndicators={false}>
-            {shoppingCart.items.map((item) => (
-              <div key={item.id}>
-                <div className={styles.itemHeadline}>
-                  {item.title}
-                  <Button onClick={() => removeFromCart(item)}>remove</Button>
-                </div>
-                {item.images?.length > 0 && <img src={item.images[0].url} alt={item.title} />}
-              </div>
-            ))}
-            </Carousel>*/}
       </Wrapper>
     </Layout>
   );

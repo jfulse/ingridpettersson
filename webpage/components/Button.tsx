@@ -2,6 +2,8 @@ import styled, { css } from "styled-components";
 
 import { getColors, Theme } from "../style/theme";
 
+// TODO: Improve styling
+
 type ButtonMode = "default" | "callToAction";
 
 type Props = { mode?: ButtonMode; color?: string; backgroundColor?: string; theme: Theme };
