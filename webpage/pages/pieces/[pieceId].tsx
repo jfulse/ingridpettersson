@@ -2,7 +2,6 @@ import { useMemo } from "react";
 import { GetStaticPathsResult } from "next";
 import styled from "styled-components";
 import { compose, filter, get, minBy } from "lodash/fp";
-import ImageGallery from "react-image-gallery";
 import { useMeasure } from "react-use";
 // @ts-ignore
 import BlockContent from "@sanity/block-content-to-react";
@@ -16,6 +15,7 @@ import getPieceIds from "../../queries/getPieceIds";
 import { EMPTY_ARRAY } from "../../constants";
 import AddToCart from "../../components/AddToCart";
 import Layout from "../../components/Layout";
+import Carousel from "../../components/Carousel";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 import useIsMobile from "../../hooks/useIsMobile";
 import getContrastingColors from "../../utils/getContrastingColors";
@@ -102,24 +102,6 @@ const Info = styled.div`
 
 const THUMBNAILS_WIDTH_PX = 100;
 
-const CarouselWrapper = styled.div<{ thumbnailsWidthPx: number; width?: number }>`
-  width: ${({ width }) => `${width}px`};
-
-  & > div:first-child {
-    width: 100%;
-
-    & > div:first-child {
-      width: 100%;
-      display: flex;
-      flex-direction: row;
-
-      & > div:first-child {
-        ${({ thumbnailsWidthPx }) => `width: calc(100% - ${thumbnailsWidthPx}px)`};
-      }
-    }
-  }
-`;
-
 const filterWithAsset = filter(get("asset"));
 
 const dimensionsPath = "asset.metadata.dimensions";
@@ -155,15 +137,7 @@ const Piece = (props: Props<Data>) => {
   return (
     <Layout projects={props.projects}>
       <Wrapper ref={ref}>
-        <CarouselWrapper width={width} thumbnailsWidthPx={thumbnailsWidthPx}>
-          <ImageGallery
-            items={images}
-            showPlayButton={false}
-            showFullscreenButton={false}
-            thumbnailPosition="right"
-            showThumbnails={images.length > 1}
-          />
-        </CarouselWrapper>
+        <Carousel width={width} thumbnailsWidthPx={thumbnailsWidthPx} images={images} />
         <InfoWrapper background={background} color={color}>
           <Title color={color}>{piece?.title}</Title>
           <Info>

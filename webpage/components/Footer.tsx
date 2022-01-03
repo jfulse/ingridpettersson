@@ -16,6 +16,7 @@ const Wrapper = styled.div`
   background-color: ${(props) => getColors(props, "background")};
   gap: 0.5rem;
   font-size: 0.8rem;
+  z-index: 5; // Win over carousel arrows
 
   a {
     text-decoration: none;

@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback /*, useEffect*/, useMemo, useState } from "react";
 import styled from "styled-components";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { useForm } from "react-hook-form";
 import { debounce, isEmpty, prop } from "lodash/fp";
+// import { StripeElements } from "@stripe/stripe-js";
 
 import useShoppingCart from "../hooks/useShoppingCart";
 import ErrorComponent from "../components/ErrorComponent";
@@ -12,9 +13,10 @@ import isServer from "../utils/isServer";
 import Button from "../components/Button";
 import Layout from "../components/Layout";
 import Address from "../components/Address";
+import Carousel from "../components/Carousel";
 import { Address as AddressType } from "../types";
-import { StripeElements } from "@stripe/stripe-js";
 import Link from "../components/Link";
+import useIsMobile from "../hooks/useIsMobile";
 
 // Test card: 4000002760003184
 
@@ -31,7 +33,16 @@ const CARD_ELEMENT_OPTIONS = {
 const Wrapper = styled.div`
   /* padding: ${HEADER_HEIGHT_REM}rem 2rem 2rem; */
   padding: 0 1.5rem;
+  overflow-y: auto;
 `;
+
+const ItemsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const THUMBNAILS_WIDTH_PX = 100;
 
 const EmptyStateWrapper = styled.div`
   display: flex;
@@ -85,6 +96,7 @@ const Checkout = (props: Props) => {
   const [error, setError] = useState<string | undefined>(undefined);
   const [processing, setProcessing] = useState(false);
   const [clientSecret, setClientSecret] = useState("");
+  const isMobile = useIsMobile();
 
   const { nItems, shoppingCart, removeFromCart, onSuccess } = useShoppingCart();
   const stripe = useStripe();
@@ -178,6 +190,24 @@ const Checkout = (props: Props) => {
 
   const handleSubmit = useMemo(() => submitWrapper(submit), [submit, submitWrapper]);
 
+  // const images = useMemo(
+  //   () =>
+  //     filterWithAsset(piece?.images ?? EMPTY_ARRAY).map(({ asset }) => ({ original: asset.url, thumbnail: asset.url })),
+  //   [piece]
+  // );
+
+  console.log("🤬 shoppingCart.items", shoppingCart.items);
+  const images = useMemo(
+    () =>
+      shoppingCart?.items
+        ?.filter?.(({ piece }) => (piece?.images?.length ?? 0) > 0)
+        .map(({ piece }) => {
+          const imageUrl = piece!.images![0]!.asset!.url;
+          return { original: imageUrl, thumbnail: imageUrl };
+        }),
+    [shoppingCart?.items]
+  );
+
   if (!stripe || !elements) return null;
 
   if (nItems < 1) {
@@ -203,17 +233,24 @@ const Checkout = (props: Props) => {
           <CardWrapper>
             <CardElement options={CARD_ELEMENT_OPTIONS} />
           </CardWrapper>
+          <ErrorComponent error={error} />
           {stripe && (
             <Button type="submit" disabled={processing}>
               {processing ? "Checking out..." : "Checkout"}
             </Button>
           )}
         </form>
-        <ErrorComponent error={error} />
         <h4>Total price: {totalPrice}NOK</h4>
-        <h4>Items in cart ({nItems})</h4>
-        {/*<div className={styles.carouselWrapper}> TODO
-          <Carousel infiniteLoop dynamicHeight transitionTime={600} showStatus={false} showIndicators={false}>
+        <ItemsWrapper>
+          <h4>Items in cart ({nItems})</h4>
+          <Carousel
+            width={isMobile ? "full" : 500}
+            images={images}
+            thumbnailsWidthPx={THUMBNAILS_WIDTH_PX}
+            showThumbnails={!isMobile}
+          />
+        </ItemsWrapper>
+        {/*<Carousel infiniteLoop dynamicHeight transitionTime={600} showStatus={false} showIndicators={false}>
             {shoppingCart.items.map((item) => (
               <div key={item.id}>
                 <div className={styles.itemHeadline}>
@@ -223,8 +260,7 @@ const Checkout = (props: Props) => {
                 {item.images?.length > 0 && <img src={item.images[0].url} alt={item.title} />}
               </div>
             ))}
-          </Carousel>
-            </div>*/}
+            </Carousel>*/}
       </Wrapper>
     </Layout>
   );
