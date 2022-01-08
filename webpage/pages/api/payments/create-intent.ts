@@ -80,7 +80,7 @@ export default async (req: NextApiRequest, res: NextApiResponse<{ clientSecret: 
 
   const paymentIntent = await stripe.paymentIntents.create({
     amount,
-    currency: "nok", // TODO
+    currency: "nok",
     payment_method_types: ["card"],
     receipt_email: email,
     description: "test description",

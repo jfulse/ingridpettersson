@@ -23,9 +23,6 @@ import getContrastingColors from "../../utils/getContrastingColors";
 // TODO: Use lower quality image for color stuff
 // TODO: Only use color stuff on illustrations?
 
-// TODO: Instead of useMeasure, use avail height and subtract header + footer,
-// to make it stable on mobile?
-
 export const getStaticPaths = async (): Promise<GetStaticPathsResult> => {
   const pieceIds = await getPieceIds();
   const paths = pieceIds.map((id) => `/pieces/${id}`);
