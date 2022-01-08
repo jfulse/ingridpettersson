@@ -1,6 +1,21 @@
+import { ReactNode, forwardRef, MouseEventHandler } from "react";
 import styled from "styled-components";
 import ImageGallery from "react-image-gallery";
-import { ReactNode, forwardRef } from "react";
+import { BsCaretLeftSquareFill, BsCaretRightSquareFill } from "react-icons/bs";
+
+import NavButton from "./NavButton";
+
+const renderLeftNav = (onClick: MouseEventHandler<HTMLElement>, disabled: boolean): ReactNode => (
+  <NavButton onClick={onClick} disabled={disabled}>
+    <BsCaretLeftSquareFill />
+  </NavButton>
+);
+
+const renderRightNav = (onClick: MouseEventHandler<HTMLElement>, disabled: boolean): ReactNode => (
+  <NavButton onClick={onClick} disabled={disabled} right>
+    <BsCaretRightSquareFill />
+  </NavButton>
+);
 
 const CarouselWrapper = styled.div<{ thumbnailsWidthPx: number; width?: number | "full"; showThumbnails?: boolean }>`
   width: ${({ width }) => (width === "full" ? "100%" : `${width}px`)};
@@ -24,8 +39,8 @@ const CarouselWrapper = styled.div<{ thumbnailsWidthPx: number; width?: number |
 
 const ChildrenWrapper = styled.div`
   position: absolute;
-  top: 1.5rem;
-  left: 1.5rem;
+  top: 1rem;
+  left: 1rem;
 
   @media only screen and (max-width: 480px) {
     top: 1rem;
@@ -50,6 +65,8 @@ const Carousel = forwardRef(
         showFullscreenButton={false}
         thumbnailPosition="right"
         showThumbnails={showThumbnails && images.length > 1}
+        renderLeftNav={renderLeftNav}
+        renderRightNav={renderRightNav}
         // @ts-ignore
         ref={ref}
       />
