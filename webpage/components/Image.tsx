@@ -31,12 +31,25 @@ const getDimensions = ({ aspectRatio, height, width, gap }: ImageWrapperProps) =
   `;
 };
 
+const clickableMixin = css`
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.6;
+    transition: opacity 0.3s ease-out;
+
+    @media only screen and (max-width: 480px) {
+      opacity: unset;
+    }
+  }
+`;
+
 const ImageWrapper = styled.div<ImageWrapperProps & { clickable: boolean }>`
   display: inline-block;
   margin: ${({ gap }) => `0 ${gap} 0 0`};
   position: relative;
-  ${({ clickable }) => clickable && "cursor: pointer"};
-
+  transition: opacity 0.3s ease-in;
+  ${({ clickable }) => clickable && clickableMixin}
   ${getDimensions}
 
   &:last-child {
