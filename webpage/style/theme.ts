@@ -1,6 +1,8 @@
+import { brightColor, darkColor } from "./global";
+
 type Section = "base";
 
-type Element = "background" | "backgroundEmphasized" | "line" | "callToAction" | "selected";
+type Element = "background" | "backgroundEmphasized" | "line" | "selected" | "bright" | "dark";
 
 export type Theme = {
   colors: {
@@ -13,11 +15,12 @@ export type Theme = {
 const theme: Theme = {
   colors: {
     base: {
-      background: "#fdfdfd",
+      background: brightColor,
       backgroundEmphasized: "#f0f0f0",
       line: "#b9b9b9",
-      callToAction: "#e1e3ce",
       selected: "#60f74b",
+      bright: brightColor,
+      dark: darkColor,
     },
   },
 };

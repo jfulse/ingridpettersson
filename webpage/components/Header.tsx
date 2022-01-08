@@ -2,6 +2,7 @@ import { MouseEventHandler, useMemo } from "react";
 import styled from "styled-components";
 
 import { getColors } from "../style/theme";
+import { hoverButton } from "../style/utils";
 import slugify from "../utils/slugify";
 import useIsMobile from "../hooks/useIsMobile";
 import HamburgerMenu from "./HamburgerMenu";
@@ -38,6 +39,7 @@ const Name = styled.h1`
   padding: 1rem 1rem 1rem 1.5rem;
   font-size: 1rem;
   cursor: pointer;
+  ${hoverButton}
 `;
 
 const MenuButton = styled.button`
@@ -47,6 +49,7 @@ const MenuButton = styled.button`
   text-transform: uppercase;
   letter-spacing: 1px;
   font-weight: 500;
+  ${hoverButton}
 `;
 
 const getHeaderMenuItems = (projects: ResolvedProject[], nItems: number): MenuItem[] => [

@@ -20,7 +20,7 @@ const Wrapper = styled.div`
 
   a {
     text-decoration: none;
-    color: initial;
+    color: ${(props) => getColors(props, "dark")};
 
     &:hover {
       opacity: 0.6;

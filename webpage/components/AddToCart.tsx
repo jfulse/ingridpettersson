@@ -40,12 +40,12 @@ const AddToCart = ({ product, color, backgroundColor }: Props) => {
   return (
     <Wrapper>
       {!inShoppinCart && (
-        <Button onClick={onClickAddToCart} mode="callToAction" color={color} backgroundColor={backgroundColor}>
+        <Button onClick={onClickAddToCart} color={color} backgroundColor={backgroundColor}>
           Add to cart
         </Button>
       )}
       {Boolean(inShoppinCart) && (
-        <Button as="a" href="/checkout" mode="callToAction" color={color} backgroundColor={backgroundColor}>
+        <Button as="a" href="/checkout" color={color} backgroundColor={backgroundColor}>
           Checkout
         </Button>
       )}

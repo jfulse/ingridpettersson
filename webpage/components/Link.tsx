@@ -3,13 +3,14 @@ import styled from "styled-components";
 import { useRouter } from "next/router";
 import { ReactNode } from "react";
 
+import { hoverButton } from "../style/utils";
 import { getColors } from "../style/theme";
 
 const Wrapper = styled.span<{ isActive: boolean }>`
   a {
-    /* TODO: Active color */
-    color: ${({ isActive, ...props }) => (isActive ? getColors(props, "selected") : "initial")};
+    color: ${({ isActive, ...props }) => (isActive ? getColors(props, "selected") : getColors(props, "dark"))};
     text-decoration: none;
+    ${hoverButton}
   }
 `;
 

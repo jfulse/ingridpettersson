@@ -22,7 +22,6 @@ const Menu = styled.ul<{ open: boolean }>`
   padding: 0;
   display: flex;
   flex-direction: column;
-  border: 1px solid ${(props) => getColors(props, "line")};
   font-size: 1rem;
   border-radius: 0.5rem;
   transform-origin: top;

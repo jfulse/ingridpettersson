@@ -1,6 +1,7 @@
 import { maxBy, mean, minBy, prop, range } from "lodash/fp";
 import { RGBA } from "image-palette";
 
+import { brightColor, darkColor } from "../style/global";
 import { Color } from "../types";
 
 const minContrast = 4;
@@ -47,17 +48,13 @@ const hasN =
 const hasTwo = hasN(2);
 const hasOne = hasN(1);
 
-// TODO: From theme?
-const DEFAULT_DARK_COLOR = "rgba(0, 0, 0, 255)";
-const DEFAULT_BRIGHT_COLOR = "rgba(255, 255, 255, 255)";
-
 const chooseColors = (contrastingColors?: Color[]): { color: string; background: string } => {
-  if (!contrastingColors) return { color: DEFAULT_DARK_COLOR, background: DEFAULT_BRIGHT_COLOR };
+  if (!contrastingColors) return { color: darkColor, background: brightColor };
   const colors = contrastingColors.map(rgbaToColorString);
 
   if (contrastingColors.length === 1) {
-    if (contrastingColors[0].luma < 0.5) return { color: DEFAULT_BRIGHT_COLOR, background: colors[0] };
-    return { color: DEFAULT_DARK_COLOR, background: colors[0] };
+    if (contrastingColors[0].luma < 0.5) return { color: brightColor, background: colors[0] };
+    return { color: darkColor, background: colors[0] };
   }
 
   return { color: colors[1], background: colors[0] };

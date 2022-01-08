@@ -5,6 +5,9 @@ const fontSize = css`
   font-size: 18px;
 `;
 
+export const darkColor = "#171717";
+export const brightColor = "#fdfdfd";
+
 const GlobalStyle = createGlobalStyle<{ theme: Theme }>`
   @font-face {
     font-family: "PTSans";
@@ -44,6 +47,7 @@ const GlobalStyle = createGlobalStyle<{ theme: Theme }>`
     background-color: ${(props) => getColors(props, "background")};
     height: 100vh;
     width: 100vw;
+    color: ${darkColor};
     
     * {
       box-sizing: border-box;
@@ -59,6 +63,7 @@ const GlobalStyle = createGlobalStyle<{ theme: Theme }>`
   input, select, button {
     ${fontSize}
     font-family: PTSans;
+    color: ${darkColor};
   }
 `;
 

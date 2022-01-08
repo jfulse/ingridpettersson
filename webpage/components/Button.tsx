@@ -1,17 +1,18 @@
 import styled, { css } from "styled-components";
 
 import { getColors, Theme } from "../style/theme";
+import { hoverButton } from "../style/utils";
 
-// TODO: Improve styling
+type Props = { color?: string; backgroundColor?: string; theme: Theme };
 
-type ButtonMode = "default" | "callToAction";
-
-type Props = { mode?: ButtonMode; color?: string; backgroundColor?: string; theme: Theme };
-
-const getBackgroundColor = ({ backgroundColor, mode = "default", ...props }: Props) => {
+const getBackgroundColor = ({ backgroundColor, ...props }: Props) => {
   if (backgroundColor) return backgroundColor;
-  if (mode === "callToAction") return getColors(props, "callToAction");
-  return getColors(props, "backgroundEmphasized");
+  return getColors(props, "dark");
+};
+
+const getColor = ({ color, ...props }: Props) => {
+  if (color) return color;
+  return getColors(props, "bright");
 };
 
 export const buttonMixin = css<Props>`
@@ -20,23 +21,11 @@ export const buttonMixin = css<Props>`
   border: 1px solid gray;
   border-radius: 0.25rem;
   cursor: pointer;
+  color: ${getColor};
+  border-color: ${getColor};
   background-color: ${getBackgroundColor};
   text-decoration: none;
-
-  ${({ color }) =>
-    color &&
-    `
-    color: ${color};
-    border-color: ${color};
-  `}
-
-  &:hover {
-    opacity: 0.6;
-
-    @media only screen and (max-width: 480px) {
-      opacity: unset;
-    }
-  }
+  ${hoverButton}
 
   &:disabled {
     opacity: 1;
