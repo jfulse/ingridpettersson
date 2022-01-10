@@ -52,12 +52,12 @@ export default async (req: NextApiRequest, res: NextApiResponse<{ clientSecret: 
   const { itemIds, email, address, total } = req.body;
   const {
     name,
-    addressLine1: line1,
-    addressLine2: line2,
+    line1,
+    line2,
     country,
     city,
     state,
-    postalCode: postal_code, // eslint-disable-line camelcase
+    postal_code, // eslint-disable-line camelcase
   } = address;
 
   let invalid = false;
@@ -78,26 +78,25 @@ export default async (req: NextApiRequest, res: NextApiResponse<{ clientSecret: 
     res.status(403).send("Something went wrong");
   }
 
+  const details = {
+    name,
+    address: {
+      city,
+      country,
+      line1,
+      line2,
+      postal_code,
+      state,
+    },
+  };
+
   const paymentIntent = await stripe.paymentIntents.create({
-    amount,
+    amount: amount * 100, // Specified in cents
     currency: "nok",
     payment_method_types: ["card"],
     receipt_email: email,
-    description: "test description",
-    // payment_method, TODO: https://stripe.com/docs/api/payment_intents/create#create_payment_intent-payment_method,
-    statement_descriptor: "statement description",
-    statement_descriptor_suffix: "suffix",
-    shipping: {
-      name,
-      address: {
-        city,
-        country,
-        line1,
-        line2,
-        postal_code,
-        state,
-      },
-    },
+    description: "Purchase from ingridpettersson.com",
+    shipping: details,
   });
 
   if (!paymentIntent.client_secret) {

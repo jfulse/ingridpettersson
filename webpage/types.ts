@@ -69,5 +69,5 @@ export type Address = {
   city: string;
   postalCode: string;
   state: string;
-  country: string;
+  country: "Norway";
 };

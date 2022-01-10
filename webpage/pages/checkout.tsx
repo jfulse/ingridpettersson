@@ -1,9 +1,8 @@
-import { useCallback /*, useEffect*/, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { debounce, intersection, isEqual, prop } from "lodash/fp";
-// import { StripeElements } from "@stripe/stripe-js";
 
 import useShoppingCart from "../hooks/useShoppingCart";
 import ErrorComponent from "../components/ErrorComponent";
@@ -84,20 +83,23 @@ const DEFAULT_ADDRESS_VALUES: AddressType = {
 
 const REQUIRED_FIELDS: (keyof AddressType)[] = ["name", "addressLine1", "email", "state", "city", "postalCode"];
 
+const GENERIC_ERROR = "Something went wrong";
+
 const filledRequiredFields = (dirtyFields: object) =>
   isEqual(intersection(Object.keys(dirtyFields), REQUIRED_FIELDS), REQUIRED_FIELDS);
 
-// const useCardComplete = (elements: StripeElements | null) => {
-//   const card = elements?.getElement(CardElement);
-//   const [complete, setComplete] = useState(false);
+const getCountryCode = (country?: "Norway") => {
+  if (country !== "Norway") throw new Error(`Unknown country ${country}`);
+  return "no";
+};
 
-//   useEffect(() => {
-//     if (!card) return;
-//     card.on("change", (cardState) => setComplete(cardState.complete));
-//   }, [card]);
-
-//   return complete;
-// };
+const handleValues = ({ country, addressLine1, addressLine2, postalCode, ...rest }: Partial<AddressType>): object => ({
+  ...rest,
+  line1: addressLine1,
+  line2: addressLine2,
+  postal_code: postalCode,
+  country: getCountryCode(country),
+});
 
 const Checkout = (props: Props) => {
   const [error, setError] = useState<string | undefined>(undefined);
@@ -111,6 +113,17 @@ const Checkout = (props: Props) => {
   const stripe = useStripe();
   const elements = useElements();
   const totalPrice = shoppingCart.items.reduce((total, { price }) => total + price, 0);
+
+  const {
+    control,
+    formState: { isSubmitting, dirtyFields },
+    handleSubmit: submitWrapper,
+  } = useForm({ defaultValues: DEFAULT_ADDRESS_VALUES, mode: "onChange" });
+
+  const values = useWatch({ control });
+  const details = useMemo(() => handleValues(values), [values]);
+
+  const ready = !isSubmitting && nItems > 0 && filledRequiredFields(dirtyFields);
 
   const getClientSecret = useCallback(async ({ email, ...address }, items, total) => {
     const itemIds = items.map(prop("_id"));
@@ -129,7 +142,10 @@ const Checkout = (props: Props) => {
     });
 
     if (!response.ok) {
-      setError(await response.text());
+      const errorMessage = !response.headers.get("Content-Type")?.includes("html")
+        ? await response.text()
+        : GENERIC_ERROR;
+      setError(errorMessage);
       return;
     }
 
@@ -145,19 +161,10 @@ const Checkout = (props: Props) => {
 
   const debouncedGetClientSecret = useMemo(() => debounce(1000, getClientSecret), [getClientSecret]);
 
-  const {
-    control,
-    formState: { isSubmitting, dirtyFields },
-    getValues,
-    handleSubmit: submitWrapper,
-  } = useForm({ defaultValues: DEFAULT_ADDRESS_VALUES, mode: "onChange" });
-
-  const ready = !isSubmitting && nItems > 0 && filledRequiredFields(dirtyFields);
-
   useEffect(() => {
     if (!ready) return;
-    debouncedGetClientSecret(getValues(), shoppingCart?.items, totalPrice);
-  }, [debouncedGetClientSecret, getValues, ready, shoppingCart?.items, totalPrice]);
+    debouncedGetClientSecret(details, shoppingCart?.items, totalPrice);
+  }, [debouncedGetClientSecret, details, ready, shoppingCart?.items, totalPrice]);
 
   const submit = useCallback(async () => {
     try {
@@ -171,11 +178,14 @@ const Checkout = (props: Props) => {
         return;
       }
 
+      const { name, email, ...address }: Partial<AddressType> = details;
       const data = {
         payment_method: {
           card,
           billing_details: {
-            name: "test",
+            name,
+            email,
+            address,
           },
         },
       };
@@ -194,7 +204,7 @@ const Checkout = (props: Props) => {
     } finally {
       setProcessing(false);
     }
-  }, [clientSecret, elements, onSuccess, stripe]);
+  }, [clientSecret, elements, details, onSuccess, stripe]);
 
   const handleSubmit = useMemo(() => submitWrapper(submit), [submit, submitWrapper]);
 
