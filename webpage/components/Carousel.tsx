@@ -42,6 +42,7 @@ const ChildrenWrapper = styled.div`
   position: absolute;
   top: 1rem;
   left: 1rem;
+  z-index: 1;
 
   @media only screen and (max-width: 480px) {
     top: 1rem;
