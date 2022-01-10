@@ -7,7 +7,6 @@ import { debounce, intersection, isEqual, prop } from "lodash/fp";
 import useShoppingCart from "../hooks/useShoppingCart";
 import ErrorComponent from "../components/ErrorComponent";
 import makeGetStaticProps, { Props } from "../utils/makeGetStaticProps";
-import { HEADER_HEIGHT_REM } from "../components/Header";
 import isServer from "../utils/isServer";
 import Button from "../components/Button";
 import Layout from "../components/Layout";
@@ -34,7 +33,6 @@ const CARD_ELEMENT_OPTIONS = {
 };
 
 const Wrapper = styled.div`
-  /* padding: ${HEADER_HEIGHT_REM}rem 2rem 2rem; */
   padding: 0 1.5rem;
   overflow-y: auto;
 `;
