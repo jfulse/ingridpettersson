@@ -1,19 +1,20 @@
 import { ReactNode, forwardRef, MouseEventHandler } from "react";
 import styled from "styled-components";
 import ImageGallery from "react-image-gallery";
-import { BsCaretLeftSquareFill, BsCaretRightSquareFill } from "react-icons/bs";
 
+import LeftArrow from "./LeftArrow";
+import RightArrow from "./RightArrow";
 import NavButton from "./NavButton";
 
 const renderLeftNav = (onClick: MouseEventHandler<HTMLElement>, disabled: boolean): ReactNode => (
   <NavButton onClick={onClick} disabled={disabled}>
-    <BsCaretLeftSquareFill />
+    <LeftArrow />
   </NavButton>
 );
 
 const renderRightNav = (onClick: MouseEventHandler<HTMLElement>, disabled: boolean): ReactNode => (
   <NavButton onClick={onClick} disabled={disabled} right>
-    <BsCaretRightSquareFill />
+    <RightArrow />
   </NavButton>
 );
 
