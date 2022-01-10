@@ -1,4 +1,5 @@
 import type { AppProps } from "next/app";
+import Script from "next/script";
 import { ThemeProvider } from "styled-components";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
@@ -20,14 +21,17 @@ const stripePromise = loadStripe(PUBLIC_STRIPE_API_KEY);
 
 function App({ Component, pageProps }: AppProps) {
   return (
-    <Elements stripe={stripePromise}>
-      <ContextProvider>
-        <ThemeProvider theme={theme}>
-          <GlobalStyle />
-          <Component {...pageProps} />
-        </ThemeProvider>
-      </ContextProvider>
-    </Elements>
+    <>
+      <Script src="https://js.stripe.com/v3/" />
+      <Elements stripe={stripePromise}>
+        <ContextProvider>
+          <ThemeProvider theme={theme}>
+            <GlobalStyle />
+            <Component {...pageProps} />
+          </ThemeProvider>
+        </ContextProvider>
+      </Elements>
+    </>
   );
 }
 
