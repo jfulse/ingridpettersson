@@ -71,3 +71,13 @@ export type Address = {
   state: string;
   country: "Norway";
 };
+
+export type ResolvedAddress = Omit<
+  Partial<Address>,
+  "country" | "addressLine1" | "addressLine2" | "postalCode" | "email"
+> & {
+  country: "NO";
+  line1: string;
+  line2: string;
+  postal_code: string;
+};

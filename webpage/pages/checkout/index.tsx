@@ -1,20 +1,22 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { useRouter } from "next/router";
 import { useForm, useWatch } from "react-hook-form";
 import { debounce, intersection, isEqual, prop } from "lodash/fp";
 
-import useShoppingCart from "../hooks/useShoppingCart";
-import ErrorComponent from "../components/ErrorComponent";
-import makeGetStaticProps, { Props } from "../utils/makeGetStaticProps";
-import isServer from "../utils/isServer";
-import Button from "../components/Button";
-import Layout from "../components/Layout";
-import Address from "../components/Address";
-import Carousel from "../components/Carousel";
-import { Address as AddressType } from "../types";
-import Link from "../components/Link";
-import useIsMobile from "../hooks/useIsMobile";
+import { COUNTRY_CODES } from "../../constants";
+import useShoppingCart from "../../hooks/useShoppingCart";
+import ErrorComponent from "../../components/ErrorComponent";
+import makeGetStaticProps, { Props } from "../../utils/makeGetStaticProps";
+import isServer from "../../utils/isServer";
+import Button from "../../components/Button";
+import Layout from "../../components/Layout";
+import Address from "../../components/Address";
+import Carousel from "../../components/Carousel";
+import { Address as AddressType } from "../../types";
+import Link from "../../components/Link";
+import useIsMobile from "../../hooks/useIsMobile";
 
 // Test card: 4000002760003184
 
@@ -86,17 +88,12 @@ const GENERIC_ERROR = "Something went wrong";
 const filledRequiredFields = (dirtyFields: object) =>
   isEqual(intersection(Object.keys(dirtyFields), REQUIRED_FIELDS), REQUIRED_FIELDS);
 
-const getCountryCode = (country?: "Norway") => {
-  if (country !== "Norway") throw new Error(`Unknown country ${country}`);
-  return "no";
-};
-
 const handleValues = ({ country, addressLine1, addressLine2, postalCode, ...rest }: Partial<AddressType>): object => ({
   ...rest,
   line1: addressLine1,
   line2: addressLine2,
   postal_code: postalCode,
-  country: getCountryCode(country),
+  country: COUNTRY_CODES[country ?? "Norway"],
 });
 
 const Checkout = (props: Props) => {
@@ -106,6 +103,7 @@ const Checkout = (props: Props) => {
 
   const isMobile = useIsMobile();
   const carouselRef = useRef(null);
+  const { push } = useRouter();
 
   const { nItems, shoppingCart, removeFromCart, onSuccess } = useShoppingCart();
   const stripe = useStripe();
@@ -195,14 +193,14 @@ const Checkout = (props: Props) => {
       } else if (payload?.paymentIntent) {
         setError("");
         onSuccess(payload?.paymentIntent);
-        // push('/checkout/success'); TODO
+        push("/checkout/success");
       } else {
         setError("Something went wrong");
       }
     } finally {
       setProcessing(false);
     }
-  }, [clientSecret, elements, details, onSuccess, stripe]);
+  }, [clientSecret, elements, details, onSuccess, push, stripe]);
 
   const handleSubmit = useMemo(() => submitWrapper(submit), [submit, submitWrapper]);
 
