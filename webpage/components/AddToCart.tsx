@@ -52,11 +52,11 @@ const AddToCart = ({ product, color, backgroundColor }: Props) => {
       {Boolean(inShoppinCart) && `In cart: ${inShoppinCart}`}
       {Boolean(inShoppinCart) && (
         <ButtonsWrapper>
-          <Button onClick={onClickAddToCart} color={color} backgroundColor={backgroundColor}>
-            +
-          </Button>
           <Button onClick={onClickRemoveFromCart} color={color} backgroundColor={backgroundColor}>
             -
+          </Button>
+          <Button onClick={onClickAddToCart} color={color} backgroundColor={backgroundColor}>
+            +
           </Button>
         </ButtonsWrapper>
       )}
