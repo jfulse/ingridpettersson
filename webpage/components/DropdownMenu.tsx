@@ -4,7 +4,6 @@ import { useClickAway } from "react-use";
 
 import { MenuItem as MenuItemType } from "../types";
 
-import MaybeLink from "./MaybeLink";
 import MenuItem from "./MenuItem";
 import { getColors } from "../style/theme";
 

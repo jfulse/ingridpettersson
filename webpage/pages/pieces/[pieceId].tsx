@@ -109,8 +109,9 @@ const Piece = (props: Props<Data>) => {
   const isMobile = useIsMobile();
   const { data } = useData<Partial<Data>>(getPieceOnly, `pieces/${props.slug}`, props.params);
   const piece = data?.piece || props.data?.piece;
+  const withComputedColors = piece?.category === "Illustration";
   // We don't recalculate colors, to save cpu
-  const { color, background } = props.data?.contrastingColors || {};
+  const { color, background } = (withComputedColors && props.data?.contrastingColors) || {};
 
   const product = useMemo(() => (piece?.product ? { ...piece.product, piece } : undefined), [piece]);
 
