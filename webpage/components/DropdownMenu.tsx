@@ -8,8 +8,6 @@ import MaybeLink from "./MaybeLink";
 import MenuItem from "./MenuItem";
 import { getColors } from "../style/theme";
 
-// TODO: Fix click area in sub dropdown
-
 const Wrapper = styled.div`
   position: relative;
 `;
@@ -32,13 +30,17 @@ const Menu = styled.ul<{ open: boolean }>`
   box-shadow: -0.25rem 0.5rem 1rem rgba(0, 0, 0, 0.2);
 
   ${({ open }) => open && "transform: scaleY(1);"}
+`;
 
-  li:first-child {
-    border-radius: 0.5rem 0.5rem 0 0;
+const SubMenu = styled.div`
+  padding: 0 1.5rem;
+
+  span a {
+    padding: 0.5rem 1rem;
   }
 
-  li:last-child {
-    border-radius: 0 0 0.5rem 0.5rem;
+  span:last-child a {
+    padding: 0.5rem 1rem;
   }
 `;
 
@@ -63,19 +65,19 @@ const DropdownMenu = ({ items, component: Component }: Props) => {
       <Menu open={isOpen}>
         {items
           .filter(({ hidden }) => !hidden)
-          .map(({ title, href, onClick, menuItems }) => (
-            <MenuItem key={title} onClick={onClick} toggle={toggle} group={hasSubmenu(menuItems)}>
+          .map(({ title, href, menuItems }) => (
+            <MenuItem key={title} href={href} group={hasSubmenu(menuItems)} onClick={close}>
               {hasSubmenu(menuItems) ? (
-                <div>
+                <SubMenu>
                   {title}
                   {menuItems?.map?.((subMenuItem) => (
-                    <MaybeLink key={subMenuItem.title} href={subMenuItem.href}>
-                      <MenuItem submenuItem>{subMenuItem.title}</MenuItem>
-                    </MaybeLink>
+                    <MenuItem key={subMenuItem.title} href={subMenuItem.href} submenuItem>
+                      {subMenuItem.title}
+                    </MenuItem>
                   ))}
-                </div>
+                </SubMenu>
               ) : (
-                <MaybeLink href={href}>{title}</MaybeLink>
+                title
               )}
             </MenuItem>
           ))}

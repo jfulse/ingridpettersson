@@ -29,8 +29,12 @@ const Wrapper = styled.div`
   // Make sure dropdown goes above image hover title
   z-index: 10;
 
-  span:last-child {
+  & > div:last-child {
     margin-right: 1.5rem;
+
+    @media only screen and (max-width: 480px) {
+      margin-right: 0;
+    }
   }
 `;
 

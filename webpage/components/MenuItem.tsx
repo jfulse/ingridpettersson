@@ -1,20 +1,32 @@
-import { MouseEventHandler, ReactNode, useCallback } from "react";
+import { MouseEventHandler, ReactNode } from "react";
 import styled from "styled-components";
 
 import { getColors } from "../style/theme";
+import MaybeLink from "./MaybeLink";
 
-const StyledMenuItem = styled.li<{ group?: boolean; submenuItem?: boolean }>`
-  list-style: none;
+const StyledMaybeLink = styled(MaybeLink)<{
+  group?: boolean;
+  submenuItem?: boolean;
+  role: string;
+  onClick?: MouseEventHandler;
+}>`
+  display: block;
   white-space: nowrap;
-  padding: 0.5rem 1.5rem;
-  cursor: pointer;
   font-weight: normal;
+  padding: 0;
+  margin: 0;
 
-  &:first-child {
+  a {
+    display: block;
+    padding: 0.5rem 1.5rem;
+    cursor: pointer;
+  }
+
+  &:first-child a {
     padding-top: 1rem;
   }
 
-  &:last-child {
+  &:last-child a {
     padding-bottom: 1rem;
   }
 
@@ -23,10 +35,12 @@ const StyledMenuItem = styled.li<{ group?: boolean; submenuItem?: boolean }>`
   ${({ group }) =>
     group &&
     `
-    padding-bottom: 0;
-    
-    & + li {
-      padding-top: 0;
+    a {
+      padding-bottom: 0;
+      
+      & + li {
+        padding-top: 0;
+      }
     }
   `}
 
@@ -40,26 +54,18 @@ const StyledMenuItem = styled.li<{ group?: boolean; submenuItem?: boolean }>`
 `;
 
 type Props = {
-  toggle?: () => void;
-  onClick?: MouseEventHandler<HTMLButtonElement>;
+  href?: string;
   children: ReactNode;
   group?: boolean;
   submenuItem?: boolean;
+  onClick?: MouseEventHandler;
 };
 
-const MenuItem = ({ toggle, onClick, children, group, submenuItem }: Props) => {
-  const handleClick = useCallback(
-    (event) => {
-      toggle?.();
-      onClick?.(event);
-    },
-    [onClick, toggle]
-  );
-
+const MenuItem = ({ href, children, group, submenuItem, onClick }: Props) => {
   return (
-    <StyledMenuItem group={group} onClick={handleClick} submenuItem={submenuItem}>
+    <StyledMaybeLink href={href} group={group} submenuItem={submenuItem} onClick={onClick} role="listitem">
       {children}
-    </StyledMenuItem>
+    </StyledMaybeLink>
   );
 };
 
