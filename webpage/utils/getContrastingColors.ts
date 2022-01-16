@@ -67,7 +67,7 @@ const getContrastingColors = (colors: Color[] | undefined): { color: string; bac
   const testResults = range(3, 8).map((nColors) => tryGettingContrastingColors(colorsNotGraytone.slice(0, nColors)));
   const contrasting = testResults.find(hasTwo) || testResults.find(hasOne);
 
-  return { ...chooseColors(contrasting) };
+  return chooseColors(contrasting);
 };
 
 export default getContrastingColors;
