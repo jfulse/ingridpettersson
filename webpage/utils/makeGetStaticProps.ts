@@ -4,12 +4,14 @@ import { get, orderBy } from "lodash/fp";
 
 import { ResolvedProject } from "../types";
 import getProjects from "../queries/getProjects";
+import getEmail from "../queries/getEmail";
 import { EMPTY_ARRAY } from "../constants";
 
 export type Props<T = null> = {
   slug: string | string[] | null;
   data: T | null;
   projects: ResolvedProject[];
+  email: string;
   params: NextParsedUrlQuery | null;
 };
 
@@ -30,8 +32,10 @@ const makeGetStaticProps =
       if (getSlug && !slug) throw new Error("Could not get slug server side");
 
       const projects = orderByYear(await getProjects()) ?? EMPTY_ARRAY;
+      const email = await getEmail();
+      console.log("🤯email", email);
 
-      return { props: { data, projects, params, slug }, revalidate: 10 };
+      return { props: { data, projects, params, slug, email }, revalidate: 10 };
     } catch (err) {
       console.error(err);
       return { notFound: true };

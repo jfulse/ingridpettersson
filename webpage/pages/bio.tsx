@@ -8,6 +8,7 @@ import useImageHeight from "../hooks/useImageHeight";
 import makeGetStaticProps, { Props } from "../utils/makeGetStaticProps";
 import getBio from "../queries/getBio";
 import Layout from "../components/Layout";
+import Link from "../components/Link";
 import { ResolvedBio } from "../types";
 import { FOOTER_HEIGHT_REM } from "../components/Footer";
 import { HEADER_HEIGHT_REM } from "../components/Header";
@@ -101,6 +102,9 @@ const Bio = (props: Props<ResolvedBio>) => {
         )}
         <Headline>{headline}</Headline>
         <Body>{body}</Body>
+        <Body>
+          Contact Ingrid at <Link href={`mailto:${props.email}`}>{props.email}</Link>
+        </Body>
       </Wrapper>
     </Layout>
   );

@@ -9,6 +9,7 @@ export default {
   icon: GiSecretBook,
   __experimental_actions: ["update", "publish"],
   fields: [
+    field("email", { type: "string" }),
     field("headline", { type: "text" }),
     field("body", { type: "text" }),
     field("image", { type: "image", fields: [field("title")] }),

@@ -40,6 +40,7 @@ const ModalWrapper = styled.div`
 
 type Props = {
   control: Control<AddressType, object>;
+  email: string;
 };
 
 const MOBILE_INPUT_ORDER: (keyof AddressType)[] = [
@@ -56,7 +57,7 @@ const MOBILE_INPUT_ORDER: (keyof AddressType)[] = [
 const orderInputs = (isMobile: boolean, inputs: ReactElement[]) =>
   sortBy((node) => (isMobile ? MOBILE_INPUT_ORDER.indexOf(node?.key as keyof AddressType) : 0), inputs);
 
-const Address = ({ control }: Props) => {
+const Address = ({ control, email }: Props) => {
   const [modalOpen, setModalOpen] = useState(false);
   const openModal = useCallback(() => setModalOpen(true), []);
   const closeModal = useCallback(() => setModalOpen(false), []);
@@ -82,8 +83,7 @@ const Address = ({ control }: Props) => {
       {inputs}
       <Modal open={modalOpen} onClose={closeModal} center>
         <ModalWrapper>
-          For shipping outside Norway send a mail to{" "}
-          <a href="mailto:ingridpettersson.r@gmail.com">ingridpettersson.r@gmail.com</a>
+          For shipping outside Norway send a mail to <a href={`mailto:${email}`}>{email}</a>
         </ModalWrapper>
       </Modal>
     </Wrapper>

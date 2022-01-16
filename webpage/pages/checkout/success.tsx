@@ -63,7 +63,7 @@ const CheckoutSuccess = (props: Props) => {
   return (
     <Layout projects={props.projects}>
       <Wrapper>
-        <p>Thanks from ordering from ingridpettersson.com!</p>
+        <p>Thanks from ordering from {props.email}!</p>
         {!isEmpty(address) && (
           <>
             <p>We will send your items to:</p>

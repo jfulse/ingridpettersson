@@ -269,7 +269,7 @@ const Checkout = (props: Props<{ shippingInfo: string | null }>) => {
         )}
         <form onSubmit={handleSubmit}>
           <h4>Details</h4>
-          <Address control={control} />
+          <Address control={control} email={props.email} />
           <br />
           <Rule />
           <h4>Bank card</h4>
