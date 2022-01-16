@@ -16,6 +16,7 @@ export type FieldConfig = {
   initialValue?: any;
   hidden?: boolean | (({ document }: { document: SanityDocument }) => boolean);
   filter?: string;
+  rows?: number;
 };
 
 export type SchemaType =

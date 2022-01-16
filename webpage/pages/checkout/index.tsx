@@ -5,9 +5,11 @@ import { useRouter } from "next/router";
 import { useForm, useWatch } from "react-hook-form";
 import { debounce, intersection, isEqual, prop } from "lodash/fp";
 
+import useData from "../../hooks/useData";
 import { COUNTRY_CODES } from "../../constants";
 import useShoppingCart from "../../hooks/useShoppingCart";
 import ErrorComponent from "../../components/ErrorComponent";
+import getShippingInfo from "../../queries/getShippingInfo";
 import makeGetStaticProps, { Props } from "../../utils/makeGetStaticProps";
 import isServer from "../../utils/isServer";
 import Button from "../../components/Button";
@@ -20,7 +22,7 @@ import useIsMobile from "../../hooks/useIsMobile";
 
 // Test card: 4000002760003184
 
-export const getStaticProps = makeGetStaticProps();
+export const getStaticProps = makeGetStaticProps(getShippingInfo);
 
 const CardWrapper = styled.div`
   iframe {
@@ -70,6 +72,15 @@ const EmptyStateWrapper = styled.div`
   }
 `;
 
+const ShippingInfo = styled.div`
+  margin: 1rem 0;
+  font-size: 1.2rem;
+`;
+
+const Rule = styled.hr`
+  border-top: none;
+`;
+
 const DEFAULT_ADDRESS_VALUES: AddressType = {
   name: "",
   addressLine1: "",
@@ -96,7 +107,11 @@ const handleValues = ({ country, addressLine1, addressLine2, postalCode, ...rest
   country: COUNTRY_CODES[country ?? "Norway"],
 });
 
-const Checkout = (props: Props) => {
+const Checkout = (props: Props<{ shippingInfo: string | null }>) => {
+  const { data } = useData<{ shippingInfo: string | null }>(getShippingInfo, "shippingInfo");
+  const shippingInfo = data?.shippingInfo || props?.data?.shippingInfo;
+  console.log("🔥🔥🔥 ", { props, data, shippingInfo });
+
   const [error, setError] = useState<string | undefined>(undefined);
   const [processing, setProcessing] = useState(false);
   const [clientSecret, setClientSecret] = useState("");
@@ -245,9 +260,18 @@ const Checkout = (props: Props) => {
   return (
     <Layout projects={props.projects}>
       <Wrapper>
+        {shippingInfo && (
+          <>
+            {!isMobile && <Rule />}
+            <ShippingInfo>{shippingInfo}</ShippingInfo>
+            <Rule />
+          </>
+        )}
         <form onSubmit={handleSubmit}>
           <h4>Details</h4>
           <Address control={control} />
+          <br />
+          <Rule />
           <h4>Bank card</h4>
           <CardWrapper>
             <CardElement options={CARD_ELEMENT_OPTIONS} />
@@ -259,6 +283,8 @@ const Checkout = (props: Props) => {
             </Button>
           )}
         </form>
+        <br />
+        <Rule />
         <h4>Total price: {totalPrice}NOK</h4>
         <ItemsWrapper>
           <h4>Items in cart ({nItems})</h4>

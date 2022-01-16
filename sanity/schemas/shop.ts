@@ -9,6 +9,7 @@ export default {
   icon: RiShoppingCart2Line,
   __experimental_actions: ["update", "publish"],
   fields: [
+    field("shippingInfo", { type: "text", title: "Shipping info", rows: 3 }),
     field("products", {
       type: "array",
       required: true,
