@@ -1,14 +1,14 @@
-import { maxBy, mean, minBy, prop, range } from "lodash/fp";
-import { RGBA } from "image-palette";
+import { maxBy, minBy, prop, range } from "lodash/fp";
 
 import { brightColor, darkColor } from "../style/global";
 import { Color } from "../types";
+import { EMPTY_COLOR } from "../constants";
+import rgbaToColorString from "./rgbaToColorString";
+import standardDeviation from "./standardDeviation";
 
 const minContrast = 4;
 
 type ItemWithLuma = { luma: number };
-
-const EMPTY_COLOR = { luma: -1, rgba: [0, 0, 0, 0] as RGBA, amount: 0 };
 
 const getContrast = (
   { luma: luma1 }: ItemWithLuma = EMPTY_COLOR,
@@ -31,13 +31,10 @@ const tryGettingContrastingColors = (colors: Color[]): Color[] | undefined => {
   return [darkestColor];
 };
 
-const rgbaToColorString = ({ rgba: [R, G, B, A] }: Color = EMPTY_COLOR): string => `rgba(${R}, ${G}, ${B}, ${A})`;
-
 const isNotGrayTone = ({ luma, rgba: [R, G, B] }: Color): boolean => {
   // We count very bright or dark colors as graytone
   if (luma < 0.1 || luma > 0.9) return false;
-  const meanHue = mean([R, G, B]);
-  return [R, G, B].every((hue) => Math.abs(hue - meanHue) / 255 > 0.02);
+  return standardDeviation([R, G, B]) >= 15;
 };
 
 const hasN =
@@ -48,8 +45,10 @@ const hasN =
 const hasTwo = hasN(2);
 const hasOne = hasN(1);
 
+const DEFAULT_COLORS = { color: darkColor, background: brightColor };
+
 const chooseColors = (contrastingColors?: Color[]): { color: string; background: string } => {
-  if (!contrastingColors) return { color: darkColor, background: brightColor };
+  if (!contrastingColors) return DEFAULT_COLORS;
   const colors = contrastingColors.map(rgbaToColorString);
 
   if (contrastingColors.length === 1) {
@@ -62,13 +61,13 @@ const chooseColors = (contrastingColors?: Color[]): { color: string; background:
 
 // Use some heuristics to get two or one color(s) that are prominent and have high contrast
 const getContrastingColors = (colors: Color[] | undefined): { color: string; background: string } => {
-  if (!colors) return chooseColors();
+  if (!colors) return DEFAULT_COLORS;
 
   const colorsNotGraytone = colors.filter(isNotGrayTone);
   const testResults = range(3, 8).map((nColors) => tryGettingContrastingColors(colorsNotGraytone.slice(0, nColors)));
   const contrasting = testResults.find(hasTwo) || testResults.find(hasOne);
 
-  return chooseColors(contrasting);
+  return { ...chooseColors(contrasting) };
 };
 
 export default getContrastingColors;
