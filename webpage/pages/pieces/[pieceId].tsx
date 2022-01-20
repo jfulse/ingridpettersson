@@ -132,7 +132,7 @@ const Piece = (props: Props<Data>) => {
   const width = Math.min(desiredWidth, maxWidth) + thumbnailsWidthPx;
 
   return (
-    <Layout projects={props.projects}>
+    <Layout projects={props.projects} email={props.email}>
       <Wrapper ref={ref}>
         <Carousel width={width} thumbnailsWidthPx={thumbnailsWidthPx} images={images} />
         <InfoWrapper background={background} color={color}>

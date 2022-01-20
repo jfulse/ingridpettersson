@@ -40,7 +40,7 @@ const Shop = (props: Props<Shop>) => {
   );
 
   return (
-    <Layout projects={props.projects}>
+    <Layout projects={props.projects} email={props.email}>
       <ProductGrid imageObjects={imageObjects} />
     </Layout>
   );

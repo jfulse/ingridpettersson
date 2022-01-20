@@ -21,17 +21,18 @@ const Content = styled.div<{ footerAlwaysVisible?: boolean }>`
 type Props = {
   children: ReactNode;
   projects: ResolvedProject[];
+  email: string;
   footerAlwaysVisible?: boolean;
 };
 
-const Layout = ({ children, projects, footerAlwaysVisible }: Props) => {
+const Layout = ({ children, projects, footerAlwaysVisible, email }: Props) => {
   const isMobile = useIsMobile();
 
   return (
     <>
       <Header projects={projects} />
       <Content footerAlwaysVisible={footerAlwaysVisible}>{children}</Content>
-      {(!isMobile || footerAlwaysVisible) && <Footer />}
+      {(!isMobile || footerAlwaysVisible) && <Footer email={email} />}
     </>
   );
 };

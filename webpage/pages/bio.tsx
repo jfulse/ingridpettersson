@@ -120,7 +120,7 @@ const Bio = (props: Props<ResolvedBio>) => {
   if (!headline || !body) return null;
 
   return (
-    <Layout projects={props.projects} footerAlwaysVisible>
+    <Layout projects={props.projects} email={props.email} footerAlwaysVisible>
       <Wrapper>
         {!isMobile && <BackgroundImage height={height} aspectRatio={aspectRatio} imageProps={imageProps} />}
         <TextWrapper height={height} aspectRatio={aspectRatio}>

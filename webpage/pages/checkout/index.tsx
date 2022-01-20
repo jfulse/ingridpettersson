@@ -246,7 +246,7 @@ const Checkout = (props: Props<{ shippingInfo: string | null }>) => {
 
   if (nItems < 1) {
     return (
-      <Layout projects={props.projects}>
+      <Layout projects={props.projects} email={props.email}>
         <EmptyStateWrapper>
           <span>There are no items in the cart</span>
           <span>
@@ -258,7 +258,7 @@ const Checkout = (props: Props<{ shippingInfo: string | null }>) => {
   }
 
   return (
-    <Layout projects={props.projects}>
+    <Layout projects={props.projects} email={props.email}>
       <Wrapper>
         {shippingInfo && (
           <>

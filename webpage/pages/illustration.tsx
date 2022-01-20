@@ -24,7 +24,7 @@ const Illustration = (props: Props<ResolvedPiece[]>) => {
   );
 
   return (
-    <Layout projects={props.projects}>
+    <Layout projects={props.projects} email={props.email}>
       <ImageBeam imageObjects={imageObjects} />
     </Layout>
   );

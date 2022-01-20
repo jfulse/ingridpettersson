@@ -26,7 +26,7 @@ const Index = (props: Props<Landing>) => {
   );
 
   return (
-    <Layout projects={props.projects} footerAlwaysVisible>
+    <Layout projects={props.projects} email={props.email} footerAlwaysVisible>
       <ImageBeam imageObjects={imageObjects} />
     </Layout>
   );

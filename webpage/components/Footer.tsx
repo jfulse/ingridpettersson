@@ -18,6 +18,10 @@ const Wrapper = styled.div`
   font-size: 0.8rem;
   z-index: 5; // Win over carousel arrows
 
+  @media only screen and (max-width: 480px) {
+    gap: 0.2rem;
+  }
+
   a {
     text-decoration: none;
     color: ${(props) => getColors(props, "dark")};
@@ -32,12 +36,14 @@ const Wrapper = styled.div`
   }
 `;
 
-const Footer = () => {
+const Footer = ({ email }: { email: string }) => {
   return (
     <Wrapper>
       <a href="https://www.instagram.com/ingridpettersson00/">instagram</a>
       {"/"}
       <a href="https://jfcurated.no/designer/ingrid-pettersson/">stockist</a>
+      {"/"}
+      <a href={`mailto:${email}`}>{email}</a>
     </Wrapper>
   );
 };

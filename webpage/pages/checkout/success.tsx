@@ -61,7 +61,7 @@ const CheckoutSuccess = (props: Props) => {
   const email = shoppingCart?.successMetadata?.receipt_email;
 
   return (
-    <Layout projects={props.projects}>
+    <Layout projects={props.projects} email={props.email}>
       <Wrapper>
         <p>Thanks from ordering from {props.email}!</p>
         {!isEmpty(address) && (

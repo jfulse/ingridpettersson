@@ -44,7 +44,7 @@ const Project = (props: Props<ResolvedProject>) => {
   const singleVideo = imageObjects.length === 1 && imageObjects[0].image?._type === "youtubeEmbed";
 
   return (
-    <Layout projects={props.projects}>
+    <Layout projects={props.projects} email={props.email}>
       <Wrapper>
         {singleVideo ? (
           <YoutubePreview url={imageObjects[0].image?.url} single={singleVideo} />
