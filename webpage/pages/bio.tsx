@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 import NextImage from "next/image";
-import { useNextSanityImage } from "next-sanity-image";
+import { useNextSanityImage, UseNextSanityImageProps } from "next-sanity-image";
 
 import { EMPTY_OBJECT } from "../constants";
 import useData from "../hooks/useData";
@@ -8,11 +8,11 @@ import useImageHeight from "../hooks/useImageHeight";
 import makeGetStaticProps, { Props } from "../utils/makeGetStaticProps";
 import getBio from "../queries/getBio";
 import Layout from "../components/Layout";
-import Link from "../components/Link";
 import { ResolvedBio } from "../types";
 import { FOOTER_HEIGHT_REM } from "../components/Footer";
 import { HEADER_HEIGHT_REM } from "../components/Header";
 import { sanityClient } from "../utils/sanityClient";
+import useIsMobile from "../hooks/useIsMobile";
 
 // TODO: Looks like https://ingridpettersson.com/about.html has a different font
 
@@ -21,7 +21,6 @@ export const getStaticProps = makeGetStaticProps(getBio);
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 1rem;
   padding: 0 1.5rem;
   line-height: 1.5rem;
@@ -33,8 +32,7 @@ const Wrapper = styled.div`
 const BORDER_REM = FOOTER_HEIGHT_REM + HEADER_HEIGHT_REM;
 
 const ImageWrapper = styled.div<{ height: number; aspectRatio: number }>`
-  position: absolute;
-  left: 0;
+  left: 1.5rem;
   top: 0;
   ${({ aspectRatio, height }) => `
   height: calc(${height}vh - ${BORDER_REM}rem);
@@ -45,66 +43,93 @@ const ImageWrapper = styled.div<{ height: number; aspectRatio: number }>`
     width: 100%;
     height: unset;
     position: relative;
+    left: 0;
+    margin-top: 1rem;
   }
 `;
 
-const textShadowColor = "rgba(255, 255, 255, 0.3)";
-const textShadow = css`-3px -3px 20px ${textShadowColor}, 3px -3px 20px ${textShadowColor}, -3px 3px 20px ${textShadowColor}, 3px 3px 20px ${textShadowColor}`;
+const TextWrapper = styled.div<{ height: number; aspectRatio: number }>`
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  margin-left: 1.5rem;
+  left: ${({ height, aspectRatio }) => `calc(${height * aspectRatio}vh - ${BORDER_REM * aspectRatio}rem)`};
+
+  @media only screen and (max-width: 480px) {
+    position: relative;
+    left: 0;
+    margin: 0;
+  }
+`;
 
 const Headline = styled.h3`
   z-index: 1;
   font-weight: 500;
-  font-size: 2rem;
-  line-height: 2.5rem;
-  margin: 10% 0 0 5%;
-  text-shadow: ${textShadow};
+  font-size: 2.2rem;
+  line-height: 3rem;
+  position: relative;
+  top: 2rem;
+  left: -150px;
 
   @media only screen and (max-width: 480px) {
-    position: absolute;
-    font-size: 1.4rem;
+    left: 0;
+    top: 0;
+    margin: 0.5rem 0 0;
+    font-size: 1.3rem;
     line-height: 1.8rem;
-    margin: 1.5rem 2rem 0;
   }
 `;
 
-const Body = styled.div`
+const Body = styled.div<{ height: number; aspectRatio: number }>`
   z-index: 1;
-  margin: 5% 0 0 15%;
   font-weight: 500;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   line-height: 2rem;
-  text-shadow: ${textShadow};
+  margin: 3rem 2rem 0 2rem;
 
   @media only screen and (max-width: 480px) {
-    margin: 0;
-    font-size: 1rem;
+    margin: 1rem 0 1rem;
+    font-size: 1.1rem;
     line-height: 1.5rem;
   }
 `;
 
+const BackgroundImage = ({
+  height,
+  aspectRatio,
+  imageProps,
+}: {
+  height: number;
+  aspectRatio: number;
+  imageProps: UseNextSanityImageProps;
+}) => (
+  <ImageWrapper height={height} aspectRatio={aspectRatio}>
+    <NextImage {...imageProps} layout="responsive" placeholder="blur" />
+  </ImageWrapper>
+);
+
 const Bio = (props: Props<ResolvedBio>) => {
   const { data } = useData<ResolvedBio>(getBio, "bio");
   const { headline, body, image } = (data || props.data) ?? (EMPTY_OBJECT as ResolvedBio);
+  const isMobile = useIsMobile();
 
   const height = useImageHeight(image);
   const imageProps = useNextSanityImage(sanityClient, image?.asset ?? {});
-  const aspectRatio = image?.asset?.metadata?.dimensions?.aspectRatio;
+  const aspectRatio = image?.asset?.metadata?.dimensions?.aspectRatio ?? 1;
 
   if (!headline || !body) return null;
 
   return (
     <Layout projects={props.projects} footerAlwaysVisible>
       <Wrapper>
-        {aspectRatio && (
-          <ImageWrapper height={height} aspectRatio={aspectRatio}>
-            <NextImage {...imageProps} layout="responsive" placeholder="blur" />
-          </ImageWrapper>
-        )}
-        <Headline>{headline}</Headline>
-        <Body>{body}</Body>
-        <Body>
-          Contact Ingrid at <Link href={`mailto:${props.email}`}>{props.email}</Link>
-        </Body>
+        {!isMobile && <BackgroundImage height={height} aspectRatio={aspectRatio} imageProps={imageProps} />}
+        <TextWrapper height={height} aspectRatio={aspectRatio}>
+          <Headline>{headline}</Headline>
+          {isMobile && <BackgroundImage height={height} aspectRatio={aspectRatio} imageProps={imageProps} />}
+          <Body height={height} aspectRatio={aspectRatio}>
+            {body}
+          </Body>
+        </TextWrapper>
       </Wrapper>
     </Layout>
   );
