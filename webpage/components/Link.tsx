@@ -8,9 +8,24 @@ import { getColors } from "../style/theme";
 
 const Wrapper = styled.span<{ isActive: boolean }>`
   a {
-    color: ${({ isActive, ...props }) => (isActive ? getColors(props, "selected") : getColors(props, "dark"))};
+    color: ${(props) => getColors(props, "dark")};
     text-decoration: none;
+    padding: 0.25rem 0.4rem;
+    border-radius: 0.25rem;
     ${hoverButton}
+
+    ${({ isActive, ...props }) =>
+      isActive &&
+      `
+      color: ${getColors(props, "bright")};
+      background-color: ${getColors(props, "dark")};
+
+      @media only screen and (max-width: 480px) {
+        color: ${getColors(props, "dark")};
+        background-color: transparent;
+        font-weight: bold;
+      }
+    `}
   }
 `;
 
